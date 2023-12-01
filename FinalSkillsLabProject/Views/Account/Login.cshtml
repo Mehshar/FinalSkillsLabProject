@@ -1,0 +1,105 @@
+﻿@model FinalSkillsLabProject.Common.Models.LoginModel
+
+@{
+    ViewBag.Title = "Login";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="~/Content/LoginStyle.css" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/%40fortawesome/fontawesome-free@6.2.0/css/fontawesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    @*https://codeseven.github.io/toastr/*@
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <script type="text/javascript" src="~/Scripts/PasswordVisibility.js"></script>
+    <script type="text/javascript" src="~/Scripts/LoginScript.js"></script>
+</head>
+<body>
+    <div class="title-bar">
+        <p>
+            <a href="/Home/Index" class="text-decoration-none" id="title-text">SkillsHub</a>
+        </p>
+    </div>
+
+    <div class="container bg-transparent mt-4">
+        <div class="row justify-content-center flex-wrap">
+            <div class="col-lg-5 col-md-6 bg-white py-5 px-1 rounded-3 left-column">
+                <div>
+                    <img src="~/images/image-14.jpg" class="img-fluid" alt="Image" />
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 bg-transparent justify-content-center align-items-center d-flex ps-0 outer-content">
+                <div class="inner-content bg-opacity-25 px-5 pb-5 pt-4 rounded-end bg-white">
+                    <h2 class="text-center pt-2 pb-2">Log In</h2>
+                    <span class="d-flex align-content-center justify-content-center mt-3 mb-3">Don't have an account? <a href="/Account/SignUp" class="text-decoration-none fw-bold ms-1" id="signUpText">Sign Up</a></span>
+
+                    <div>
+                        <form name="LoginForm" id="LoginForm">
+                            <div class="input-field rounded-pill">
+                                <i class="fa fa-user"></i>
+                                <input type="text" name="username" id="username" placeholder="Username" required />
+                            </div>
+
+                            <div class="input-field rounded-pill bg-white">
+                                <i class="fa fa-lock"></i>
+                                <input type="password" name="password" id="password" placeholder="Password" required />
+                            </div>
+
+                            <div class="form-checkbox">
+                                <input type="checkbox" id="passwordCheckbox" onclick="togglePasswordVisibility()" />
+                                <span>Show Password</span>
+                            </div>
+
+                            <div class="form-button d-flex justify-content-center">
+                                <button type="submit" id="btnLogin">LOG IN</button>
+                            </div>
+
+                            <h4 class="hr-line px-5"> OR </h4>
+
+                            <div class="text-center pt-2 pb-3"><span>Sign in with social platforms</span></div>
+
+                            <div class="social-media">
+                                <a href="#" class="social-icon">
+                                    <i class="fa fa-facebook-f"></i>
+                                </a>
+
+                                <a href="#" class="social-icon">
+                                    <i class="fa fa-twitter"></i>
+                                </a>
+
+                                <a href="#" class="social-icon">
+                                    <i class="fa fa-google"></i>
+                                </a>
+
+                                <a href="#" class="social-icon">
+                                    <i class="fa fa-linkedin"></i>
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

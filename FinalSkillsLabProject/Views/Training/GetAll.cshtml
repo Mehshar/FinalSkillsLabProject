@@ -1,0 +1,68 @@
+﻿@model IEnumerable<FinalSkillsLabProject.Common.Models.TrainingModel>
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>All Trainings</title>
+</head>
+<body>
+    <p>
+        @Html.ActionLink("New Training", "Create", null, new { @class = "btn btn-primary" })
+        @*<a href="@Url.Action("Create")" class="btn btn-primary" id="createBtn">
+            <i class="fa-solid fa-plus"></i> Create New
+        </a>*@
+    </p>
+    <table class="table table-hover">
+        <tr>
+            <th>
+                Training
+            </th>
+            <th>
+                Description
+            </th>
+            <th>
+                Deadline
+            </th>
+            <th>
+                Capacity
+            </th>
+            <th>
+                Priority Department Name
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var training in ViewBag.Trainings)
+        {
+            <tr>
+                <td>
+                    @training.TrainingName
+                </td>
+                <td>
+                    @training.Description
+                </td>
+                <td>
+                    @training.Deadline
+                </td>
+                <td>
+                    @training.Capacity
+                </td>
+                @*<td>
+                        @(training.PriorityDepartment == null ? "N/A" : training.PriorityDepartment)
+                    </td>*@
+                <td>
+                    @(training.PriorityDepartmentName == null ? "N/A" : training.PriorityDepartmentName)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = training.TrainingId }) |
+                    @*@Html.ActionLink("Details", "Details", new { id = training.TrainingId }) |*@
+                    @Html.ActionLink("Delete", "Delete", new { id = training.TrainingId })
+                </td>
+            </tr>
+        }
+
+    </table>
+</body>
+</html>

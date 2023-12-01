@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C5A5A9D9-3316-48AA-99E1-ED4B0C400727}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>FinalSkillsLabProject.BL</RootNamespace>
+    <AssemblyName>FinalSkillsLabProject.BL</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.SqlClient, Version=4.6.1.5, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Data.SqlClient.4.8.5\lib\net461\System.Data.SqlClient.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BusinessLogicLayer\AccountBL.cs" />
+    <Compile Include="BusinessLogicLayer\DepartmentBL.cs" />
+    <Compile Include="BusinessLogicLayer\EnrollmentBL.cs" />
+    <Compile Include="BusinessLogicLayer\PendingUserBL.cs" />
+    <Compile Include="BusinessLogicLayer\PrerequisiteBL.cs" />
+    <Compile Include="BusinessLogicLayer\TrainingBL.cs" />
+    <Compile Include="BusinessLogicLayer\UserBL.cs" />
+    <Compile Include="Interfaces\IAccountBL.cs" />
+    <Compile Include="Interfaces\IDepartmentBL.cs" />
+    <Compile Include="Interfaces\IEnrollmentBL.cs" />
+    <Compile Include="Interfaces\IPendingUserBL.cs" />
+    <Compile Include="Interfaces\IPrerequisiteBL.cs" />
+    <Compile Include="Interfaces\ITrainingBL.cs" />
+    <Compile Include="Interfaces\IUserBL.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FinalSkillsLabProject.Common\FinalSkillsLabProject.Common.csproj">
+      <Project>{3986385e-5ab4-4601-8fe1-c4a0b854165f}</Project>
+      <Name>FinalSkillsLabProject.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FinalSkillsLabProject.DAL\FinalSkillsLabProject.DAL.csproj">
+      <Project>{951d2522-2efa-4cec-a583-b80dd251f27e}</Project>
+      <Name>FinalSkillsLabProject.DAL</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
