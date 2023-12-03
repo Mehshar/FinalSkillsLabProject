@@ -45,9 +45,9 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             parameters.Add(new SqlParameter("@TrainingName", training.TrainingName));
             parameters.Add(new SqlParameter("@Description", training.Description));
             parameters.Add(new SqlParameter("@Deadline", training.Deadline));
-            parameters.Add(new SqlParameter("@PriorityDepartment", training.PriorityDepartment));
-            parameters.Add(new SqlParameter("@Capacity", training.Capacity));
-            parameters.Add(new SqlParameter("@TrainingId", training.TrainingId));
+            parameters.Add(new SqlParameter("@PriorityDepartment", Convert.ToInt16(training.PriorityDepartment)));
+            parameters.Add(new SqlParameter("@Capacity", Convert.ToInt16(training.Capacity)));
+            parameters.Add(new SqlParameter("@TrainingId", Convert.ToInt16(training.TrainingId)));
 
             const string UpdateTrainingQuery =
                 @"BEGIN TRANSACTION;
