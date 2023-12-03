@@ -36,7 +36,7 @@ namespace FinalSkillsLabProject.Common.Models
 
         [Required]
         public int DepartmentId { get; set; }
-        public string Manager { get; set; }
+        public int? ManagerId { get; set; }
 
         [Required]
         public int RoleId { get; set; }

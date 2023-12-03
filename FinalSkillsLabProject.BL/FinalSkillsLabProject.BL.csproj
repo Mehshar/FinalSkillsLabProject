@@ -47,14 +47,12 @@
     <Compile Include="BusinessLogicLayer\AccountBL.cs" />
     <Compile Include="BusinessLogicLayer\DepartmentBL.cs" />
     <Compile Include="BusinessLogicLayer\EnrollmentBL.cs" />
-    <Compile Include="BusinessLogicLayer\PendingUserBL.cs" />
     <Compile Include="BusinessLogicLayer\PrerequisiteBL.cs" />
     <Compile Include="BusinessLogicLayer\TrainingBL.cs" />
     <Compile Include="BusinessLogicLayer\UserBL.cs" />
     <Compile Include="Interfaces\IAccountBL.cs" />
     <Compile Include="Interfaces\IDepartmentBL.cs" />
     <Compile Include="Interfaces\IEnrollmentBL.cs" />
-    <Compile Include="Interfaces\IPendingUserBL.cs" />
     <Compile Include="Interfaces\IPrerequisiteBL.cs" />
     <Compile Include="Interfaces\ITrainingBL.cs" />
     <Compile Include="Interfaces\IUserBL.cs" />

@@ -33,7 +33,7 @@ namespace FinalSkillsLabProject.BL
         {
             try
             {
-                CheckUpdateDuplicate(account.UserId, account.Username, account.Password);
+                CheckUpdateDuplicate(account.UserId, account.Username);
                 this._accountDAL.Update(account);
                 return "Account successfully updated!";
             }
@@ -44,7 +44,7 @@ namespace FinalSkillsLabProject.BL
             }
         }
 
-        private void CheckUpdateDuplicate(int userId, string username, string password)
+        private void CheckUpdateDuplicate(int userId, string username)
         {
             AccountModel account = this._accountDAL.GetByUsernameAndUserId(username, userId);
             string message = "";

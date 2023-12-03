@@ -23,7 +23,7 @@ namespace FinalSkillsLabProject.Common.Models
         [DataType(DataType.DateTime)]
         public DateTime Deadline { get; set; }
         public int Capacity { get; set; }
-        public int? PriorityDepartment { get; set; }
+        public int PriorityDepartment { get; set; }
         public string PriorityDepartmentName { get; set; }
     }
 }

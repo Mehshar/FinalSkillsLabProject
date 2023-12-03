@@ -13,70 +13,6 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
 {
     public class TrainingDAL : ITrainingDAL
     {
-        private const string _InsertTrainingQuery =
-            @"BEGIN TRANSACTION;
-
-            DECLARE @training_key INT            
-
-            INSERT INTO [dbo].[Training] ([TrainingName], [Description], [Deadline], [PriorityDepartment], [Capacity])
-            SELECT @TrainingName, @Description, @Deadline, @PriorityDepartment, @Capacity;
-
-            SELECT @training_key = @@IDENTITY
-
-            COMMIT;";
-
-        private const string _UpdateTrainingQuery =
-            @"BEGIN TRANSACTION;
-
-            UPDATE [dbo].[Training]
-            SET [TrainingName] = @TrainingName,
-	            [Description] = @Description,
-	            [Deadline] = @Deadline,
-	            [PriorityDepartment] = @PriorityDepartment,
-	            [Capacity] = @Capacity
-            WHERE [TrainingId] = @TrainingId;
-
-            COMMIT;";
-
-        private const string _DeleteTrainingQuery =
-            @"BEGIN TRANSACTION;
-
-            DELETE FROM [dbo].[Training]
-            WHERE [TrainingId] = @TrainingId;
-
-            COMMIT;";
-
-        private const string _GetTrainingQuery =
-            @"
-            BEGIN TRANSACTION;
-
-            SELECT *
-            FROM [dbo].[Training]
-            WHERE [TrainingId] = @TrainingId;
-
-            COMMIT;";
-
-        private const string _GetAllTrainingsQuery =
-            @"BEGIN TRANSACTION;
-
-            SELECT *
-            FROM [dbo].[Training] as t
-            LEFT JOIN [dbo].[Department] as d
-            ON t.[PriorityDepartment] = d.DepartmentId;
-
-            COMMIT;";
-
-        private const string _GetTrainingsByUserQuery =
-            @"BEGIN TRANSACTION;
-
-            SELECT t.*, e.[UserId], e.[TrainingId]
-            FROM [dbo].[Enrollment] as e
-            INNER JOIN [dbo].[Training] as t
-            ON e.[TrainingId] = t.[TrainingId]
-            WHERE e.[UserId] = @UserId;
-
-            COMMIT;";
-
         public void Add(TrainingModel training)
         {
             List<SqlParameter> parameters = new List<SqlParameter>();
@@ -87,17 +23,24 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             parameters.Add(new SqlParameter("@PriorityDepartment", training.PriorityDepartment));
             parameters.Add(new SqlParameter("@Capacity", training.Capacity));
 
-            DbCommand.InsertUpdateData(_InsertTrainingQuery, parameters);
+            const string InsertTrainingQuery =
+                @"BEGIN TRANSACTION;
+
+                DECLARE @training_key INT            
+
+                INSERT INTO [dbo].[Training] ([TrainingName], [Description], [Deadline], [PriorityDepartment], [Capacity])
+                SELECT @TrainingName, @Description, @Deadline, @PriorityDepartment, @Capacity;
+
+                SELECT @training_key = @@IDENTITY
+
+                COMMIT;";
+
+            DbCommand.InsertUpdateData(InsertTrainingQuery, parameters);
         }
 
         public void Update(TrainingModel training)
         {
             List<SqlParameter> parameters = new List<SqlParameter>();
-
-            //foreach(var property in training.GetType().GetProperties())
-            //{
-            //    parameters.Add(new SqlParameter($"@{property.Name}", property.GetValue(training)));
-            //}
 
             parameters.Add(new SqlParameter("@TrainingName", training.TrainingName));
             parameters.Add(new SqlParameter("@Description", training.Description));
@@ -106,13 +49,35 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             parameters.Add(new SqlParameter("@Capacity", training.Capacity));
             parameters.Add(new SqlParameter("@TrainingId", training.TrainingId));
 
-            DbCommand.InsertUpdateData(_UpdateTrainingQuery, parameters);
+            const string UpdateTrainingQuery =
+                @"BEGIN TRANSACTION;
+
+                UPDATE [dbo].[Training]
+                SET [TrainingName] = @TrainingName,
+	                [Description] = @Description,
+	                [Deadline] = @Deadline,
+	                [PriorityDepartment] = @PriorityDepartment,
+	                [Capacity] = @Capacity
+                WHERE [TrainingId] = @TrainingId;
+
+                COMMIT;";
+
+            DbCommand.InsertUpdateData(UpdateTrainingQuery, parameters);
         }
 
         public bool Delete(int trainingId)
         {
             SqlParameter parameter = new SqlParameter("@TrainingId", trainingId);
-            return DbCommand.DeleteData(_DeleteTrainingQuery, parameter) > 0;
+
+            const string DeleteTrainingQuery =
+                @"BEGIN TRANSACTION;
+
+                DELETE FROM [dbo].[Training]
+                WHERE [TrainingId] = @TrainingId;
+
+                COMMIT;";
+
+            return DbCommand.DeleteData(DeleteTrainingQuery, parameter) > 0;
         }
 
         public TrainingModel Get(int trainingId)
@@ -122,21 +87,32 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
 
             parameters.Add(new SqlParameter("@TrainingId", trainingId));
 
-            DataTable dt = DbCommand.GetDataWithConditions(_GetTrainingQuery, parameters);
+            const string GetTrainingQuery =
+                @"
+                BEGIN TRANSACTION;
+
+                SELECT *
+                FROM [dbo].[Training] AS t
+                LEFT JOIN [dbo].[Department] AS d
+                ON t.[PriorityDepartment] = d.[DepartmentId]
+                WHERE [TrainingId] = @TrainingId;
+
+                COMMIT;";
+
+            DataTable dt = DbCommand.GetDataWithConditions(GetTrainingQuery, parameters);
 
             DataRow row = dt.Rows[0];
             training.TrainingId = trainingId;
             training.TrainingName = row["TrainingName"].ToString();
             training.Description = row["Description"].ToString();
             training.Deadline = (DateTime)row["Deadline"];
-            if (row["PriorityDepartment"] != DBNull.Value)
+            training.PriorityDepartment = int.Parse(row["PriorityDepartment"].ToString());
+            if (row["DepartmentName"] != DBNull.Value)
             {
-                training.PriorityDepartment = int.Parse(row["PriorityDepartment"].ToString());
                 training.PriorityDepartmentName = row["DepartmentName"].ToString();
             }
             else
             {
-                training.PriorityDepartment = null;
                 training.PriorityDepartmentName = null;
             }
             training.Capacity = int.Parse(row["Capacity"].ToString());
@@ -148,7 +124,17 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             TrainingModel training;
             List<TrainingModel> trainingList = new List<TrainingModel>();
 
-            DataTable dt = DbCommand.GetData(_GetAllTrainingsQuery);
+            const string GetAllTrainingsQuery =
+                @"BEGIN TRANSACTION;
+
+                SELECT *
+                FROM [dbo].[Training] as t
+                LEFT JOIN [dbo].[Department] as d
+                ON t.[PriorityDepartment] = d.DepartmentId;
+
+                COMMIT;";
+
+            DataTable dt = DbCommand.GetData(GetAllTrainingsQuery);
 
             foreach (DataRow row in dt.Rows)
             {
@@ -158,14 +144,13 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                 training.TrainingName = row["TrainingName"].ToString();
                 training.Description = row["Description"].ToString();
                 training.Deadline = (DateTime)row["Deadline"];
-                if (row["PriorityDepartment"] != DBNull.Value)
+                training.PriorityDepartment = int.Parse(row["PriorityDepartment"].ToString());
+                if (row["DepartmentName"] != DBNull.Value)
                 {
-                    training.PriorityDepartment = int.Parse(row["PriorityDepartment"].ToString());
                     training.PriorityDepartmentName = row["DepartmentName"].ToString();
                 }
                 else
                 {
-                    training.PriorityDepartment = null;
                     training.PriorityDepartmentName = null;
                 }
                 training.Capacity = int.Parse(row["Capacity"].ToString());
@@ -182,7 +167,18 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
 
             List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter("@UserId", userId) };
 
-            DataTable dt = DbCommand.GetDataWithConditions(_GetTrainingsByUserQuery, parameters);
+            const string GetTrainingsByUserQuery =
+                @"BEGIN TRANSACTION;
+
+                SELECT t.*, e.[UserId], e.[TrainingId]
+                FROM [dbo].[Enrollment] as e
+                INNER JOIN [dbo].[Training] as t
+                ON e.[TrainingId] = t.[TrainingId]
+                WHERE e.[UserId] = @UserId;
+
+                COMMIT;";
+
+            DataTable dt = DbCommand.GetDataWithConditions(GetTrainingsByUserQuery, parameters);
 
             foreach (DataRow row in dt.Rows)
             {
@@ -192,15 +188,13 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                 training.TrainingName = row["TrainingName"].ToString();
                 training.Description = row["Description"].ToString();
                 training.Deadline = (DateTime)row["Deadline"];
-
-                if (row["PriorityDepartment"] != DBNull.Value)
+                training.PriorityDepartment = int.Parse(row["PriorityDepartment"].ToString());
+                if (row["DepartmentName"] != DBNull.Value)
                 {
-                    training.PriorityDepartment = int.Parse(row["PriorityDepartment"].ToString());
                     training.PriorityDepartmentName = row["DepartmentName"].ToString();
                 }
                 else
                 {
-                    training.PriorityDepartment = null;
                     training.PriorityDepartmentName = null;
                 }
                 training.Capacity = int.Parse(row["Capacity"].ToString());

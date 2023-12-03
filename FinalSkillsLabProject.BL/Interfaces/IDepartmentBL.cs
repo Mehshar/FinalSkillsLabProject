@@ -15,5 +15,6 @@ namespace FinalSkillsLabProject.BL.Interfaces
         //void Delete(DepartmentModel department);
         DepartmentModel Get(int departmentId);
         IEnumerable<DepartmentModel> GetAll();
+        IEnumerable<UserModel> GetManagerByDepartment(int departmentId);
     }
 }

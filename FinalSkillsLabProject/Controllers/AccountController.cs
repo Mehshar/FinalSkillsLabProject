@@ -16,12 +16,14 @@ namespace FinalSkillsLabProject.Controllers
     public class AccountController : Controller
     {
         private readonly IAccountBL _accountBL;
-        private readonly IPendingUserBL _pendingUserBL;
+        private readonly IUserBL _userBL;
+        private readonly IDepartmentBL _departmentBL;
 
-        public AccountController(IAccountBL accountBL, IPendingUserBL pendingUserBL)
+        public AccountController(IAccountBL accountBL, IUserBL userBL, IDepartmentBL departmentBL)
         {
             _accountBL = accountBL;
-            _pendingUserBL = pendingUserBL;
+            _userBL = userBL;
+            _departmentBL = departmentBL;
         }
 
         [HttpGet]
@@ -51,14 +53,21 @@ namespace FinalSkillsLabProject.Controllers
         [HttpGet]
         public ActionResult Signup()
         {
+            ViewBag.Departments = _departmentBL.GetAll().ToList();
             return View();
         }
 
         [HttpPost]
-        public JsonResult Signup(PendingUserModel pendingUser)
+        public JsonResult Signup(SignUpModel signUp)
         {
-            string result = _pendingUserBL.Add(pendingUser);
+            string result = _userBL.Add(signUp);
             return Json(new { result = result, url = Url.Action("Login", "Account") });
+        }
+
+        public JsonResult GetDepartmentManagers(int departmentId)
+        {
+            List<UserModel> managersList = _departmentBL.GetManagerByDepartment(departmentId).ToList();
+            return Json(new { managers = managersList });
         }
 
         public ActionResult Logout()

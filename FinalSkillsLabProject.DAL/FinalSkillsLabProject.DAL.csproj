@@ -50,14 +50,12 @@
     <Compile Include="DataAccessLayer\AccountDAL.cs" />
     <Compile Include="DataAccessLayer\DepartmentDAL.cs" />
     <Compile Include="DataAccessLayer\EnrollmentDAL.cs" />
-    <Compile Include="DataAccessLayer\PendingUserDAL.cs" />
     <Compile Include="DataAccessLayer\PrerequisiteDAL.cs" />
     <Compile Include="DataAccessLayer\TrainingDAL.cs" />
     <Compile Include="DataAccessLayer\UserDAL.cs" />
     <Compile Include="Interfaces\IAccountDAL.cs" />
     <Compile Include="Interfaces\IDepartmentDAL.cs" />
     <Compile Include="Interfaces\IEnrollmentDAL.cs" />
-    <Compile Include="Interfaces\IPendingUserDAL.cs" />
     <Compile Include="Interfaces\IPrerequisiteDAL.cs" />
     <Compile Include="Interfaces\ITrainingDAL.cs" />
     <Compile Include="Interfaces\IUserDAL.cs" />

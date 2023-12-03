@@ -14,66 +14,6 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
 {
     public class UserDAL : IUserDAL
     {
-        private const string _AddUserQuery =
-            @"BEGIN TRANSACTION;
-
-            DECLARE @key int
-            DECLARE @salt UNIQUEIDENTIFIER=NEWID()
-
-            INSERT INTO [dbo].[EndUser] ([NIC], [FirstName], [LastName], [Email], [MobileNum], [Manager], [DepartmentId], [RoleId])
-            SELECT @NIC, @FirstName, @LastName, @Email, @MobileNum, @Manager, @DepartmentId, @RoleId;
-
-            SELECT @key = @@IDENTITY
-
-            DELETE FROM [dbo].[PendingUser]
-            WHERE [NIC] = @NIC;
-
-            INSERT INTO [dbo].[Account] ([Username], [UserId], [Password], [Salt])
-            SELECT @Username, @key, HASHBYTES('SHA2_512', @Password+CAST(@salt AS NVARCHAR(36))), @salt;
-
-            COMMIT;";
-
-        private const string _UpdateUserQuery =
-            @"BEGIN TRANSACTION;
-
-            UPDATE [dbo].[EndUser]
-            SET [NIC] = @NIC,
-	            [FirstName] = @FirstName,
-	            [LastName] = @LastName,
-	            [Email] = @Email,
-	            [MobileNum] = @MobileNum,
-	            [DepartmentId] = @DepartmentId,
-	            [Manager] = @Manager,
-	            [RoleId] = @RoleId
-            WHERE [UserId] = @UserId;
-
-            COMMIT;";
-
-        private const string _DeleteUserQuery =
-            @"BEGIN TRANSACTION;
-
-            DELETE FROM [dbo].[EndUser]
-            WHERE [UserId] = @UserId;
-
-            COMMIT;";
-
-        private const string _GetUserQuery =
-            @"BEGIN TRANSACTION;
-
-            SELECT *
-            FROM [dbo].[EndUser]
-            WHERE [UserId] = @UserId;
-
-            COMMIT;";
-
-        private const string _GetAllUsersQuery =
-            @"BEGIN TRANSACTION;
-
-            SELECT *
-            FROM [dbo].[EndUser];
-
-            COMMIT;";
-
         public bool Add(SignUpModel model)
         {
             List<SqlParameter> parameters = new List<SqlParameter>()
@@ -83,14 +23,30 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                 new SqlParameter("@LastName", model.LastName),
                 new SqlParameter("@Email", model.Email),
                 new SqlParameter("@MobileNum", model.MobileNum),
-                new SqlParameter("@Manager", model.Manager),
-                new SqlParameter("@DepartmentId", model.DepartmentId),
-                new SqlParameter("@RoleId", (int)RoleEnum.Employee),
+                new SqlParameter("@ManagerId", Convert.ToInt16(model.ManagerId)),
+                new SqlParameter("@DepartmentId", Convert.ToInt16(model.DepartmentId)),
+                new SqlParameter("@RoleId", Convert.ToInt16((int)RoleEnum.Employee)),
                 new SqlParameter("@Username", model.Username),
                 new SqlParameter("@Password", model.Password)
             };
 
-            return DbCommand.InsertUpdateData(_AddUserQuery, parameters) > 0;
+            const string AddUserQuery =
+                @"BEGIN TRANSACTION;
+
+                DECLARE @key int
+                DECLARE @salt UNIQUEIDENTIFIER=NEWID()
+
+                INSERT INTO [dbo].[EndUser] ([NIC], [FirstName], [LastName], [Email], [MobileNum], [ManagerId], [DepartmentId], [RoleId])
+                SELECT @NIC, @FirstName, @LastName, @Email, @MobileNum, @ManagerId, @DepartmentId, @RoleId;
+
+                SELECT @key = @@IDENTITY
+
+                INSERT INTO [dbo].[Account] ([Username], [UserId], [Password], [Salt])
+                SELECT @Username, @key, HASHBYTES('SHA2_512', @Password+CAST(@salt AS NVARCHAR(36))), @salt;
+
+                COMMIT;";
+
+            return DbCommand.InsertUpdateData(AddUserQuery, parameters) > 0;
         }
 
         public bool Update(UserModel user)
@@ -103,18 +59,43 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                 new SqlParameter("@Email", user.Email),
                 new SqlParameter("@MobileNum", user.MobileNum),
                 new SqlParameter("@DepartmentId", user.DepartmentId),
-                new SqlParameter("@Manager", user.Manager),
+                new SqlParameter("@ManagerId", user.ManagerId),
                 new SqlParameter("@RoleId", user.RoleId),
                 new SqlParameter("@UserId", user.UserId)
             };
-            return DbCommand.InsertUpdateData(_UpdateUserQuery, parameters) > 0;
+
+            const string UpdateUserQuery =
+                @"BEGIN TRANSACTION;
+
+                UPDATE [dbo].[EndUser]
+                SET [NIC] = @NIC,
+	                [FirstName] = @FirstName,
+	                [LastName] = @LastName,
+	                [Email] = @Email,
+	                [MobileNum] = @MobileNum,
+	                [DepartmentId] = @DepartmentId,
+	                [ManagerId] = @ManagerId,
+	                [RoleId] = @RoleId
+                WHERE [UserId] = @UserId;
+
+                COMMIT;";
+
+            return DbCommand.InsertUpdateData(UpdateUserQuery, parameters) > 0;
         }
 
         public bool Delete(int userId)
         {
             SqlParameter parameter = new SqlParameter("@UserId", userId);
 
-            return DbCommand.DeleteData(_DeleteUserQuery, parameter) > 0;
+            const string DeleteUserQuery =
+                @"BEGIN TRANSACTION;
+
+                DELETE FROM [dbo].[EndUser]
+                WHERE [UserId] = @UserId;
+
+                COMMIT;";
+
+            return DbCommand.DeleteData(DeleteUserQuery, parameter) > 0;
         }
 
         public UserModel Get(int userId)
@@ -125,7 +106,16 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                 new SqlParameter("@UserId", userId)
             };
 
-            DataTable dt = DbCommand.GetDataWithConditions(_GetUserQuery, parameters);
+            const string GetUserQuery =
+                @"BEGIN TRANSACTION;
+
+                SELECT *
+                FROM [dbo].[EndUser]
+                WHERE [UserId] = @UserId;
+
+                COMMIT;";
+
+            DataTable dt = DbCommand.GetDataWithConditions(GetUserQuery, parameters);
 
             if (dt.Rows.Count > 0)
             {
@@ -139,7 +129,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                     Email = row["Email"].ToString(),
                     MobileNum = row["MobileNum"].ToString(),
                     DepartmentId = int.Parse(row["DepartmentId"].ToString()),
-                    Manager = row["Manager"].ToString(),
+                    ManagerId = int.TryParse(row["ManagerId"].ToString(), out int managerIdResult) ? (int?)managerIdResult : null,
                     RoleId = int.Parse(row["RoleId"].ToString())
                 };
             }
@@ -148,7 +138,15 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
 
         public IEnumerable<UserModel> GetAll()
         {
-            DataTable dt = DbCommand.GetData(_GetAllUsersQuery);
+            const string GetAllUsersQuery =
+                @"BEGIN TRANSACTION;
+
+                SELECT *
+                FROM [dbo].[EndUser];
+
+                COMMIT;";
+
+            DataTable dt = DbCommand.GetData(GetAllUsersQuery);
 
             UserModel user;
             List<UserModel> usersList = new List<UserModel>();
@@ -164,10 +162,11 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                     Email = row["Email"].ToString(),
                     MobileNum = row["MobileNum"].ToString(),
                     DepartmentId = int.Parse(row["DepartmentId"].ToString()),
-                    Manager = row["Manager"].ToString(),
+                    ManagerId = int.TryParse(row["ManagerId"].ToString(), out int managerIdResult) ? (int?)managerIdResult : null,
                     RoleId = int.Parse(row["RoleId"].ToString())
                 };
                 usersList.Add(user);
+
             }
             return usersList;
         }

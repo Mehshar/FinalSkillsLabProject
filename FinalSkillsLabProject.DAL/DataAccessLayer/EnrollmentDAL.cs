@@ -13,53 +13,6 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
 {
     public class EnrollmentDAL : IEnrollmentDAL
     {
-        private const string _InsertEnrollmentQuery =
-            @"BEGIN TRANSACTION;
-
-            INSERT INTO [dbo].[Enrollment] ([UserId], [TrainingId], [EnrollmentDate], [EnrollmentStatus], [PrerequisiteMaterial])
-            SELECT @UserId, @TrainingId, @EnrollmentDate, @EnrollmentStatus, @PrerequisiteMaterial;
-
-            COMMIT;";
-
-        private const string _UpdateEnrollmentQuery =
-            @"BEGIN TRANSACTION;
-
-            UPDATE [dbo].[Enrollment]
-            SET [EnrollmentStatus] = @EnrollmentStatus,
-	            [PrerequisiteMaterial] = @PrerequisiteMaterial,
-                [DeclineReason] = @DeclineReason
-            WHERE [UserId] = @UserId AND [TrainingId] = @TrainingId;
-
-            COMMIT;";
-
-        private const string _GetEnrollmentQuery =
-            @"BEGIN TRANSACTION;
-
-            SELECT *
-            FROM [dbo].[Enrollment]
-            WHERE [UserId] = @UserId AND [TrainingId] = @TrainingId;
-
-            COMMIT;";
-
-        private const string _GetAllEnrollmentsQuery =
-            @"BEGIN TRANSACTION;
-
-            SELECT *
-            FROM [dbo].[Enrollment];
-
-            COMMIT;";
-
-        private const string _GetEnrollmentsByManager =
-            @"BEGIN TRANSACTION;
-
-            SELECT en.*
-            FROM [dbo].[Enrollment] AS en
-            INNER JOIN [dbo].[EndUser] AS euser
-            ON en.[UserId] = euser.[UserId]
-            WHERE euser.[Manager] = @Manager;
-
-            COMMIT;";
-
         public bool Add(EnrollmentModel enrollment)
         {
             List<SqlParameter> parameters = new List<SqlParameter>();
@@ -70,7 +23,15 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             parameters.Add(new SqlParameter("@EnrollmentStatus", enrollment.EnrollmentStatus));
             parameters.Add(new SqlParameter("@PrerequisiteMaterial", enrollment.PrerequisiteMaterial));
 
-            return DbCommand.InsertUpdateData(_InsertEnrollmentQuery, parameters) > 0;
+            const string InsertEnrollmentQuery =
+                @"BEGIN TRANSACTION;
+
+                INSERT INTO [dbo].[Enrollment] ([UserId], [TrainingId], [EnrollmentDate], [EnrollmentStatus], [PrerequisiteMaterial])
+                SELECT @UserId, @TrainingId, @EnrollmentDate, @EnrollmentStatus, @PrerequisiteMaterial;
+
+                COMMIT;";
+
+            return DbCommand.InsertUpdateData(InsertEnrollmentQuery, parameters) > 0;
         }
         public bool Update(EnrollmentModel enrollment)
         {
@@ -82,7 +43,18 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             parameters.Add(new SqlParameter("@TrainingId", enrollment.TrainingId));
             parameters.Add(new SqlParameter("@DeclineReason", enrollment.DeclineReason));
 
-            return DbCommand.InsertUpdateData(_UpdateEnrollmentQuery, parameters) > 0;
+            const string UpdateEnrollmentQuery =
+                @"BEGIN TRANSACTION;
+
+                UPDATE [dbo].[Enrollment]
+                SET [EnrollmentStatus] = @EnrollmentStatus,
+	                [PrerequisiteMaterial] = @PrerequisiteMaterial,
+                    [DeclineReason] = @DeclineReason
+                WHERE [UserId] = @UserId AND [TrainingId] = @TrainingId;
+
+                COMMIT;";
+
+            return DbCommand.InsertUpdateData(UpdateEnrollmentQuery, parameters) > 0;
         }
 
         //public bool Delete(int userId, int trainingId) { }
@@ -92,7 +64,16 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             List<SqlParameter> parameters = new List<SqlParameter>()
             { new SqlParameter("@UserId", userId) , new SqlParameter("@TrainingId", trainingId) };
 
-            DataTable dt = DbCommand.GetDataWithConditions(_GetEnrollmentQuery, parameters);
+            const string GetEnrollmentQuery =
+                @"BEGIN TRANSACTION;
+
+                SELECT *
+                FROM [dbo].[Enrollment]
+                WHERE [UserId] = @UserId AND [TrainingId] = @TrainingId;
+
+                COMMIT;";
+
+            DataTable dt = DbCommand.GetDataWithConditions(GetEnrollmentQuery, parameters);
 
             DataRow row = dt.Rows[0];
 
@@ -113,7 +94,15 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             EnrollmentModel enrollment;
             List<EnrollmentModel> enrollmentsList = new List<EnrollmentModel>();
 
-            DataTable dt = DbCommand.GetData(_GetAllEnrollmentsQuery);
+            const string GetAllEnrollmentsQuery =
+                @"BEGIN TRANSACTION;
+
+                SELECT *
+                FROM [dbo].[Enrollment];
+
+                COMMIT;";
+
+            DataTable dt = DbCommand.GetData(GetAllEnrollmentsQuery);
 
             foreach (DataRow row in dt.Rows)
             {
@@ -139,7 +128,18 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
 
             List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter("@Manager", manager) };
 
-            DataTable dt = DbCommand.GetDataWithConditions(_GetEnrollmentsByManager, parameters);
+            const string GetEnrollmentsByManager =
+                @"BEGIN TRANSACTION;
+
+                SELECT en.*
+                FROM [dbo].[Enrollment] AS en
+                INNER JOIN [dbo].[EndUser] AS euser
+                ON en.[UserId] = euser.[UserId]
+                WHERE euser.[Manager] = @Manager;
+
+                COMMIT;";
+
+            DataTable dt = DbCommand.GetDataWithConditions(GetEnrollmentsByManager, parameters);
 
             foreach (DataRow row in dt.Rows)
             {

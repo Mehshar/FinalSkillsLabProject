@@ -29,9 +29,6 @@ namespace FinalSkillsLabProject
             container.RegisterType<IEnrollmentBL, EnrollmentBL>();
             container.RegisterType<IEnrollmentDAL, EnrollmentDAL>();
 
-            container.RegisterType<IPendingUserDAL, PendingUserDAL>();
-            container.RegisterType<IPendingUserBL, PendingUserBL>();
-
             container.RegisterType<IPrerequisiteBL, PrerequisiteBL>();
             container.RegisterType<IPrerequisiteDAL, PrerequisiteDAL>();
 

@@ -47,6 +47,11 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
             return this._departmentDAL.GetAll();
         }
 
+        public IEnumerable<UserModel> GetManagerByDepartment(int departmentId)
+        {
+            return this._departmentDAL.GetManagerByDepartment(departmentId);
+        }
+
         public string Update(DepartmentModel department)
         {
             try

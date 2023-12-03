@@ -13,10 +13,12 @@
         var lastName = $("#lastName").val().trim();
         var email = $("#email").val().trim();
         var mobileNum = $("#mobileNum").val().trim();
+        var departmentId = parseInt($("#departmentDropdown").val().trim());
+        var managerId = parseInt($("#managerDropdown").val().trim());
         var username = $("#username").val().trim();
         var password = $("#password").val().trim();
 
-        var signupObj = { NIC: nic, FirstName: firstName, LastName: lastName, Email: email, MobileNum: mobileNum, Username: username, Password: password };
+        var signupObj = { NIC: nic, FirstName: firstName, LastName: lastName, Email: email, MobileNum: mobileNum, DepartmentId: departmentId, ManagerId: managerId, Username: username, Password: password };
 
         $.ajax({
             type: "POST",
@@ -25,7 +27,7 @@
             dataType: "json",
 
             success: function (response) {
-                if (response.result.toLowerCase().includes("successfully")) {
+                if (response.result.toLowerCase().includes("success")) {
                     toastr.success(response.result);
                     //window.location = response.url;
                     // Set a timeout to redirect after 2 seconds
@@ -45,7 +47,7 @@
             },
 
             error: function (response) {
-                toastr.error("Something went wrong");
+                toastr.error("Something went wrong!");
             }
         });
     });

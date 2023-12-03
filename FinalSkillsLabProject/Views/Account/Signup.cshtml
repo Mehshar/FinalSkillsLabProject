@@ -1,4 +1,4 @@
-﻿@model FinalSkillsLabProject.Common.Models.PendingUserModel
+﻿@model FinalSkillsLabProject.Common.Models.SignUpModel
 
 @{
     ViewBag.Title = "Signup";
@@ -14,12 +14,16 @@
 
     <title>Signup</title>
 
+    <link rel="stylesheet" href="~/Content/SignupStyle.css" />
+
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     @*https://codeseven.github.io/toastr/*@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
 
     <script type="text/javascript" src="~/Scripts/SignupScript.js"></script>
+    <script type="text/javascript" src="~/Scripts/ManagerDropdownScript.js"></script>
+    <script type="text/javascript" src="~/Scripts/PasswordVisibility.js"></script>
 </head>
 <body>
     @using (Html.BeginForm())
@@ -72,6 +76,24 @@
                     </div>
                 </div>
 
+                <div class="form-group">
+                    <label for="department" class="control-label col-md-2 pb-2">Department</label>
+                </div>
+                <select class="form-select mb-3" id="departmentDropdown" required>
+                    <option disabled selected hidden>Choose your department...</option>
+                    @foreach (var department in ViewBag.Departments)
+                    {
+                        <option value="@department.DepartmentId">@department.DepartmentName</option>
+                    }
+                </select>
+
+                <div class="form-group">
+                    <label for="manager" class="control-label col-md-2 py-2">Manager</label>
+                </div>
+                <select class="form-select mb-3" id="managerDropdown" disabled required>
+                    <option disabled selected hidden>Choose your manager...</option>
+                </select>
+
                 <div class="form-group py-3">
                     <label for="username" class="control-label col-md-2 pb-2">Username</label>
                     <div class="col-md-10">
@@ -83,9 +105,14 @@
                 <div class="form-group py-3">
                     <label for="password" class="control-label col-md-2 pb-2">Password</label>
                     <div class="col-md-10">
-                        <input type="text" name="password" id="password" class="form-control" required />
+                        <input type="password" name="password" id="password" class="form-control" required />
                         @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
                     </div>
+                </div>
+
+                <div class="form-checkbox">
+                    <input type="checkbox" id="passwordCheckbox" onclick="togglePasswordVisibility()" />
+                    <span>Show Password</span>
                 </div>
 
                 <div class="form-group">
