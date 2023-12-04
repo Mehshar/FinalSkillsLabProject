@@ -13,11 +13,35 @@ namespace FinalSkillsLabProject.Controllers
     {
         private readonly ITrainingBL _trainingBL;
         private readonly IDepartmentBL _departmentBL;
+        private readonly IPrerequisiteBL _prerequisiteBL;
 
-        public TrainingController(ITrainingBL trainingBL, IDepartmentBL departmentBL)
+        public TrainingController(ITrainingBL trainingBL, IDepartmentBL departmentBL, IPrerequisiteBL prerequisiteBL)
         {
             _trainingBL = trainingBL;
             _departmentBL = departmentBL;
+            _prerequisiteBL = prerequisiteBL;
+        }
+
+        public ActionResult Index()
+        {
+            List<TrainingModel> trainingsList = _trainingBL.GetAll().ToList();
+            ViewBag.Trainings = trainingsList;
+            return View();
+        }
+
+        [HttpGet]
+        public ActionResult Create()
+        {
+            ViewBag.Departments = _departmentBL.GetAll().ToList();
+            ViewBag.Prerequisites = _prerequisiteBL.GetAll().ToList();
+            return View();
+        }
+
+        [HttpPost]
+        public JsonResult Create(TrainingModel training, List<int> prerequisitesList)
+        {
+            string result = _trainingBL.Add(training, prerequisitesList);
+            return Json(new { result = result, url = Url.Action("Index", "Training") });
         }
 
         [HttpGet]
@@ -37,14 +61,7 @@ namespace FinalSkillsLabProject.Controllers
         public JsonResult SaveEdit(TrainingModel training)
         {
             string result = _trainingBL.Update(training);
-            return Json(new { result = result, url = Url.Action("GetAll", "Training") });
-        }
-
-        public ActionResult GetAll()
-        {
-            List<TrainingModel> trainingsList = _trainingBL.GetAll().ToList();
-            ViewBag.Trainings = trainingsList;
-            return View();
+            return Json(new { result = result, url = Url.Action("Index", "Training") });
         }
     }
 }

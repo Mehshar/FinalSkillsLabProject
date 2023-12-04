@@ -9,7 +9,7 @@ namespace FinalSkillsLabProject.DAL.Interfaces
 {
     public interface ITrainingDAL
     {
-        void Add(TrainingModel training);
+        void Add(TrainingModel training, List<int> prerequisitesList);
         void Update(TrainingModel training);
         bool Delete(int trainingId);
         TrainingModel Get(int trainingId);

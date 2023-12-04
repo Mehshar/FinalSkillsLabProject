@@ -73,14 +73,6 @@
                     </div>
                 </div>
 
-                @*<div class="form-group py-3">
-                        <label for="priorityDepartment" class="control-label col-md-2 pb-2">Priority Department</label>
-                        <div class="col-md-10">
-                            <input type="number" name="priorityDepartment" id="priorityDepartment" class="form-control" value="@Model.PriorityDepartment" required />
-                            @Html.ValidationMessageFor(model => model.PriorityDepartment, "", new { @class = "text-danger" })
-                        </div>
-                    </div>*@
-
                 <div class="form-group pt-3">
                     <label for="priorityDepartmentName" class="control-label col-md-2 pb-2">Priority Department</label>
                 </div>
@@ -104,7 +96,7 @@
     }
 
     <div>
-        @Html.ActionLink("Back to List", "GetAll", "Training")
+        @Html.ActionLink("Back to List", "Index", "Training")
     </div>
 
 </body>

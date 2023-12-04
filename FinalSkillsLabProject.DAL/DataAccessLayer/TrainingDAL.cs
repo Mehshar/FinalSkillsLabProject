@@ -13,7 +13,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
 {
     public class TrainingDAL : ITrainingDAL
     {
-        public void Add(TrainingModel training)
+        public void Add(TrainingModel training, List<int> prerequisitesList)
         {
             List<SqlParameter> parameters = new List<SqlParameter>();
 
@@ -22,6 +22,15 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             parameters.Add(new SqlParameter("@Deadline", training.Deadline));
             parameters.Add(new SqlParameter("@PriorityDepartment", training.PriorityDepartment));
             parameters.Add(new SqlParameter("@Capacity", training.Capacity));
+            
+            if(prerequisitesList == null)
+            {
+                parameters.Add(new SqlParameter("@PrerequisiteIds", ""));
+            }
+            else
+            {
+                parameters.Add(new SqlParameter("@PrerequisiteIds", string.Join(",", prerequisitesList)));
+            }
 
             const string InsertTrainingQuery =
                 @"BEGIN TRANSACTION;
@@ -33,7 +42,25 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
 
                 SELECT @training_key = @@IDENTITY
 
-                COMMIT;";
+                -- Check if PrerequisiteIds is not empty
+                IF LEN(@PrerequisiteIds) > 0
+                BEGIN
+	                -- Loop through the list of prerequisite IDs and insert each one
+	                DECLARE @index INT = 1;
+
+	                WHILE @index <= LEN(@PrerequisiteIds)
+	                BEGIN
+	                    DECLARE @PrerequisiteId INT;
+	                    SELECT @PrerequisiteId = CAST(SUBSTRING(@PrerequisiteIds, @index, CHARINDEX(',', @PrerequisiteIds + ',', @index) - @index) AS INT);
+
+	                    INSERT INTO [dbo].[Training_Prerequisite] ([TrainingId], [PrerequisiteId])
+	                    SELECT @training_key, @PrerequisiteId;
+
+	                    SET @index = CHARINDEX(',', @PrerequisiteIds + ',', @index) + 1;
+	                END;
+                END;
+
+                COMMIT";
 
             DbCommand.InsertUpdateData(InsertTrainingQuery, parameters);
         }

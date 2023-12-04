@@ -19,13 +19,13 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
             this._trainingDAL = trainingDAL;
         }
 
-        public string Add(TrainingModel training)
+        public string Add(TrainingModel training, List<int> prerequisitesList)
         {
             try
             {
                 TrainingModel trainingModel = GetAll().FirstOrDefault(x => x.TrainingName.Equals(training.TrainingName));
                 CheckInsertUpdateDuplicate(trainingModel);
-                this._trainingDAL.Add(training);
+                this._trainingDAL.Add(training, prerequisitesList);
                 return "Training created successfully!";
             }
 

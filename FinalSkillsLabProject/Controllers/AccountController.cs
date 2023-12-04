@@ -47,7 +47,7 @@ namespace FinalSkillsLabProject.Controllers
                 // Not creating persistent cookie --> setting it to false
                 FormsAuthentication.SetAuthCookie(loginModel.Username, false);
             }
-            return Json(new { result = isUserValid, url = Url.Action("GetAll", "Training") });
+            return Json(new { result = isUserValid, url = Url.Action("Index", "Training") });
         }
 
         [HttpGet]

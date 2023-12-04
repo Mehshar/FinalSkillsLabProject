@@ -9,7 +9,7 @@ namespace FinalSkillsLabProject.BL.Interfaces
 {
     public interface ITrainingBL
     {
-        string Add(TrainingModel training);
+        string Add(TrainingModel training, List<int> prerequisitesList);
         string Update(TrainingModel training);
         bool Delete(int trainingId);
         TrainingModel Get(int trainingId);

@@ -16,7 +16,6 @@ namespace FinalSkillsLabProject.Common.Models
         public string TrainingName { get; set; }
 
         [Required]
-        //[Column()]
         public string Description { get; set; }
 
         [Required]
