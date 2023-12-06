@@ -10,6 +10,9 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>All Trainings</title>
+
+    <script type="text/javascript" src="~/Scripts/ClickableRowScript.js"></script>
+    <link rel="stylesheet" href="~/Content/ClickableRowStyle.css" />
 </head>
 <body>
     <p>
@@ -30,14 +33,14 @@
                 Capacity
             </th>
             <th>
-                Priority Department Name
+                Priority Department
             </th>
             <th></th>
         </tr>
 
         @foreach (var training in ViewBag.Trainings)
         {
-            <tr>
+            <tr class="clickable-row" data-href="@Url.Action("Details", "Training", new { id = training.TrainingId })">
                 <td>
                     @training.TrainingName
                 </td>
@@ -50,15 +53,11 @@
                 <td>
                     @training.Capacity
                 </td>
-                @*<td>
-                        @(training.PriorityDepartment == null ? "N/A" : training.PriorityDepartment)
-                    </td>*@
                 <td>
                     @(training.PriorityDepartmentName == null ? "N/A" : training.PriorityDepartmentName)
                 </td>
                 <td>
                     @Html.ActionLink("Edit", "Edit", "Training", new { id = training.TrainingId }, null) |
-                    @*@Html.ActionLink("Details", "Details", new { id = training.TrainingId }) |*@
                     @Html.ActionLink("Delete", "Delete", "Training", new { id = training.TrainingId })
                 </td>
             </tr>

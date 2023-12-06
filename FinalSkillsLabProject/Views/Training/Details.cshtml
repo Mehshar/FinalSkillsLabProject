@@ -1,0 +1,47 @@
+﻿@model FinalSkillsLabProject.Common.Models.TrainingModel
+
+@{
+    ViewBag.Title = "Training Details";
+}
+
+<div>
+    <h4>Training Details</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <div class="py-3">
+            <dt class="mb-2">Name</dt>
+            <dd>@Model.TrainingName</dd>
+        </div>
+
+        <div class="py-3">
+            <dt class="mb-2">Description</dt>
+            <dd>@Model.Description</dd>
+        </div>
+
+        <div class="py-3">
+            <dt class="mb-2">Deadline</dt>
+            <dd>@Model.Deadline</dd>
+        </div>
+
+        <div class="py-3">
+            <dt class="mb-2">Capacity</dt>
+            <dd>@Model.Capacity</dd>
+        </div>
+
+        <div class="py-3">
+            <dt class="mb-2">Priority Department</dt>
+            <dd>@Model.PriorityDepartmentName</dd>
+        </div>
+    </dl>
+    <p class="fw-bold">Prerequisites</p>
+    <ul class="list-group mb-4 list-group-numbered">
+        @foreach (var prerequisite in ViewBag.Prerequisites)
+        {
+            <li class="list-group-item" id="@prerequisite.PrerequisiteId">@prerequisite.Description</li>
+        }
+    </ul>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", "Training", new { id = Model.TrainingId }, null) |
+    @Html.ActionLink("Back to List", "Index", "Training")
+</p>

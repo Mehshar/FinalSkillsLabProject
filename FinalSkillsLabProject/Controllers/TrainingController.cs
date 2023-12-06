@@ -44,13 +44,18 @@ namespace FinalSkillsLabProject.Controllers
             return Json(new { result = result, url = Url.Action("Index", "Training") });
         }
 
+        public ActionResult Details(int? id)
+        {
+            if (id == null) { return new HttpStatusCodeResult(HttpStatusCode.BadRequest); }
+            TrainingModel training = _trainingBL.Get((int)id);
+            ViewBag.Prerequisites = _prerequisiteBL.GetAllByTraining((int)id).ToList();
+            return View(training);
+        }
+
         [HttpGet]
         public ActionResult Edit(int? id)
         {
-            if(id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
+            if (id == null) { return new HttpStatusCodeResult(HttpStatusCode.BadRequest); }
             TrainingModel training = _trainingBL.Get((int)id);
             ViewBag.Departments = _departmentBL.GetAll().Where(x => x.DepartmentId != training.PriorityDepartment).ToList();
             return View(training);
