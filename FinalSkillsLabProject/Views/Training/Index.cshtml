@@ -11,36 +11,39 @@
     <meta name="viewport" content="width=device-width" />
     <title>All Trainings</title>
 
+    <script type="text/javascript" src="~/Scripts/DisplayByRoleScript.js"></script>
     <script type="text/javascript" src="~/Scripts/ClickableRowScript.js"></script>
     <link rel="stylesheet" href="~/Content/ClickableRowStyle.css" />
 </head>
 <body>
     <p>
-        @Html.ActionLink("New Training", "Create", null, new { @class = "btn btn-primary" })
+        @Html.ActionLink("New Training", "Create", null, new { @class = "btn btn-primary d-none", id = "btnCreateTraining" })
     </p>
-    <table class="table table-hover">
-        <tr>
-            <th>
-                Training
-            </th>
-            <th>
-                Description
-            </th>
-            <th>
-                Deadline
-            </th>
-            <th>
-                Capacity
-            </th>
-            <th>
-                Priority Department
-            </th>
-            <th></th>
-        </tr>
+    <table class="table table-hover user-select-none">
+        <thead>
+            <tr>
+                <th>
+                    Training
+                </th>
+                <th>
+                    Description
+                </th>
+                <th>
+                    Deadline
+                </th>
+                <th>
+                    Capacity
+                </th>
+                <th>
+                    Priority Department
+                </th>
+                <th></th>
+            </tr>
+        </thead>
 
         @foreach (var training in ViewBag.Trainings)
         {
-            <tr class="clickable-row" data-href="@Url.Action("Details", "Training", new { id = training.TrainingId })">
+            <tr class="clickable-row font-1" data-href="@Url.Action("Details", "Training", new { id = training.TrainingId })">
                 <td>
                     @training.TrainingName
                 </td>
@@ -57,8 +60,10 @@
                     @(training.PriorityDepartmentName == null ? "N/A" : training.PriorityDepartmentName)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "Edit", "Training", new { id = training.TrainingId }, null) |
-                    @Html.ActionLink("Delete", "Delete", "Training", new { id = training.TrainingId })
+                    @*@Html.ActionLink("Edit", "Edit", "Training", new { id = training.TrainingId }, null) |
+                    @Html.ActionLink("Delete", "Delete", "Training", new { id = training.TrainingId })*@
+                    @Html.ActionLink("Edit", "Edit", "Training", new { id = training.TrainingId }, new { @class = "btn btn-outline-primary d-none btnEdit" })
+                    @Html.ActionLink("Enroll", "Enroll", "Enrollment", null, new { @class = "btn btn-outline-primary d-none btnEnroll" })
                 </td>
             </tr>
         }

@@ -140,7 +140,9 @@
     <Compile Include="App_Start\FontAwesomeBundleConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\UnityConfig.cs" />
+    <Compile Include="Authorization\CustomAuthorizationAttribute.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\CommonController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\TrainingController.cs" />
     <Compile Include="Global.asax.cs">
@@ -166,6 +168,7 @@
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
     <Content Include="Content\ClickableRowStyle.css" />
+    <Content Include="Content\CommonStyle.css" />
     <Content Include="Content\font-awesome.css" />
     <Content Include="Content\font-awesome.min.css" />
     <Content Include="Content\LoginStyle.css" />
@@ -209,6 +212,7 @@
     <Content Include="Scripts\SignupScript.js" />
     <Content Include="Scripts\toastr.js" />
     <Content Include="Scripts\toastr.min.js" />
+    <Content Include="Scripts\DisplayByRoleScript.js" />
     <Content Include="Scripts\UpdateTrainingScript.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -230,6 +234,7 @@
     <Content Include="Views\Training\Edit.cshtml" />
     <Content Include="Views\Training\Create.cshtml" />
     <Content Include="Views\Training\Details.cshtml" />
+    <Content Include="Views\Common\DenyAccess.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

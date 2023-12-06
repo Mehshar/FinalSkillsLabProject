@@ -1,4 +1,5 @@
-﻿using FinalSkillsLabProject.BL.Interfaces;
+﻿using FinalSkillsLabProject.Authorization;
+using FinalSkillsLabProject.BL.Interfaces;
 using FinalSkillsLabProject.Common.Models;
 using System;
 using System.Collections.Generic;
@@ -30,6 +31,7 @@ namespace FinalSkillsLabProject.Controllers
         }
 
         [HttpGet]
+        [CustomAuthorization("Admin")]
         public ActionResult Create()
         {
             ViewBag.Departments = _departmentBL.GetAll().ToList();
@@ -38,6 +40,8 @@ namespace FinalSkillsLabProject.Controllers
         }
 
         [HttpPost]
+        //[ValidateAntiForgeryToken]
+        [CustomAuthorization("Admin")]
         public JsonResult Create(TrainingModel training, List<int> prerequisitesList)
         {
             string result = _trainingBL.Add(training, prerequisitesList);
@@ -53,6 +57,7 @@ namespace FinalSkillsLabProject.Controllers
         }
 
         [HttpGet]
+        [CustomAuthorization("Admin")]
         public ActionResult Edit(int? id)
         {
             if (id == null) { return new HttpStatusCodeResult(HttpStatusCode.BadRequest); }
@@ -62,6 +67,8 @@ namespace FinalSkillsLabProject.Controllers
         }
 
         [HttpPost]
+        //[ValidateAntiForgeryToken]
+        [CustomAuthorization("Admin")]
         public JsonResult SaveEdit(TrainingModel training)
         {
             string result = _trainingBL.Update(training);
