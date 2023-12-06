@@ -50,14 +50,10 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             };
 
             const string UpdatePrerequisiteQuery =
-                @"BEGIN TRANSACTION;
-
-                UPDATE [dbo].[Prerequisite]
+              @"UPDATE [dbo].[Prerequisite]
                 SET [Type] = @Type,
 	                [Description] = @Description
-                WHERE [PrerequisiteId] = @PrerequisiteId;
-
-                COMMIT;";
+                WHERE [PrerequisiteId] = @PrerequisiteId;";
 
             DbCommand.InsertUpdateData(UpdatePrerequisiteQuery, parameters);
         }
@@ -67,12 +63,8 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             SqlParameter parameter = new SqlParameter("@PrerequisiteId", prerequisiteId);
 
             const string DeletePrerequisiteQuery =
-                @"BEGIN TRANSACTION;
-
-                DELETE FROM [dbo].[Prerequisite]
-                WHERE [PrerequisiteId] = @PrerequisiteId;
-
-                COMMIT;";
+              @"DELETE FROM [dbo].[Prerequisite]
+                WHERE [PrerequisiteId] = @PrerequisiteId;";
 
             return DbCommand.DeleteData(DeletePrerequisiteQuery, parameter) > 0;
         }
@@ -83,12 +75,8 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             List<PrerequisiteModel> prerequisitesList = new List<PrerequisiteModel>();
 
             const string GetAllPrerequisitesQuery =
-                @"BEGIN TRANSACTION;
-
-                SELECT *
-                FROM [dbo].[Prerequisite];
-
-                COMMIT;";
+              @"SELECT *
+                FROM [dbo].[Prerequisite];";
 
             DataTable dt = DbCommand.GetData(GetAllPrerequisitesQuery);
 
@@ -117,15 +105,11 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             };
 
             const string GetPrerequisitesByTrainingQuery =
-                @"BEGIN TRANSACTION;
-
-                SELECT p.*
+              @"SELECT p.*
                 FROM [dbo].[Training_Prerequisite] AS tp
                 INNER JOIN [dbo].[Prerequisite] AS p
                 ON tp.[PrerequisiteId] = p.[PrerequisiteId]
-                WHERE tp.[TrainingId] = @TrainingId;
-
-                COMIMT;";
+                WHERE tp.[TrainingId] = @TrainingId;";
 
             DataTable dt = DbCommand.GetDataWithConditions(GetPrerequisitesByTrainingQuery, parameters);
 

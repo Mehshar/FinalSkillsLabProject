@@ -16,22 +16,18 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
     {
         public bool AuthenticateUser(LoginModel model)
         {
-            List<SqlParameter> parameters = new List<SqlParameter>();
-
-            parameters.Add(new SqlParameter("@Username", model.Username));
-            parameters.Add(new SqlParameter("@Password", model.Password));
-
             const string AuthenticateUserQuery =
-                @"BEGIN TRANSACTION;
-
-                SELECT euser.*, acc.*
+              @"SELECT euser.*, acc.*
                 FROM [dbo].[EndUser] euser WITH(NOLOCK)
                 INNER JOIN [dbo].[Account] acc WITH(NOLOCK)
                 ON euser.[UserId] = acc.UserId
-                WHERE acc.[Username] = @Username AND acc.[Password] = HASHBYTES('SHA2_512', @Password+CAST(Salt AS NVARCHAR(36)));   
+                WHERE acc.[Username] = @Username AND acc.[Password] = HASHBYTES('SHA2_512', @Password+CAST(Salt AS NVARCHAR(36)));";
 
-                COMMIT;";
-
+            List<SqlParameter> parameters = new List<SqlParameter>()
+            {
+                new SqlParameter("@Username", model.Username),
+                new SqlParameter("@Password", model.Password)
+            };
             DataTable dt = DbCommand.GetDataWithConditions(AuthenticateUserQuery, parameters);
             return dt.Rows.Count > 0;
         }
@@ -39,20 +35,17 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
         public LoginModel GetByUsername(string username)
         {
             LoginModel user = null;
-            List<SqlParameter> parameters = new List<SqlParameter>();
-
-            parameters.Add(new SqlParameter("@Username", username));
+            List<SqlParameter> parameters = new List<SqlParameter>()
+            {
+                new SqlParameter("@Username", username)
+            };
 
             const string GetUserByUsernameQuery =
-                @"BEGIN TRANSACTION; 
-
-                SELECT euser.[UserId], euser.[RoleId], acc.[Username]
+              @"SELECT euser.[UserId], euser.[RoleId], acc.[Username]
                 FROM [dbo].[EndUser] euser WITH(NOLOCK)
                 INNER JOIN [dbo].[Account] acc WITH(NOLOCK) ON euser.[UserId] = acc.[UserId]
                 INNER JOIN [dbo].[Role] r WITH(NOLOCK) ON euser.[RoleId] = r.[RoleId]
-                WHERE acc.[Username] = @Username;
-
-                COMMIT;";
+                WHERE acc.[Username] = @Username;";
 
             DataTable dt = DbCommand.GetDataWithConditions(GetUserByUsernameQuery, parameters);
 
@@ -79,15 +72,11 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             };
 
             const string GetUserByUsernameAndUserId =
-                @"BEGIN TRANSACTION;
-
-                SELECT euser.[UserId], acc.[Username], acc.[Password]
+              @"SELECT euser.[UserId], acc.[Username], acc.[Password]
                 FROM [dbo].[EndUser] euser WITH(NOLOCK)
                 INNER JOIN [dbo].[Account] acc WITH(NOLOCK) ON euser.[UserId] = acc.[UserId]
                 INNER JOIN [dbo].[Role] r WITH(NOLOCK) ON euser.[RoleId] = r.[RoleId]
-                WHERE acc.[Username] = @Username AND euser.[UserId] != @UserId;
-
-                COMMIT;";
+                WHERE acc.[Username] = @Username AND euser.[UserId] != @UserId;";
 
             DataTable dt = DbCommand.GetDataWithConditions(GetUserByUsernameAndUserId, parameters);
 
@@ -111,14 +100,10 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             };
 
             const string UpdateAccountQuery =
-                @"BEGIN TRANSACTION;
-
-                UPDATE [dbo].[Account]
+              @"UPDATE [dbo].[Account]
                 SET [Username] = @Username,
 	                [Password] = @Password
-                WHERE [UserId] = @UserId;
-
-                COMMIT;";
+                WHERE [UserId] = @UserId;";
 
             return DbCommand.InsertUpdateData(UpdateAccountQuery, parameters) > 0;
         }

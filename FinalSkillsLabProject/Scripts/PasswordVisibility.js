@@ -5,7 +5,6 @@
     if (passwordCheckbox.checked) {
         passwordInput.type = "text";
     }
-
     else {
         passwordInput.type = "password";
     }

@@ -22,19 +22,22 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
         {
             return this._enrollmentDAL.Add(enrollment);
         }
+
         public bool Update(EnrollmentModel enrollment)
         {
             return this._enrollmentDAL.Update(enrollment);
         }
-        //void Delete(EnrollmentModel model);
+
         public EnrollmentModel Get(int userId, int trainingId)
         {
             return this._enrollmentDAL.Get(userId, trainingId);
         }
+
         public IEnumerable<EnrollmentModel> GetAll()
         {
             return this._enrollmentDAL.GetAll();
         }
+
         public IEnumerable<EnrollmentModel> GetAllByManager(string manager)
         {
             return this._enrollmentDAL.GetAllByManager(manager);

@@ -6,9 +6,7 @@
         return false;
     });
 
-    // click event for login button
     $("#btnLogin").click(function () {
-        // read username and password input
         var username = $("#username").val().trim();
         var password = $("#password").val().trim();
 
@@ -39,11 +37,9 @@
                     return false;
                 }
             },
-
             failure: function (response) {
                 toastr.error("Unable to make request!");
             },
-
             error: function (response) {
                 toastr.error("Something went wrong");
             }

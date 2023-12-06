@@ -77,17 +77,13 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             parameters.Add(new SqlParameter("@TrainingId", Convert.ToInt16(training.TrainingId)));
 
             const string UpdateTrainingQuery =
-                @"BEGIN TRANSACTION;
-
-                UPDATE [dbo].[Training]
+              @"UPDATE [dbo].[Training]
                 SET [TrainingName] = @TrainingName,
 	                [Description] = @Description,
 	                [Deadline] = @Deadline,
 	                [PriorityDepartment] = @PriorityDepartment,
 	                [Capacity] = @Capacity
-                WHERE [TrainingId] = @TrainingId;
-
-                COMMIT;";
+                WHERE [TrainingId] = @TrainingId;";
 
             DbCommand.InsertUpdateData(UpdateTrainingQuery, parameters);
         }
@@ -97,12 +93,8 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             SqlParameter parameter = new SqlParameter("@TrainingId", trainingId);
 
             const string DeleteTrainingQuery =
-                @"BEGIN TRANSACTION;
-
-                DELETE FROM [dbo].[Training]
-                WHERE [TrainingId] = @TrainingId;
-
-                COMMIT;";
+              @"DELETE FROM [dbo].[Training]
+                WHERE [TrainingId] = @TrainingId;";
 
             return DbCommand.DeleteData(DeleteTrainingQuery, parameter) > 0;
         }
@@ -115,16 +107,11 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             parameters.Add(new SqlParameter("@TrainingId", trainingId));
 
             const string GetTrainingQuery =
-                @"
-                BEGIN TRANSACTION;
-
-                SELECT *
+              @"SELECT *
                 FROM [dbo].[Training] AS t
                 LEFT JOIN [dbo].[Department] AS d
                 ON t.[PriorityDepartment] = d.[DepartmentId]
-                WHERE [TrainingId] = @TrainingId;
-
-                COMMIT;";
+                WHERE [TrainingId] = @TrainingId;";
 
             DataTable dt = DbCommand.GetDataWithConditions(GetTrainingQuery, parameters);
 
@@ -152,14 +139,10 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             List<TrainingModel> trainingList = new List<TrainingModel>();
 
             const string GetAllTrainingsQuery =
-                @"BEGIN TRANSACTION;
-
-                SELECT *
+              @"SELECT *
                 FROM [dbo].[Training] as t
                 LEFT JOIN [dbo].[Department] as d
-                ON t.[PriorityDepartment] = d.DepartmentId;
-
-                COMMIT;";
+                ON t.[PriorityDepartment] = d.DepartmentId;";
 
             DataTable dt = DbCommand.GetData(GetAllTrainingsQuery);
 
@@ -195,15 +178,11 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter("@UserId", userId) };
 
             const string GetTrainingsByUserQuery =
-                @"BEGIN TRANSACTION;
-
-                SELECT t.*, e.[UserId], e.[TrainingId]
+              @"SELECT t.*, e.[UserId], e.[TrainingId]
                 FROM [dbo].[Enrollment] as e
                 INNER JOIN [dbo].[Training] as t
                 ON e.[TrainingId] = t.[TrainingId]
-                WHERE e.[UserId] = @UserId;
-
-                COMMIT;";
+                WHERE e.[UserId] = @UserId;";
 
             DataTable dt = DbCommand.GetDataWithConditions(GetTrainingsByUserQuery, parameters);
 

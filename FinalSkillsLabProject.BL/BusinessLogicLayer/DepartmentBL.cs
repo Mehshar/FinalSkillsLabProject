@@ -35,8 +35,6 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
             }
         }
 
-        //public void Delete(DepartmentModel model) { throw new NotImplementedException(); }
-
         public DepartmentModel Get(int departmentId)
         {
             return this._departmentDAL.Get(departmentId);

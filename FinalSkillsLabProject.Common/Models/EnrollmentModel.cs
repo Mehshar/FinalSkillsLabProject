@@ -23,7 +23,7 @@ namespace FinalSkillsLabProject.Common.Models
         [Display(Name = "Enrollment Status")]
         public string EnrollmentStatus { get; set; }
 
-        public string PrerequisiteMaterial { get; set; } // subject to change
+        public string PrerequisiteMaterial { get; set; }
 
         [Required]
         [Display(Name = "Reason for Decline")]

@@ -16,7 +16,6 @@
 
         var parsedDeadline = new Date(deadlineInput);
         if (!isNaN(parsedDeadline.getTime())) {
-            // Convert the parsed date to a format suitable for sending to the server
             var formattedDeadline = parsedDeadline.toISOString();
         }
 
@@ -41,13 +40,11 @@
                         window.location = response.url;
                     }, 2000);
                 }
-
                 else {
                     toastr.error(response.result);
                     return false;
                 }
             },
-
             failure: function (response) {
                 toastr.error("Unable to make request!");
             },

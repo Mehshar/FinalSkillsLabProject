@@ -48,7 +48,6 @@ namespace FinalSkillsLabProject.BL
         {
             AccountModel account = this._accountDAL.GetByUsernameAndUserId(username, userId);
             string message = "";
-
             if (account != null)
             {
                 message = "Username already exists!";

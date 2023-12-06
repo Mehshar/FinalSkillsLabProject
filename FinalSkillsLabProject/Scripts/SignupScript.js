@@ -6,7 +6,6 @@
         return false;
     });
 
-    // add click event for Signup button
     $("#btnSignup").click(function () {
         var nic = $("#nic").val().trim();
         var firstName = $("#firstName").val().trim();
@@ -39,8 +38,6 @@
             success: function (response) {
                 if (response.result.toLowerCase().includes("success")) {
                     toastr.success(response.result);
-                    //window.location = response.url;
-                    // Set a timeout to redirect after 1 second
                     setTimeout(function () {
                         window.location = response.url;
                     }, 1000);

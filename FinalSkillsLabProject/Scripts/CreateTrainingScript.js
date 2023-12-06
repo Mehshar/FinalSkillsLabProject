@@ -6,25 +6,12 @@
         return false;
     });
 
-    //function getSelectedPrerequisites() {
-    //    const reqCheckboxes = document.querySelectorAll('.prerequisite-checkbox');
-    //    const selectedPrerequisites = [];
-
-    //    reqCheckboxes.forEach(checkbox => {
-    //        if (checkbox.checked) {
-    //            selectedPrerequisites.push(checkbox.value);
-    //        }
-    //    });
-    //    return selectedPrerequisites;
-    //}
-
     $("#btnSubmit").click(function () {
         var trainingName = $("#trainingName").val().trim();
         var description = $("#description").val().trim();
         var deadlineInput = $("#deadline").val();
         var capacity = parseInt($("#capacity").val().trim());
         var priorityDepartment = parseInt($("#departmentDropdown").val().trim());
-        //var selectedPrerequisites = getSelectedPrerequisites();
         var selectedPrerequisites = []
         $(".prerequisite-checkbox:checked").each(function () {
             selectedPrerequisites.push($(this).val());
@@ -55,7 +42,6 @@
                         window.location = response.url;
                     }, 2000);
                 }
-
                 else {
                     toastr.error(response.result);
                     return false;

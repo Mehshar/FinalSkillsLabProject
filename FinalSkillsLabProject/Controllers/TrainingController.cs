@@ -51,7 +51,6 @@ namespace FinalSkillsLabProject.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-
             TrainingModel training = _trainingBL.Get((int)id);
             ViewBag.Departments = _departmentBL.GetAll().Where(x => x.DepartmentId != training.PriorityDepartment).ToList();
             return View(training);

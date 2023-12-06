@@ -65,9 +65,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             };
 
             const string UpdateUserQuery =
-                @"BEGIN TRANSACTION;
-
-                UPDATE [dbo].[EndUser]
+              @"UPDATE [dbo].[EndUser]
                 SET [NIC] = @NIC,
 	                [FirstName] = @FirstName,
 	                [LastName] = @LastName,
@@ -76,9 +74,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
 	                [DepartmentId] = @DepartmentId,
 	                [ManagerId] = @ManagerId,
 	                [RoleId] = @RoleId
-                WHERE [UserId] = @UserId;
-
-                COMMIT;";
+                WHERE [UserId] = @UserId;";
 
             return DbCommand.InsertUpdateData(UpdateUserQuery, parameters) > 0;
         }
@@ -88,12 +84,8 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             SqlParameter parameter = new SqlParameter("@UserId", userId);
 
             const string DeleteUserQuery =
-                @"BEGIN TRANSACTION;
-
-                DELETE FROM [dbo].[EndUser]
-                WHERE [UserId] = @UserId;
-
-                COMMIT;";
+              @"DELETE FROM [dbo].[EndUser]
+                WHERE [UserId] = @UserId;";
 
             return DbCommand.DeleteData(DeleteUserQuery, parameter) > 0;
         }
@@ -107,13 +99,9 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             };
 
             const string GetUserQuery =
-                @"BEGIN TRANSACTION;
-
-                SELECT *
+              @"SELECT *
                 FROM [dbo].[EndUser]
-                WHERE [UserId] = @UserId;
-
-                COMMIT;";
+                WHERE [UserId] = @UserId;";
 
             DataTable dt = DbCommand.GetDataWithConditions(GetUserQuery, parameters);
 
@@ -139,12 +127,8 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
         public IEnumerable<UserModel> GetAll()
         {
             const string GetAllUsersQuery =
-                @"BEGIN TRANSACTION;
-
-                SELECT *
-                FROM [dbo].[EndUser];
-
-                COMMIT;";
+              @"SELECT *
+                FROM [dbo].[EndUser];";
 
             DataTable dt = DbCommand.GetData(GetAllUsersQuery);
 

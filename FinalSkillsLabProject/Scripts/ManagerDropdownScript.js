@@ -3,7 +3,6 @@
         var managerDropdown = $("#managerDropdown");
         managerDropdown.empty();
         managerDropdown.prop("disabled", false);
-
         var department = $("#departmentDropdown").val();
 
         $.ajax({
@@ -11,7 +10,6 @@
             url: "/Account/GetDepartmentManagers",
             data: { departmentId: department },  
             dataType: "json",
-
             success: function (response) {
                 var placeholder = "<option disabled selected hidden>Choose your manager...</option>";
                 managerDropdown.append(placeholder);
@@ -20,7 +18,6 @@
                     managerDropdown.append(managerOptions);
                 });
             },
-
             error: function (xhr, status, error) {
                 console.error("AJAX error:", status, error);
             }

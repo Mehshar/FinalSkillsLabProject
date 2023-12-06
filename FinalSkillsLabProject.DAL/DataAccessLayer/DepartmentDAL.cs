@@ -21,16 +21,12 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             parameters.Add(new SqlParameter("@DepartmentName", department.DepartmentName));
 
             const string InsertDepartmentQuery =
-                @"BEGIN TRANSACTION;
-
-                DECLARE @department_key INT            
+              @"DECLARE @department_key INT            
 
                 INSERT INTO [dbo].[Department] ([DepartmentName])
                 SELECT @DepartmentName;
 
-                SELECT @department_key = @@IDENTITY
-
-                COMMIT;";
+                SELECT @department_key = @@IDENTITY";
 
             return DbCommand.InsertUpdateData(InsertDepartmentQuery, parameters) > 0;
         }
@@ -42,13 +38,9 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             parameters.Add(new SqlParameter("@DepartmentName", department.DepartmentName));
 
             const string UpdateDepartmentQuery =
-                @"BEGIN TRANSACTION;
-
-                UPDATE [dbo].[Department]
+              @"UPDATE [dbo].[Department]
                 SET [DepartmentName] = @DepartmentName
-                WHERE [DepartmentId] = @DepartmentId;
-
-                COMMIT;";
+                WHERE [DepartmentId] = @DepartmentId;";
 
             return DbCommand.InsertUpdateData(UpdateDepartmentQuery, parameters) > 0;
         }
@@ -62,13 +54,9 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             parameters.Add(new SqlParameter("@DepartmentId", departmentId));
 
             const string GetDepartmentQuery =
-                @"BEGIN TRANSACTION;
-            
-                SELECT *
+              @"SELECT *
                 FROM [dbo].[Department]
-                WHERE [DepartmentId] = @DepartmentId;
-
-                COMMIT;";
+                WHERE [DepartmentId] = @DepartmentId;";
 
             DataTable dt = DbCommand.GetDataWithConditions(GetDepartmentQuery, parameters);
 
@@ -82,12 +70,8 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             DepartmentModel department;
 
             const string GetAllDepartmentsQuery =
-                @"BEGIN TRANSACTION;
-
-                SELECT *
-                FROM [dbo].[Department] 
-
-                COMMIT;";
+              @"SELECT *
+                FROM [dbo].[Department] ";
 
             DataTable dt = DbCommand.GetData(GetAllDepartmentsQuery);
 
@@ -108,7 +92,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
         public IEnumerable<UserModel> GetManagerByDepartment(int departmentId)
         {
             const string GetManagerByDepartmentQuery =
-                @"SELECT [UserId], [FirstName], [LastName]
+              @"SELECT [UserId], [FirstName], [LastName]
                 FROM [dbo].[EndUser]
                 WHERE [DepartmentId] = @DepartmentId AND [RoleId] = @RoleId";
 
