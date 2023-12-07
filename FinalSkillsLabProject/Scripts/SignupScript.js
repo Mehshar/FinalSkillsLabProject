@@ -6,7 +6,26 @@
         return false;
     });
 
+    function extractLabelValue(fieldName) {
+        var label = $("Label[for='" + fieldName + "']");
+        return label.length > 0 ? label.text().trim() : "";
+    }
+
+    function validateFieldValues() {
+        var fields = ["nic", "firstName", "lastName", "email", "mobileNum", "departmentDropdown", "managerDropdown", "username", "password"];
+        fields.forEach(function (field) {
+            var value = $("#" + field).val();
+            if (value == "" || value == null || value.trim() == "") {
+                var label = extractLabelValue(field);
+                toastr.error(label + " cannot be empty");
+                return false;
+            }
+        });
+    }
+
     $("#btnSignup").click(function () {
+        validateFieldValues();
+
         var nic = $("#nic").val().trim();
         var firstName = $("#firstName").val().trim();
         var lastName = $("#lastName").val().trim();
