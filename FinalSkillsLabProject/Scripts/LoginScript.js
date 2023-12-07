@@ -6,14 +6,33 @@
         return false;
     });
 
-    $("#btnLogin").click(function () {
-        var username = $("#username").val().trim();
-        var password = $("#password").val().trim();
+    function extractPlaceholder(fieldName) {
+        var input = document.querySelector("#" + fieldName);
+        console.log(input.getAttribute("placeholder"))
+        return input.getAttribute("placeholder") || "";
+    }
 
-        if (username == '' || password == '') {
-            toastr.error("Username and Password cannot be empty");
+    function validateFieldValues() {
+        var fields = ["username", "password"];
+        var isValid = true;
+        fields.forEach(function (field) {
+            var value = $("#" + field).val();
+            if (value = "" || value == null || value.trim() === "") {
+                var placeholder = extractPlaceholder(field);
+                toastr.error(placeholder + " cannot be empty");
+                isValid = false;
+            }
+        });
+        return isValid;
+    }
+
+    $("#btnLogin").click(function () {
+        if (!validateFieldValues()) {
             return false;
         }
+
+        var username = $("#username").val().trim();
+        var password = $("#password").val().trim();
 
         // create object to map LoginModel
         var authObj = { Username: username, Password: password };

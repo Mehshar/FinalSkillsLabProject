@@ -6,7 +6,30 @@
         return false;
     });
 
+    function extractLabelValue(fieldName) {
+        var label = $("Label[for='" + fieldName + "']");
+        return label.length > 0 ? label.text().trim() : "";
+    }
+
+    function validateFieldValues() {
+        var fields = ["trainingName", "description", "deadline", "capacity", "departmentDropdown"];
+        var isValid = true;
+        fields.forEach(function (field) {
+            var value = $("#" + field).val();
+            if (value == "" || value == null || value.trim() == "") {
+                var label = extractLabelValue(field);
+                toastr.error(label + " cannot be empty");
+                isValid = false;
+            }
+        });
+        return isValid;
+    }
+
     $("#btnSubmit").click(function () {
+        if (!validateFieldValues()) {
+            return false;
+        }
+
         var trainingName = $("#trainingName").val().trim();
         var description = $("#description").val().trim();
         var deadlineInput = $("#deadline").val();
