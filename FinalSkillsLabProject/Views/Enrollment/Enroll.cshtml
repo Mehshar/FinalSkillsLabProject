@@ -1,0 +1,110 @@
+﻿@model FinalSkillsLabProject.Common.Models.TrainingModel
+
+@{
+    ViewBag.Title = "Enrollment";
+    var count = 0;
+}
+
+<head>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    @*https://codeseven.github.io/toastr/*@
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+    <link rel="stylesheet" href="~/Content/LoadingElementStyle.css" />
+    <script type="text/javascript" src="~/Scripts/CreateEnrollmentScript.js"></script>
+</head>
+
+<body>
+    @using (Html.BeginForm("Enroll", "Enrollment", FormMethod.Post, new { id = "enrollmentForm", enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-horizontal">
+            <h4>Enrollment</h4>
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group py-3">
+                <label for="userId" class="control-label col-md-2 pb-2">User Id</label>
+                <div class="col-md-10">
+                    <input type="number" name="userId" id="userId" class="form-control" value="@Session["CurrentUserId"]" readonly />
+                </div>
+            </div>
+
+            <div class="form-group py-3">
+                <label for="trainingId" class="control-label col-md-2 pb-2">Training Id</label>
+                <div class="col-md-10">
+                    <input type="number" name="trainingId" id="trainingId" class="form-control" value="@Model.TrainingId" readonly />
+                </div>
+            </div>
+
+            <div class="form-group py-3">
+                <label for="trainingName" class="control-label col-md-2 pb-2">Training Name</label>
+                <div class="col-md-10">
+                    <input type="text" name="trainingName" id="trainingName" class="form-control" value="@Model.TrainingName" readonly />
+                </div>
+            </div>
+
+            <div class="form-group py-3">
+                <div class="col-md-10">
+                    <label for="description" class="form-label pb-2">Description</label>
+                    <textarea class="form-control" id="description" rows="7" readonly>@Model.Description</textarea>
+                </div>
+            </div>
+
+            <div class="form-group py-3">
+                <label for="deadline" class="control-label col-md-2 pb-2">Deadline</label>
+                <div class="col-md-10">
+                    <input type="datetime" name="deadline" id="deadline" class="form-control" value="@Model.Deadline" readonly />
+                </div>
+            </div>
+
+
+            <div class="form-group py-3">
+                <label for="priorityDepartment" class="control-label col-md-2 pb-2">Priority Department</label>
+                <div class="col-md-10">
+                    <input type="text" name="priorityDepartment" id="priorityDepartment" class="form-control" value="@Model.PriorityDepartmentName" readonly />
+                </div>
+            </div>
+
+            <div class="form-group py-3">
+                <label for="capacity" class="control-label col-md-2 pb-2">Capacity</label>
+                <div class="col-md-10">
+                    <input type="number" name="capacity" id="capacity" class="form-control" value="@Model.Capacity" readonly />
+                </div>
+            </div>
+            <div class="form-group pt-3">
+                <label for="prerequisites" class="control-label col-md-2 pb-2">Prerequisites</label>
+            </div>
+            <ul class="list-group mb-4">
+                @foreach (var prerequisite in ViewBag.Prerequisites)
+                {
+                    <li class="list-group-item" id="@prerequisite.PrerequisiteId">
+                        <label for="@prerequisite.PrerequisiteId" class="form-label">@prerequisite.Description</label>
+                        <input class="form-control" type="file" id="@prerequisite.PrerequisiteId" name="files[@count]" required>
+                        <input type="hidden" name="prerequisiteIds[@count]" value="@prerequisite.PrerequisiteId" />
+                    </li>
+                    count++;
+                }
+            </ul>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10 py-3">
+                    <input type="submit" value="Enroll" id="btnSubmit" class="btn btn-primary" />
+                </div>
+            </div>
+        </div>
+
+    }
+
+    <div>
+        @Html.ActionLink("Back to List", "Index", "Training")
+    </div>
+
+    <div class="sk-chase d-none" id="loadingSpinner">
+        <div class="sk-chase-dot"></div>
+        <div class="sk-chase-dot"></div>
+        <div class="sk-chase-dot"></div>
+        <div class="sk-chase-dot"></div>
+        <div class="sk-chase-dot"></div>
+        <div class="sk-chase-dot"></div>
+    </div>
+    <div id="loadingBackdrop" class="d-none"></div>
+</body>

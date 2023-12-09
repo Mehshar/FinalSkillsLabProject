@@ -8,6 +8,8 @@ namespace FinalSkillsLabProject.Common.Models
 {
     public class EnrollmentModel
     {
+        public int EnrollmentId { get; set; }
+
         [Required]
         public int UserId { get; set; }
 
@@ -22,8 +24,6 @@ namespace FinalSkillsLabProject.Common.Models
         [Required]
         [Display(Name = "Enrollment Status")]
         public string EnrollmentStatus { get; set; }
-
-        public string PrerequisiteMaterial { get; set; }
 
         [Required]
         [Display(Name = "Reason for Decline")]

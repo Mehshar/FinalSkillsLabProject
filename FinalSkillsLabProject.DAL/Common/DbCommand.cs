@@ -68,13 +68,29 @@ namespace FinalSkillsLabProject.DAL.Common
                 {
                     parameters.ForEach(parameter =>
                     {
-                        cmd.Parameters.AddWithValue(parameter.ParameterName, parameter.Value);
+                        if (parameter.Direction == ParameterDirection.Output)
+                        {
+                            SqlParameter outputParameter = cmd.Parameters.Add(parameter.ParameterName, parameter.SqlDbType);
+                            outputParameter.Direction = ParameterDirection.Output;
+                        }
+
+                        else
+                        {
+                            cmd.Parameters.AddWithValue(parameter.ParameterName, parameter.Value);
+                        }
                     });
                 }
                 numOfRowsAffected = cmd.ExecuteNonQuery();
+
+                foreach (var parameter in parameters)
+                {
+                    if (parameter.Direction == ParameterDirection.Output)
+                    {
+                        parameter.Value = cmd.Parameters[parameter.ParameterName].Value;
+                    }
+                }
             }
             dal.CloseConnection();
-
             return numOfRowsAffected;
         }
 

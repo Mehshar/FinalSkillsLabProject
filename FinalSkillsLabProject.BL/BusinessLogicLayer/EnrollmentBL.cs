@@ -14,9 +14,9 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
             this._enrollmentDAL = enrollmentDAL;
         }
 
-        public bool Add(EnrollmentModel enrollment)
+        public bool Add(EnrollmentModel enrollment, List<PrerequisiteMaterialModel> prerequisiteMaterialsList)
         {
-            return this._enrollmentDAL.Add(enrollment);
+            return this._enrollmentDAL.Add(enrollment, prerequisiteMaterialsList);
         }
 
         public bool Update(EnrollmentModel enrollment)

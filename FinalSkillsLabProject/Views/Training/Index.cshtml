@@ -60,10 +60,8 @@
                     @(training.PriorityDepartmentName == null ? "N/A" : training.PriorityDepartmentName)
                 </td>
                 <td>
-                    @*@Html.ActionLink("Edit", "Edit", "Training", new { id = training.TrainingId }, null) |
-                    @Html.ActionLink("Delete", "Delete", "Training", new { id = training.TrainingId })*@
                     @Html.ActionLink("Edit", "Edit", "Training", new { id = training.TrainingId }, new { @class = "btn btn-outline-primary d-none btnEdit" })
-                    @Html.ActionLink("Enroll", "Enroll", "Enrollment", null, new { @class = "btn btn-outline-primary d-none btnEnroll" })
+                    @Html.ActionLink("Enroll", "Enroll", "Enrollment", new { id = training.TrainingId }, new { @class = "btn btn-outline-primary d-none btnEnroll" })
                 </td>
             </tr>
         }
