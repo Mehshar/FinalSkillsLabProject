@@ -11,15 +11,16 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Web;
 using System.Web.Mvc;
+using System.Configuration;
 
 namespace FinalSkillsLabProject.Controllers
 {
     public class EnrollmentController : Controller
     {
-        private static string ApiKey = "AIzaSyA57WmkAd63zaf0GSQeYwwjfMn2ixp-ebM";
-        private static string Bucket = "skillslabproject-4b1a2.appspot.com";
-        private static string AuthEmail = "khatidja.mauraknah@ceridian.com";
-        private static string AuthPassword = "Mehshar@Ceridian786";
+        private static string _apiKey = ConfigurationManager.AppSettings["ApiKey"];
+        private static string _bucket = ConfigurationManager.AppSettings["Bucket"];
+        private static string _authEmail = ConfigurationManager.AppSettings["AuthEmail"];
+        private static string _authPassword = ConfigurationManager.AppSettings["AuthPassword"];
 
         private readonly ITrainingBL _trainingBL;
         private readonly IPrerequisiteBL _prerequisiteBL;
@@ -98,13 +99,13 @@ namespace FinalSkillsLabProject.Controllers
         {
             try
             {
-                var auth = new FirebaseAuthProvider(new FirebaseConfig(ApiKey));
-                var a = await auth.SignInWithEmailAndPasswordAsync(AuthEmail, AuthPassword);
+                var auth = new FirebaseAuthProvider(new FirebaseConfig(_apiKey));
+                var a = await auth.SignInWithEmailAndPasswordAsync(_authEmail, _authPassword);
 
                 var cancellation = new CancellationTokenSource();
 
                 var task = new FirebaseStorage(
-                    Bucket,
+                    _bucket,
                     new FirebaseStorageOptions
                     {
                         AuthTokenAsyncFactory = () => Task.FromResult(a.FirebaseToken),
