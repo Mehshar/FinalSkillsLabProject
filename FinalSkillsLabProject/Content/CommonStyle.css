@@ -3,3 +3,104 @@
 * {
     font-family: 'Poppins', sans-serif;
 }
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.navbar-nav .nav-link, .nav-item {
+    font-weight: 600 !important;
+    font-size: 19px !important;
+}
+
+#nav-bar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    padding: 0;
+}
+
+.navbar {
+    background: radial-gradient(circle, rgba(238, 174, 202, 1) 6%, rgba(148, 187, 233, 1) 100%);
+}
+
+.navbar-brand h4 {
+    transition: 0.5s;
+    color: white;
+    position: relative;
+    padding: 0 0 0 30px;
+    font-weight: 600;
+}
+
+    .navbar-brand h4:hover {
+        transform: translateY(5px);
+    }
+
+.navbar-nav li a {
+    color: #fff !important;
+    font-weight: 600;
+    transition: 0.5s;
+}
+
+    .navbar-nav li a:hover {
+        transform: translateY(3px);
+    }
+
+.nav-item .btnCustom {
+    box-shadow: none;
+    padding: 8px 25px;
+    font-weight: 600;
+    font-size: 19px !important;
+    border: none;
+    border-radius: 20px;
+    background: linear-gradient(336deg, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 95%);
+}
+
+    .nav-item .btnCustom:hover {
+        background: linear-gradient(132deg, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 95%);
+    }
+
+.dropdown-menu .dropdown-item {
+    color: black !important;
+}
+
+#footer {
+    background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(181,193,255,1) 100%);
+    color: white;
+}
+
+hr {
+    background-color: white;
+    margin-top: 0 !important;
+}
+
+.copyright {
+    margin-bottom: 0;
+    padding-bottom: 20px;
+    text-align: center;
+}
+
+.btnEdit, .btnEnroll {
+    border: 1px solid rgba(199,179,215,255) !important;
+    font-weight: 500 !important;
+}
+
+
+    .btnEdit:hover, .btnEnroll:hover {
+        background-image: linear-gradient(to left, rgba(238, 174, 202, 1) 6%, rgba(148, 187, 233, 1) 100%);
+        border: none !important;
+        color: white !important;
+    }
+
+#btnCreateTraining, #btnSubmit {
+    background-image: linear-gradient(to left, rgba(238, 174, 202, 1) 6%, rgba(148, 187, 233, 1) 100%);
+    border: none;
+    outline: none;
+    font-weight: 600;
+    color: white;
+}
+
+    #btnCreateTraining:hover, #btnSubmit:hover {
+        background-image: linear-gradient(to right, rgba(238, 174, 202, 1) 6%, rgba(148, 187, 233, 1) 100%);
+    }

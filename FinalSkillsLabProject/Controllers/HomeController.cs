@@ -10,6 +10,7 @@ namespace FinalSkillsLabProject.Controllers
 {
     // to login before having access
     //[Authorize]
+    [AllowAnonymous]
     public class HomeController : Controller
     {
         public ActionResult Index()
@@ -17,7 +18,6 @@ namespace FinalSkillsLabProject.Controllers
             return View();
         }
 
-        [AllowAnonymous]
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";
