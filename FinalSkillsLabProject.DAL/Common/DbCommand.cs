@@ -8,51 +8,33 @@ using System.Threading.Tasks;
 
 namespace FinalSkillsLabProject.DAL.Common
 {
-    // DML
-    // Insert, Update, Select and Delete operations
     public static class DbCommand
     {
-        public static DataTable GetData(string query)
+        public static SqlDataReader GetData(string query)
         {
             DAL dal = new DAL();
-            DataTable dt = new DataTable();
-
-            using (SqlCommand cmd = new SqlCommand(query, dal.Connection))
+            SqlCommand cmd = new SqlCommand(query, dal.Connection)
             {
-                cmd.CommandType = CommandType.Text;
-                using (SqlDataAdapter sda = new SqlDataAdapter(cmd))
-                {
-                    sda.Fill(dt);
-                }
-            }
-            dal.CloseConnection();
-            return dt;
+                CommandType = CommandType.Text
+            };
+
+            return cmd.ExecuteReader(CommandBehavior.CloseConnection);
         }
 
-        public static DataTable GetDataWithConditions(string query, List<SqlParameter> parameters)
+        public static SqlDataReader GetDataWithConditions(string query, List<SqlParameter> parameters)
         {
             DAL dal = new DAL();
-            DataTable dt = new DataTable();
+            SqlCommand cmd = new SqlCommand(query, dal.Connection);
+            cmd.CommandType = CommandType.Text;
 
-            using (SqlCommand cmd = new SqlCommand(query, dal.Connection))
+            if (parameters != null)
             {
-                cmd.CommandType = CommandType.Text;
-
-                if (parameters != null)
+                parameters.ForEach(parameter =>
                 {
-                    parameters.ForEach(parameter =>
-                    {
-                        cmd.Parameters.AddWithValue(parameter.ParameterName, parameter.Value);
-                    });
-                }
-
-                using (SqlDataAdapter sda = new SqlDataAdapter(cmd))
-                {
-                    sda.Fill(dt);
-                }
+                    cmd.Parameters.AddWithValue(parameter.ParameterName, parameter.Value);
+                });
             }
-            dal.CloseConnection();
-            return dt;
+            return cmd.ExecuteReader(CommandBehavior.CloseConnection);
         }
 
         public static int InsertUpdateData(string query, List<SqlParameter> parameters)

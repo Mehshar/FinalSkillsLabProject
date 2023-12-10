@@ -78,18 +78,18 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
               @"SELECT *
                 FROM [dbo].[Prerequisite];";
 
-            DataTable dt = DbCommand.GetData(GetAllPrerequisitesQuery);
-
-            foreach (DataRow row in dt.Rows)
+            using (SqlDataReader reader = DbCommand.GetData(GetAllPrerequisitesQuery))
             {
-                prerequisite = new PrerequisiteModel()
+                while (reader.Read())
                 {
-                    PrerequisiteId = int.Parse(row["PrerequisiteId"].ToString()),
-                    Type = row["Type"].ToString(),
-                    Description = row["Description"].ToString()
-                };
-
-                prerequisitesList.Add(prerequisite);
+                    prerequisite = new PrerequisiteModel()
+                    {
+                        PrerequisiteId = reader.GetInt16(reader.GetOrdinal("PrerequisiteId")),
+                        Type = reader.GetString(reader.GetOrdinal("Type")),
+                        Description = reader.GetString(reader.GetOrdinal("Description"))
+                    };
+                    prerequisitesList.Add(prerequisite);
+                }
             }
             return prerequisitesList;
         }
@@ -111,17 +111,18 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                 ON tp.[PrerequisiteId] = p.[PrerequisiteId]
                 WHERE tp.[TrainingId] = @TrainingId;";
 
-            DataTable dt = DbCommand.GetDataWithConditions(GetPrerequisitesByTrainingQuery, parameters);
-
-            foreach (DataRow row in dt.Rows)
+            using (SqlDataReader reader = DbCommand.GetDataWithConditions(GetPrerequisitesByTrainingQuery, parameters))
             {
-                prerequisite = new PrerequisiteModel();
-
-                prerequisite.PrerequisiteId = int.Parse(row["PrerequisiteId"].ToString());
-                prerequisite.Type = row["Type"].ToString();
-                prerequisite.Description = row["Description"].ToString();
-
-                prerequisitesList.Add(prerequisite);
+                while (reader.Read())
+                {
+                    prerequisite = new PrerequisiteModel()
+                    {
+                        PrerequisiteId = reader.GetInt16(reader.GetOrdinal("PrerequisiteId")),
+                        Type = reader.GetString(reader.GetOrdinal("Type")),
+                        Description = reader.GetString(reader.GetOrdinal("Description"))
+                    };
+                    prerequisitesList.Add(prerequisite);
+                }
             }
             return prerequisitesList;
         }

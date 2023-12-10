@@ -103,54 +103,54 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                 FROM [dbo].[EndUser]
                 WHERE [UserId] = @UserId;";
 
-            DataTable dt = DbCommand.GetDataWithConditions(GetUserQuery, parameters);
-
-            if (dt.Rows.Count > 0)
+            using (SqlDataReader reader = DbCommand.GetDataWithConditions(GetUserQuery, parameters))
             {
-                DataRow row = dt.Rows[0];
-                user = new UserModel()
+                if (reader.Read())
                 {
-                    UserId = userId,
-                    NIC = row["NIC"].ToString(),
-                    FirstName = row["FirstName"].ToString(),
-                    LastName = row["LastName"].ToString(),
-                    Email = row["Email"].ToString(),
-                    MobileNum = row["MobileNum"].ToString(),
-                    DepartmentId = int.Parse(row["DepartmentId"].ToString()),
-                    ManagerId = int.TryParse(row["ManagerId"].ToString(), out int managerIdResult) ? (int?)managerIdResult : null,
-                    RoleId = int.Parse(row["RoleId"].ToString())
-                };
+                    user = new UserModel()
+                    {
+                        UserId = userId,
+                        NIC = reader.GetString(reader.GetOrdinal("NIC")),
+                        FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                        LastName = reader.GetString(reader.GetOrdinal("LastName")),
+                        Email = reader.GetString(reader.GetOrdinal("Email")),
+                        MobileNum = reader.GetString(reader.GetOrdinal("MobileNum")),
+                        DepartmentId = reader.GetInt16(reader.GetOrdinal("DepartmentId")),
+                        ManagerId = reader.IsDBNull(reader.GetOrdinal("ManagerId")) ? null : (int?)reader.GetInt16(reader.GetOrdinal("ManagerId")),
+                        RoleId = reader.GetInt16(reader.GetOrdinal("RoleId"))
+                    };
+                }
             }
             return user;
         }
 
         public IEnumerable<UserModel> GetAll()
         {
+            UserModel user;
+            List<UserModel> usersList = new List<UserModel>();
+
             const string GetAllUsersQuery =
               @"SELECT *
                 FROM [dbo].[EndUser];";
 
-            DataTable dt = DbCommand.GetData(GetAllUsersQuery);
-
-            UserModel user;
-            List<UserModel> usersList = new List<UserModel>();
-
-            foreach (DataRow row in dt.Rows)
+            using (SqlDataReader reader = DbCommand.GetData(GetAllUsersQuery))
             {
-                user = new UserModel()
+                while (reader.Read())
                 {
-                    UserId = int.Parse(row["UserId"].ToString()),
-                    NIC = row["NIC"].ToString(),
-                    FirstName = row["FirstName"].ToString(),
-                    LastName = row["LastName"].ToString(),
-                    Email = row["Email"].ToString(),
-                    MobileNum = row["MobileNum"].ToString(),
-                    DepartmentId = int.Parse(row["DepartmentId"].ToString()),
-                    ManagerId = int.TryParse(row["ManagerId"].ToString(), out int managerIdResult) ? (int?)managerIdResult : null,
-                    RoleId = int.Parse(row["RoleId"].ToString())
-                };
-                usersList.Add(user);
-
+                    user = new UserModel()
+                    {
+                        UserId = reader.GetInt16(reader.GetOrdinal("UserId")),
+                        NIC = reader.GetString(reader.GetOrdinal("NIC")),
+                        FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                        LastName = reader.GetString(reader.GetOrdinal("LastName")),
+                        Email = reader.GetString(reader.GetOrdinal("Email")),
+                        MobileNum = reader.GetString(reader.GetOrdinal("MobileNum")),
+                        DepartmentId = reader.GetInt16(reader.GetOrdinal("DepartmentId")),
+                        ManagerId = reader.IsDBNull(reader.GetOrdinal("ManagerId")) ? null : (int?)reader.GetInt16(reader.GetOrdinal("ManagerId")),
+                        RoleId = reader.GetInt16(reader.GetOrdinal("RoleId"))
+                    };
+                    usersList.Add(user);
+                }
             }
             return usersList;
         }

@@ -28,8 +28,11 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                 new SqlParameter("@Username", model.Username),
                 new SqlParameter("@Password", model.Password)
             };
-            DataTable dt = DbCommand.GetDataWithConditions(AuthenticateUserQuery, parameters);
-            return dt.Rows.Count > 0;
+
+            using (SqlDataReader reader = DbCommand.GetDataWithConditions(AuthenticateUserQuery, parameters))
+            {
+                return reader.HasRows;
+            }
         }
 
         public LoginModel GetByUsername(string username)
@@ -47,17 +50,21 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                 INNER JOIN [dbo].[Role] r WITH(NOLOCK) ON euser.[RoleId] = r.[RoleId]
                 WHERE acc.[Username] = @Username;";
 
-            DataTable dt = DbCommand.GetDataWithConditions(GetUserByUsernameQuery, parameters);
-
-            if (dt.Rows.Count > 0)
+            using (SqlDataReader reader = DbCommand.GetDataWithConditions(GetUserByUsernameQuery, parameters))
             {
-                DataRow row = dt.Rows[0];
-                user = new LoginModel()
+                if (reader.Read())
                 {
-                    UserId = int.Parse(row["UserId"].ToString()),
-                    Username = row["Username"].ToString(),
-                    Role = new RoleModel() { RoleId = int.Parse(row["RoleId"].ToString()), RoleName = (RoleEnum)(int.Parse(row["RoleId"].ToString())) }
-                };
+                    user = new LoginModel()
+                    {
+                        UserId = reader.GetInt16(reader.GetOrdinal("UserId")),
+                        Username = reader.GetString(reader.GetOrdinal("Username")),
+                        Role = new RoleModel()
+                        {
+                            RoleId = reader.GetInt16(reader.GetOrdinal("RoleId")),
+                            RoleName = (RoleEnum)reader.GetInt16(reader.GetOrdinal("RoleId"))
+                        }
+                    };
+                }
             }
             return user;
         }
@@ -65,6 +72,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
         // Getting a user with a different UserId, who has a specific username
         public AccountModel GetByUsernameAndUserId(string username, int userId)
         {
+            AccountModel user = null;
             List<SqlParameter> parameters = new List<SqlParameter>()
             {
                 new SqlParameter("@Username", username),
@@ -78,15 +86,18 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                 INNER JOIN [dbo].[Role] r WITH(NOLOCK) ON euser.[RoleId] = r.[RoleId]
                 WHERE acc.[Username] = @Username AND euser.[UserId] != @UserId;";
 
-            DataTable dt = DbCommand.GetDataWithConditions(GetUserByUsernameAndUserId, parameters);
-
-            DataRow row = dt.Rows[0];
-            AccountModel user = row != null ? new AccountModel()
+            using (SqlDataReader reader = DbCommand.GetDataWithConditions(GetUserByUsernameAndUserId, parameters))
             {
-                UserId = int.Parse(row["UserId"].ToString()),
-                Username = row["Username"].ToString(),
-                Password = row["Password"].ToString()
-            } : null;
+                if (reader.Read())
+                {
+                    user = new AccountModel()
+                    {
+                        UserId = reader.GetInt16(reader.GetOrdinal("UserId")),
+                        Username = reader.GetString(reader.GetOrdinal("Username")),
+                        Password = reader.GetString(reader.GetOrdinal("Password"))
+                    };
+                }
+            }
             return user;
         }
 

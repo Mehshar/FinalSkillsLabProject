@@ -101,7 +101,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
 
         public TrainingModel Get(int trainingId)
         {
-            TrainingModel training = new TrainingModel();
+            TrainingModel training = null;
             List<SqlParameter> parameters = new List<SqlParameter>();
 
             parameters.Add(new SqlParameter("@TrainingId", trainingId));
@@ -113,26 +113,25 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                 ON t.[PriorityDepartment] = d.[DepartmentId]
                 WHERE [TrainingId] = @TrainingId;";
 
-            DataTable dt = DbCommand.GetDataWithConditions(GetTrainingQuery, parameters);
-
-            DataRow row = dt.Rows[0];
-            training.TrainingId = trainingId;
-            training.TrainingName = row["TrainingName"].ToString();
-            training.Description = row["Description"].ToString();
-            training.Deadline = (DateTime)row["Deadline"];
-            training.PriorityDepartment = int.Parse(row["PriorityDepartment"].ToString());
-            if (row["DepartmentName"] != DBNull.Value)
+            using (SqlDataReader reader = DbCommand.GetDataWithConditions(GetTrainingQuery, parameters))
             {
-                training.PriorityDepartmentName = row["DepartmentName"].ToString();
+                if (reader.Read())
+                {
+                    training = new TrainingModel()
+                    {
+                        TrainingId = trainingId,
+                        TrainingName = reader.GetString(reader.GetOrdinal("TrainingName")),
+                        Description = reader.GetString(reader.GetOrdinal("Description")),
+                        Deadline = reader.GetDateTime(reader.GetOrdinal("Deadline")),
+                        PriorityDepartment = reader.GetInt16(reader.GetOrdinal("PriorityDepartment")),
+                        PriorityDepartmentName = reader.IsDBNull(reader.GetOrdinal("DepartmentName")) ? null : reader.GetString(reader.GetOrdinal("DepartmentName")),
+                        Capacity = reader.GetInt16(reader.GetOrdinal("Capacity"))
+                    };
+                }
             }
-            else
-            {
-                training.PriorityDepartmentName = null;
-            }
-            training.Capacity = int.Parse(row["Capacity"].ToString());
-
             return training;
         }
+
         public IEnumerable<TrainingModel> GetAll()
         {
             TrainingModel training;
@@ -144,28 +143,29 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                 LEFT JOIN [dbo].[Department] as d
                 ON t.[PriorityDepartment] = d.DepartmentId;";
 
-            DataTable dt = DbCommand.GetData(GetAllTrainingsQuery);
-
-            foreach (DataRow row in dt.Rows)
+            using (SqlDataReader reader = DbCommand.GetData(GetAllTrainingsQuery))
             {
-                training = new TrainingModel();
-
-                training.TrainingId = int.Parse(row["TrainingId"].ToString());
-                training.TrainingName = row["TrainingName"].ToString();
-                training.Description = row["Description"].ToString();
-                training.Deadline = (DateTime)row["Deadline"];
-                training.PriorityDepartment = int.Parse(row["PriorityDepartment"].ToString());
-                if (row["DepartmentName"] != DBNull.Value)
+                while (reader.Read())
                 {
-                    training.PriorityDepartmentName = row["DepartmentName"].ToString();
-                }
-                else
-                {
-                    training.PriorityDepartmentName = null;
-                }
-                training.Capacity = int.Parse(row["Capacity"].ToString());
+                    training = new TrainingModel();
 
-                trainingList.Add(training);
+                    training.TrainingId = reader.GetInt16(reader.GetOrdinal("TrainingId"));
+                    training.TrainingName = reader.GetString(reader.GetOrdinal("TrainingName"));
+                    training.Description = reader.GetString(reader.GetOrdinal("Description"));
+                    training.Deadline = reader.GetDateTime(reader.GetOrdinal("Deadline"));
+                    training.PriorityDepartment = reader.GetInt16(reader.GetOrdinal("PriorityDepartment"));
+                    if (reader.IsDBNull(reader.GetOrdinal("DepartmentName")))
+                    {
+                        training.PriorityDepartmentName = null;
+                    }
+                    else
+                    {
+                        training.PriorityDepartmentName = reader.GetString(reader.GetOrdinal("DepartmentName"));
+                    }
+                    training.Capacity = reader.GetInt16(reader.GetOrdinal("Capacity"));
+
+                    trainingList.Add(training);
+                }
             }
             return trainingList;
         }
@@ -184,28 +184,22 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                 ON e.[TrainingId] = t.[TrainingId]
                 WHERE e.[UserId] = @UserId;";
 
-            DataTable dt = DbCommand.GetDataWithConditions(GetTrainingsByUserQuery, parameters);
-
-            foreach (DataRow row in dt.Rows)
+            using (SqlDataReader reader = DbCommand.GetDataWithConditions(GetTrainingsByUserQuery, parameters))
             {
-                training = new TrainingModel();
-
-                training.TrainingId = int.Parse(row["TrainingId"].ToString());
-                training.TrainingName = row["TrainingName"].ToString();
-                training.Description = row["Description"].ToString();
-                training.Deadline = (DateTime)row["Deadline"];
-                training.PriorityDepartment = int.Parse(row["PriorityDepartment"].ToString());
-                if (row["DepartmentName"] != DBNull.Value)
+                while (reader.Read())
                 {
-                    training.PriorityDepartmentName = row["DepartmentName"].ToString();
+                    training = new TrainingModel()
+                    {
+                        TrainingId = reader.GetInt16(reader.GetOrdinal("TrainingId")),
+                        TrainingName = reader.GetString(reader.GetOrdinal("TrainingName")),
+                        Description = reader.GetString(reader.GetOrdinal("Description")),
+                        Deadline = reader.GetDateTime(reader.GetOrdinal("Deadline")),
+                        PriorityDepartment = reader.GetInt16(reader.GetOrdinal("PriorityDepartment")),
+                        PriorityDepartmentName = reader.IsDBNull(reader.GetOrdinal("DepartmentName")) ? null : reader.GetString(reader.GetOrdinal("DepartmentName")),
+                        Capacity = reader.GetInt16(reader.GetOrdinal("Capacity"))
+                    };
+                    trainingsList.Add(training);
                 }
-                else
-                {
-                    training.PriorityDepartmentName = null;
-                }
-                training.Capacity = int.Parse(row["Capacity"].ToString());
-
-                trainingsList.Add(training);
             }
             return trainingsList;
         }

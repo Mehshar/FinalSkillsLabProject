@@ -47,8 +47,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
         //public void Delete(DepartmentModel department) { }
         public DepartmentModel Get(int departmentId)
         {
-            DepartmentModel department = new DepartmentModel();
-
+            DepartmentModel department = null;
             List<SqlParameter> parameters = new List<SqlParameter>();
 
             parameters.Add(new SqlParameter("@DepartmentId", departmentId));
@@ -58,33 +57,40 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                 FROM [dbo].[Department]
                 WHERE [DepartmentId] = @DepartmentId;";
 
-            DataTable dt = DbCommand.GetDataWithConditions(GetDepartmentQuery, parameters);
-
-            DataRow row = dt.Rows[0];
-            department.DepartmentId = departmentId;
-            department.DepartmentName = row["DepartmentName"].ToString();
+            using (SqlDataReader reader = DbCommand.GetDataWithConditions(GetDepartmentQuery, parameters))
+            {
+                if (reader.Read())
+                {
+                    department = new DepartmentModel()
+                    {
+                        DepartmentId = departmentId,
+                        DepartmentName = reader.GetString(reader.GetOrdinal("DepartmentName"))
+                    };
+                }
+            }
             return department;
         }
+
         public IEnumerable<DepartmentModel> GetAll()
         {
             DepartmentModel department;
+            List<DepartmentModel> departmentsList = new List<DepartmentModel>();
 
             const string GetAllDepartmentsQuery =
               @"SELECT *
                 FROM [dbo].[Department] ";
 
-            DataTable dt = DbCommand.GetData(GetAllDepartmentsQuery);
-
-            List<DepartmentModel> departmentsList = new List<DepartmentModel>();
-
-            foreach (DataRow row in dt.Rows)
+            using (SqlDataReader reader = DbCommand.GetData(GetAllDepartmentsQuery))
             {
-                department = new DepartmentModel();
-
-                department.DepartmentId = int.Parse(row["DepartmentId"].ToString());
-                department.DepartmentName = row["DepartmentName"].ToString();
-
-                departmentsList.Add(department);
+                while (reader.Read())
+                {
+                    department = new DepartmentModel
+                    {
+                        DepartmentId = reader.GetInt16(reader.GetOrdinal("DepartmentId")),
+                        DepartmentName = reader.GetString(reader.GetOrdinal("DepartmentName"))
+                    };
+                    departmentsList.Add(department);
+                }
             }
             return departmentsList;
         }
@@ -102,19 +108,22 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                 new SqlParameter("RoleId", (int)RoleEnum.Manager)
             };
 
-            DataTable dt = DbCommand.GetDataWithConditions(GetManagerByDepartmentQuery, parameters);
             UserModel user;
             List<UserModel> managersList = new List<UserModel>();
-            foreach (DataRow row in dt.Rows)
+
+            using (SqlDataReader reader = DbCommand.GetDataWithConditions(GetManagerByDepartmentQuery, parameters))
             {
-                user = new UserModel()
+                while (reader.Read())
                 {
-                    UserId = int.Parse(row["UserId"].ToString()),
-                    FirstName = row["FirstName"].ToString(),
-                    LastName = row["LastName"].ToString(),
-                    DepartmentId = departmentId
-                };
-                managersList.Add(user);
+                    user = new UserModel()
+                    {
+                        UserId = reader.GetInt16(reader.GetOrdinal("UserId")),
+                        FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                        LastName = reader.GetString(reader.GetOrdinal("LastName")),
+                        DepartmentId = departmentId
+                    };
+                    managersList.Add(user);
+                }
             }
             return managersList;
         }

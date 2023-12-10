@@ -92,90 +92,91 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
 
         public EnrollmentModel Get(int userId, int trainingId)
         {
-            //List<SqlParameter> parameters = new List<SqlParameter>()
-            //{ new SqlParameter("@UserId", userId) , new SqlParameter("@TrainingId", trainingId) };
+            EnrollmentModel enrollment = null;
+            List<SqlParameter> parameters = new List<SqlParameter>()
+            { new SqlParameter("@UserId", userId) , new SqlParameter("@TrainingId", trainingId) };
 
-            //const string GetEnrollmentQuery =
-            //  @"SELECT *
-            //    FROM [dbo].[Enrollment]
-            //    WHERE [UserId] = @UserId AND [TrainingId] = @TrainingId;";
+            const string GetEnrollmentQuery =
+              @"SELECT *
+                FROM [dbo].[Enrollment]
+                WHERE [UserId] = @UserId AND [TrainingId] = @TrainingId;";
 
-            //DataTable dt = DbCommand.GetDataWithConditions(GetEnrollmentQuery, parameters);
-
-            //DataRow row = dt.Rows[0];
-
-            //EnrollmentModel enrollment = new EnrollmentModel()
-            //{
-            //    UserId = userId,
-            //    TrainingId = trainingId,
-            //    EnrollmentDate = (DateTime)row["EnrollmentDate"],
-            //    EnrollmentStatus = row["EnrollmentStatus"].ToString(),
-            //    PrerequisiteMaterial = row["PrerequisiteMaterial"].ToString(),
-            //    DeclineReason = row["DeclineReason"].ToString()
-            //};
-
-            //return enrollment;
-            throw new NotImplementedException();
+            using (SqlDataReader reader = DbCommand.GetDataWithConditions(GetEnrollmentQuery, parameters))
+            {
+                if (reader.Read())
+                {
+                    enrollment = new EnrollmentModel()
+                    {
+                        EnrollmentId = reader.GetInt16(reader.GetOrdinal("EnrollmentId")),
+                        UserId = userId,
+                        TrainingId = trainingId,
+                        EnrollmentDate = reader.GetDateTime(reader.GetOrdinal("EnrollmentDate")),
+                        EnrollmentStatus = reader.GetString(reader.GetOrdinal("EnrollmentStatus")),
+                        DeclineReason = reader.GetString(reader.GetOrdinal("DeclineReason")),
+                    };
+                }
+            }
+            return enrollment;
         }
+
         public IEnumerable<EnrollmentModel> GetAll()
         {
-            //EnrollmentModel enrollment;
-            //List<EnrollmentModel> enrollmentsList = new List<EnrollmentModel>();
+            EnrollmentModel enrollment;
+            List<EnrollmentModel> enrollmentsList = new List<EnrollmentModel>();
 
-            //const string GetAllEnrollmentsQuery =
-            //  @"SELECT *
-            //    FROM [dbo].[Enrollment];";
+            const string GetAllEnrollmentsQuery =
+              @"SELECT *
+                FROM [dbo].[Enrollment];";
 
-            //DataTable dt = DbCommand.GetData(GetAllEnrollmentsQuery);
-
-            //foreach (DataRow row in dt.Rows)
-            //{
-            //    enrollment = new EnrollmentModel()
-            //    {
-            //        UserId = int.Parse(row["UserId"].ToString()),
-            //        TrainingId = int.Parse(row["TrainingId"].ToString()),
-            //        EnrollmentDate = (DateTime)row["EnrollmentDate"],
-            //        EnrollmentStatus = row["EnrollmentStatus"].ToString(),
-            //        PrerequisiteMaterial = row["PrerequisiteMaterial"].ToString(),
-            //        DeclineReason = row["DeclineReason"].ToString()
-            //    };
-
-            //    enrollmentsList.Add(enrollment);
-            //}
-            //return enrollmentsList;
-            throw new NotImplementedException();
+            using (SqlDataReader reader = DbCommand.GetData(GetAllEnrollmentsQuery))
+            {
+                while (reader.Read())
+                {
+                    enrollment = new EnrollmentModel()
+                    {
+                        EnrollmentId = reader.GetInt16(reader.GetOrdinal("EnrollmentId")),
+                        UserId = reader.GetInt16(reader.GetOrdinal("UserId")),
+                        TrainingId = reader.GetInt16(reader.GetOrdinal("TrainingId")),
+                        EnrollmentDate = reader.GetDateTime(reader.GetOrdinal("EnrollmentDate")),
+                        EnrollmentStatus = reader.GetString(reader.GetOrdinal("EnrollmentStatus")),
+                        DeclineReason = reader.GetString(reader.GetOrdinal("DeclineReason"))
+                    };
+                    enrollmentsList.Add(enrollment);
+                }
+            }
+            return enrollmentsList;
         }
 
         public IEnumerable<EnrollmentModel> GetAllByManager(string manager)
         {
-            //EnrollmentModel enrollment;
-            //List<EnrollmentModel> enrollmentsList = new List<EnrollmentModel>();
+            EnrollmentModel enrollment;
+            List<EnrollmentModel> enrollmentsList = new List<EnrollmentModel>();
 
-            //List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter("@Manager", manager) };
+            List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter("@Manager", manager) };
 
-            //const string GetEnrollmentsByManager =
-            //  @"SELECT en.*
-            //    FROM [dbo].[Enrollment] AS en
-            //    INNER JOIN [dbo].[EndUser] AS euser
-            //    ON en.[UserId] = euser.[UserId]
-            //    WHERE euser.[Manager] = @Manager;";
+            const string GetEnrollmentsByManager =
+              @"SELECT en.*
+                FROM [dbo].[Enrollment] AS en
+                INNER JOIN [dbo].[EndUser] AS euser
+                ON en.[UserId] = euser.[UserId]
+                WHERE euser.[Manager] = @Manager;";
 
-            //DataTable dt = DbCommand.GetDataWithConditions(GetEnrollmentsByManager, parameters);
-
-            //foreach (DataRow row in dt.Rows)
-            //{
-            //    enrollment = new EnrollmentModel()
-            //    {
-            //        UserId = int.Parse(row["UserId"].ToString()),
-            //        TrainingId = int.Parse(row["TrainingId"].ToString()),
-            //        EnrollmentDate = (DateTime)row["EnrollmentDate"],
-            //        EnrollmentStatus = row["EnrollmentStatus"].ToString(),
-            //        PrerequisiteMaterial = row["PrerequisiteMaterial"].ToString()
-            //    };
-            //    enrollmentsList.Add(enrollment);
-            //}
-            //return enrollmentsList;
-            throw new NotImplementedException();
+            using (SqlDataReader reader = DbCommand.GetDataWithConditions(GetEnrollmentsByManager, parameters))
+            {
+                while (reader.Read())
+                {
+                    enrollment = new EnrollmentModel()
+                    {
+                        EnrollmentId = reader.GetInt16(reader.GetOrdinal("EnrollmentId")),
+                        UserId = reader.GetInt16(reader.GetOrdinal("UserId")),
+                        TrainingId = reader.GetInt16(reader.GetOrdinal("TrainingId")),
+                        EnrollmentDate = reader.GetDateTime(reader.GetOrdinal("EnrollmentDate")),
+                        EnrollmentStatus = reader.GetString(reader.GetOrdinal("EnrollmentStatus"))
+                    };
+                    enrollmentsList.Add(enrollment);
+                }
+            }
+            return enrollmentsList;
         }
     }
 }
