@@ -1,12 +1,7 @@
 ﻿using FinalSkillsLabProject.Common.Enums;
 using FinalSkillsLabProject.DAL.Interfaces;
-using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using FinalSkillsLabProject.Common.Models;
 using FinalSkillsLabProject.DAL.Common;
 

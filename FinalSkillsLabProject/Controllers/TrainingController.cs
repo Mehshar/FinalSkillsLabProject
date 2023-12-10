@@ -1,11 +1,9 @@
 ﻿using FinalSkillsLabProject.Authorization;
 using FinalSkillsLabProject.BL.Interfaces;
 using FinalSkillsLabProject.Common.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
 
 namespace FinalSkillsLabProject.Controllers
@@ -40,7 +38,6 @@ namespace FinalSkillsLabProject.Controllers
         }
 
         [HttpPost]
-        //[ValidateAntiForgeryToken]
         [CustomAuthorization("Admin")]
         public JsonResult Create(TrainingModel training, List<int> prerequisitesList)
         {
@@ -67,7 +64,6 @@ namespace FinalSkillsLabProject.Controllers
         }
 
         [HttpPost]
-        //[ValidateAntiForgeryToken]
         [CustomAuthorization("Admin")]
         public JsonResult SaveEdit(TrainingModel training)
         {

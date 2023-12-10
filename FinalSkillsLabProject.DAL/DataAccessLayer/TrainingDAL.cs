@@ -4,10 +4,6 @@ using FinalSkillsLabProject.DAL.Common;
 using FinalSkillsLabProject.Common.Models;
 using FinalSkillsLabProject.DAL.Interfaces;
 using System.Data.SqlClient;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FinalSkillsLabProject.DAL.DataAccessLayer
 {

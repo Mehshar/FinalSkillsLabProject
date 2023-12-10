@@ -19,81 +19,73 @@
     <script type="text/javascript" src="~/Scripts/UpdateTrainingScript.js"></script>
 </head>
 <body>
-    @using (Html.BeginForm())
-    {
-        <form name="editTrainingForm" id="editTrainingForm">
-            @Html.AntiForgeryToken()
+    <form name="editTrainingForm" id="editTrainingForm">
+        @Html.AntiForgeryToken()
 
-            <div class="form-horizontal">
-                <h4>Training</h4>
-                <hr />
-                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                <div class="form-group py-3 visually-hidden">
-                    <label for="trainingId" class="control-label col-md-2 pb-2">Training Id</label>
-                    <div class="col-md-10">
-                        <input type="number" name="trainingId" id="trainingId" class="form-control" value="@Model.TrainingId" readonly />
-                        @Html.ValidationMessageFor(model => model.TrainingId, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-
-                <div class="form-group py-3">
-                    <label for="trainingName" class="control-label col-md-2 pb-2">Training Name</label>
-                    <div class="col-md-10">
-                        <input type="text" name="trainingName" id="trainingName" class="form-control" value="@Model.TrainingName" required />
-                        @Html.ValidationMessageFor(model => model.TrainingName, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-
-                <div class="form-group py-3">
-                    <div class="col-md-10">
-                        <label for="description" class="form-label pb-2">Description</label>
-                        <textarea class="form-control" id="description" rows="7" required>@Model.Description</textarea>
-                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-
-                <div class="form-group py-3">
-                    <label for="deadline" class="control-label col-md-2 pb-2">Deadline</label>
-                    <div class="col-md-10">
-                        @{
-                            DateTime deadlineValue = Model.Deadline;
-                            string formattedDeadline = deadlineValue.ToString("yyyy-MM-ddTHH:mm");
-                            string minDate = DateTime.Now.ToString("yyyy-MM-ddTHH:mm");
-                        }
-                        <input type="datetime-local" name="deadline" id="deadline" class="form-control" value="@formattedDeadline" min="@minDate" required />
-                        @Html.ValidationMessageFor(model => model.Deadline, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-
-                <div class="form-group py-3">
-                    <label for="capacity" class="control-label col-md-2 pb-2">Capacity</label>
-                    <div class="col-md-10">
-                        <input type="number" name="capacity" id="capacity" class="form-control" value="@Model.Capacity" min="1" required />
-                        @Html.ValidationMessageFor(model => model.Capacity, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-
-                <div class="form-group pt-3">
-                    <label for="priorityDepartmentName" class="control-label col-md-2 pb-2">Priority Department</label>
-                </div>
-
-                <select class="form-select mb-3" id="departmentDropdown" required>
-                    <option value="-1">None</option>
-                    <option value="@Model.PriorityDepartment" selected>@Model.PriorityDepartmentName</option>
-                    @foreach (var department in ViewBag.Departments)
-                    {
-                        <option value="@department.DepartmentId">@department.DepartmentName</option>
-                    }
-                </select>
-
-                <div class="form-group py-3">
-                    <div class="col-md-offset-2 col-md-10">
-                        <input type="submit" value="Save" id="btnSubmit" class="btn btn-primary" />
-                    </div>
+        <div class="form-horizontal">
+            <h4>Training</h4>
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group py-3 visually-hidden">
+                <label for="trainingId" class="control-label col-md-2 pb-2">Training Id</label>
+                <div class="col-md-10">
+                    <input type="number" name="trainingId" id="trainingId" class="form-control" value="@Model.TrainingId" readonly />
                 </div>
             </div>
-        </form>
-    }
+
+            <div class="form-group py-3">
+                <label for="trainingName" class="control-label col-md-2 pb-2">Training Name</label>
+                <div class="col-md-10">
+                    <input type="text" name="trainingName" id="trainingName" class="form-control" value="@Model.TrainingName" required />
+                </div>
+            </div>
+
+            <div class="form-group py-3">
+                <div class="col-md-10">
+                    <label for="description" class="form-label pb-2">Description</label>
+                    <textarea class="form-control" id="description" rows="7" required>@Model.Description</textarea>
+                </div>
+            </div>
+
+            <div class="form-group py-3">
+                <label for="deadline" class="control-label col-md-2 pb-2">Deadline</label>
+                <div class="col-md-10">
+                    @{
+                        DateTime deadlineValue = Model.Deadline;
+                        string formattedDeadline = deadlineValue.ToString("yyyy-MM-ddTHH:mm");
+                        string minDate = DateTime.Now.ToString("yyyy-MM-ddTHH:mm");
+                    }
+                    <input type="datetime-local" name="deadline" id="deadline" class="form-control" value="@formattedDeadline" min="@minDate" required />
+                </div>
+            </div>
+
+            <div class="form-group py-3">
+                <label for="capacity" class="control-label col-md-2 pb-2">Capacity</label>
+                <div class="col-md-10">
+                    <input type="number" name="capacity" id="capacity" class="form-control" value="@Model.Capacity" min="1" required />
+                </div>
+            </div>
+
+            <div class="form-group pt-3">
+                <label for="priorityDepartmentName" class="control-label col-md-2 pb-2">Priority Department</label>
+            </div>
+
+            <select class="form-select mb-3" id="departmentDropdown" required>
+                <option value="-1">None</option>
+                <option value="@Model.PriorityDepartment" selected>@Model.PriorityDepartmentName</option>
+                @foreach (var department in ViewBag.Departments)
+                {
+                    <option value="@department.DepartmentId">@department.DepartmentName</option>
+                }
+            </select>
+
+            <div class="form-group py-3">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Save" id="btnSubmit" class="btn btn-primary" />
+                </div>
+            </div>
+        </div>
+    </form>
 
     <div>
         @Html.ActionLink("Back to List", "Index", "Training")
