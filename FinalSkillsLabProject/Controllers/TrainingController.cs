@@ -47,8 +47,9 @@ namespace FinalSkillsLabProject.Controllers
 
         public ActionResult Details(int? id)
         {
-            if (id == null) { return new HttpStatusCodeResult(HttpStatusCode.BadRequest); }
+            if (id == null) { return View("Error404"); }
             TrainingModel training = _trainingBL.Get((int)id);
+            if (training == null) { return View("Error404"); }
             ViewBag.Prerequisites = _prerequisiteBL.GetAllByTraining((int)id).ToList();
             return View(training);
         }
@@ -57,8 +58,9 @@ namespace FinalSkillsLabProject.Controllers
         [CustomAuthorization("Admin")]
         public ActionResult Edit(int? id)
         {
-            if (id == null) { return new HttpStatusCodeResult(HttpStatusCode.BadRequest); }
+            if (id == null) { return View("Error404"); }
             TrainingModel training = _trainingBL.Get((int)id);
+            if (training == null) { return View("Error404"); }
             ViewBag.Departments = _departmentBL.GetAll().Where(x => x.DepartmentId != training.PriorityDepartment).ToList();
             return View(training);
         }

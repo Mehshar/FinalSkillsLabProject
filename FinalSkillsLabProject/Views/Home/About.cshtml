@@ -1,9 +1,18 @@
 ﻿@{
     ViewBag.Title = "About";
 }
-<main aria-labelledby="title">
-    <h2 id="title">@ViewBag.Title.</h2>
-    <h3>@ViewBag.Message</h3>
 
-    <p>Use this area to provide additional information.</p>
-</main>
+<head>
+    <link rel="stylesheet" href="~/Content/AboutStyle.css" />
+</head>
+
+<body>
+    <div class="container h-100">
+        <div class="content-container d-flex flex-column justify-content-center align-items-center">
+            <h2 id="title">@ViewBag.Title.</h2>
+            <h3>@ViewBag.Message</h3>
+
+            <p>Use this area to provide additional information.</p>
+        </div>
+    </div>
+</body>

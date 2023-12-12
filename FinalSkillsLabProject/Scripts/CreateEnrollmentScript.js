@@ -36,10 +36,6 @@
         $('#loadingBackdrop').removeClass('d-none');
 
         var formData = new FormData($(this)[0]);
-        console.log(formData);
-        for (var pair of formData.entries()) {
-            console.log(pair[0] + ', ' + pair[1]);
-        }
 
         $.ajax({
             url: $(this).attr('action'),

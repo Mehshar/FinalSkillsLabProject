@@ -11,6 +11,10 @@ body {
     height: 100vh;
 }
 
+.content-container {
+    height: calc(100vh - 140px);
+}
+
 #title-text {
     color: white;
     padding: 30px;
@@ -36,7 +40,8 @@ body {
 }
 
 #signUpText {
-    color: rgb(233, 148, 184);
+    /*color: rgb(233, 148, 184);*/
+    color: #8f528b;
 }
 
 .input-field {

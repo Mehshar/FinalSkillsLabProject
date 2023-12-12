@@ -4,6 +4,10 @@
     ViewBag.Title = "Training Details";
 }
 
+<head>
+    <script type="text/javascript" src="~/Scripts/DisplayByRoleScript.js"></script>
+</head>
+
 <div>
     <h4>Training Details</h4>
     <hr />
@@ -28,20 +32,26 @@
             <dd>@Model.Capacity</dd>
         </div>
 
-        <div class="py-3">
-            <dt class="mb-2">Priority Department</dt>
-            <dd>@Model.PriorityDepartmentName</dd>
-        </div>
-    </dl>
-    <p class="fw-bold">Prerequisites</p>
-    <ul class="list-group mb-4 list-group-numbered">
-        @foreach (var prerequisite in ViewBag.Prerequisites)
+        @if (Model.PriorityDepartmentName != null)
         {
-            <li class="list-group-item" id="@prerequisite.PrerequisiteId">@prerequisite.Description</li>
+            <div class="py-3">
+                <dt class="mb-2">Priority Department</dt>
+                <dd>@Model.PriorityDepartmentName</dd>
+            </div>
         }
-    </ul>
+    </dl>
+    @if (ViewBag.Prerequisites.Count != 0)
+    {
+        <p class="fw-bold">Prerequisites</p>
+        <ul class="list-group mb-4 list-group-numbered">
+            @foreach (var prerequisite in ViewBag.Prerequisites)
+            {
+                <li class="list-group-item" id="@prerequisite.PrerequisiteId">@prerequisite.Description</li>
+            }
+        </ul>
+    }
 </div>
 <p>
-    @Html.ActionLink("Edit", "Edit", "Training", new { id = Model.TrainingId }, null) |
-    @Html.ActionLink("Back to List", "Index", "Training")
+    @Html.ActionLink("Edit", "Edit", "Training", new { id = Model.TrainingId }, new { @class = "btn btn-primary me-3 border-0 btnEdit d-none" })
+    @Html.ActionLink("Back to List", "Index", "Training", null, new { @class = "btn btn-primary border-0" })
 </p>

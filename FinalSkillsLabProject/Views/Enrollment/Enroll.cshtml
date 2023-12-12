@@ -57,7 +57,6 @@
                 </div>
             </div>
 
-
             <div class="form-group py-3">
                 <label for="priorityDepartment" class="control-label col-md-2 pb-2">Priority Department</label>
                 <div class="col-md-10">
@@ -71,32 +70,34 @@
                     <input type="number" name="capacity" id="capacity" class="form-control" value="@Model.Capacity" readonly />
                 </div>
             </div>
-            <div class="form-group pt-3">
-                <label for="prerequisites" class="control-label col-md-2 pb-2">Prerequisites</label>
-            </div>
-            <ul class="list-group mb-4">
-                @foreach (var prerequisite in ViewBag.Prerequisites)
-                {
-                    <li class="list-group-item" id="@prerequisite.PrerequisiteId">
-                        <label for="@prerequisite.PrerequisiteId" class="form-label">@prerequisite.Description</label>
-                        <input class="form-control" type="file" id="@prerequisite.PrerequisiteId" name="files[@count]" required>
-                        <input type="hidden" name="prerequisiteIds[@count]" value="@prerequisite.PrerequisiteId" />
-                    </li>
-                    count++;
-                }
-            </ul>
+
+            @if (ViewBag.Prerequisites.Count > 0)
+            {
+                <div class="form-group pt-3">
+                    <label for="prerequisites" class="control-label col-md-2 pb-2">Prerequisites</label>
+                </div>
+                <ul class="list-group mb-4">
+                    @foreach (var prerequisite in ViewBag.Prerequisites)
+                    {
+                        <li class="list-group-item" id="@prerequisite.PrerequisiteId">
+                            <label for="@prerequisite.PrerequisiteId" class="form-label">@prerequisite.Description</label>
+                            <input class="form-control" type="file" id="@prerequisite.PrerequisiteId" name="files[@count]" required>
+                            <input type="hidden" name="prerequisiteIds[@count]" value="@prerequisite.PrerequisiteId" />
+                        </li>
+                        count++;
+                    }
+                </ul>
+            }
+
             <div class="form-group">
-                <div class="col-md-offset-2 col-md-10 py-3">
+                <div class="col-md-offset-2 col-md-10 pt-3 pb-4">
                     <input type="submit" value="Enroll" id="btnSubmit" class="btn btn-primary" />
+                    @Html.ActionLink("Back to List", "Index", "Training", null, new { @class = "btn btn-primary ms-3 border-0" })
                 </div>
             </div>
         </div>
 
     }
-
-    <div>
-        @Html.ActionLink("Back to List", "Index", "Training")
-    </div>
 
     <div class="sk-chase d-none" id="loadingSpinner">
         <div class="sk-chase-dot"></div>

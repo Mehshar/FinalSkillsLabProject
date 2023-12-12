@@ -287,6 +287,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\AboutStyle.css" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
     <Content Include="Content\bootstrap-grid.rtl.css" />
@@ -305,9 +306,13 @@
     <Content Include="Content\bootstrap.rtl.min.css" />
     <Content Include="Content\ClickableRowStyle.css" />
     <Content Include="Content\CommonStyle.css" />
+    <Content Include="Content\ContactStyle.css" />
+    <Content Include="Content\Error404Style.css" />
     <Content Include="Content\font-awesome.css" />
     <Content Include="Content\font-awesome.min.css" />
     <Content Include="Content\HomeStyle.css" />
+    <Content Include="Content\Images\login-image.png" />
+    <Content Include="Content\Images\error-404.png" />
     <Content Include="Content\Images\Home_1_Colored.png" />
     <Content Include="Content\Images\wave_1.svg" />
     <Content Include="Content\LoadingElementStyle.css" />
@@ -377,6 +382,7 @@
     <Content Include="Views\Training\Details.cshtml" />
     <Content Include="Views\Common\DenyAccess.cshtml" />
     <Content Include="Views\Enrollment\Enroll.cshtml" />
+    <Content Include="Views\Shared\Error404.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

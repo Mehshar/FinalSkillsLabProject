@@ -36,8 +36,9 @@ namespace FinalSkillsLabProject.Controllers
         [HttpGet]
         public ActionResult Enroll(int? id)
         {
-            if (id == null) { return new HttpStatusCodeResult(HttpStatusCode.BadRequest); }
+            if (id == null) { return View("Error404"); }
             TrainingModel training = _trainingBL.Get((int)id);
+            if (training == null) { return View("Error404"); }
             ViewBag.Prerequisites = _prerequisiteBL.GetAllByTraining((int)id);
             return View(training);
         }
