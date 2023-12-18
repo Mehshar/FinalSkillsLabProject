@@ -81,13 +81,13 @@ hr {
     text-align: center;
 }
 
-.btnEdit, .btnEnroll {
+.btnEdit, .btnEnroll, .btnEmployeeEnrollments {
     border: 1px solid rgba(199,179,215,255) !important;
     font-weight: 500 !important;
 }
 
 
-    .btnEdit:hover, .btnEnroll:hover {
+    .btnEdit:hover, .btnEnroll:hover, .btnEmployeeEnrollments:hover {
         background-image: linear-gradient(to left, rgba(238, 174, 202, 1) 6%, rgba(148, 187, 233, 1) 100%);
         border: none !important;
         color: white !important;
