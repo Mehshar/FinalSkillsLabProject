@@ -19,9 +19,9 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
             return this._enrollmentDAL.Add(enrollment, prerequisiteMaterialsList);
         }
 
-        public bool Update(EnrollmentModel enrollment)
+        public bool Update(int enrollmentId, bool isApproved, string declineReason)
         {
-            return this._enrollmentDAL.Update(enrollment);
+            return this._enrollmentDAL.Update(enrollmentId, isApproved, declineReason);
         }
 
         public EnrollmentModel Get(int userId, int trainingId)
@@ -34,9 +34,29 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
             return this._enrollmentDAL.GetAll();
         }
 
-        public IEnumerable<EnrollmentModel> GetAllByManager(string manager)
+        public IEnumerable<EnrollmentViewModel> GetAllByManagerTraining(int managerId, int trainingId)
         {
-            return this._enrollmentDAL.GetAllByManager(manager);
+            return this._enrollmentDAL.GetAllByManagerTraining(managerId, trainingId);
+        }
+
+        public IEnumerable<EnrollmentViewModel> GetAllByManager(int managerId)
+        {
+            return this._enrollmentDAL.GetAllByManager(managerId);
+        }
+
+        public IEnumerable<PrerequisiteMaterialViewModel> GetPrerequisiteMaterialsByEnrollment(int enrollmentId)
+        {
+            return this._enrollmentDAL.GetPrerequisiteMaterialsByEnrollment(enrollmentId);
+        }
+
+        public UserEnrollmentViewModel GetUserByEnrollment(int enrollmentId)
+        {
+            return this._enrollmentDAL.GetUserByEnrollment(enrollmentId);
+        }
+
+        public string GetDeclineReasonByEnrollment(int enrollmentId)
+        {
+            return this._enrollmentDAL.GetDeclineReasonByEnrollment(enrollmentId);
         }
     }
 }

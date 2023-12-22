@@ -52,6 +52,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Console, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Console.4.3.0\lib\net46\System.Console.dll</HintPath>
       <Private>True</Private>
@@ -185,12 +186,14 @@
   <ItemGroup>
     <Compile Include="BusinessLogicLayer\AccountBL.cs" />
     <Compile Include="BusinessLogicLayer\DepartmentBL.cs" />
+    <Compile Include="BusinessLogicLayer\EmailNotificationBL.cs" />
     <Compile Include="BusinessLogicLayer\EnrollmentBL.cs" />
     <Compile Include="BusinessLogicLayer\PrerequisiteBL.cs" />
     <Compile Include="BusinessLogicLayer\TrainingBL.cs" />
     <Compile Include="BusinessLogicLayer\UserBL.cs" />
     <Compile Include="Interfaces\IAccountBL.cs" />
     <Compile Include="Interfaces\IDepartmentBL.cs" />
+    <Compile Include="Interfaces\IEmailNotificationBL.cs" />
     <Compile Include="Interfaces\IEnrollmentBL.cs" />
     <Compile Include="Interfaces\IPrerequisiteBL.cs" />
     <Compile Include="Interfaces\ITrainingBL.cs" />

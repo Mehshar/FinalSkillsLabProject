@@ -1,0 +1,24 @@
+﻿.header {
+    border: 2px solid;
+    border-image: radial-gradient(circle, rgba(238, 174, 202, 1) 6%, rgba(148, 187, 233, 1) 100%);
+    border-image-slice: 1;
+    font-weight: 600;
+}
+
+.header-text {
+    padding: 1rem 1.95rem !important;
+    display: flex;
+}
+
+.accordion-text {
+    padding: 1rem 1.75rem !important;
+    display: flex;
+}
+
+.collapsed, .accordion-button {
+    padding: 0 1.25rem 0 0 !important;
+}
+
+.badge {
+    margin: 0 1rem !important;
+}

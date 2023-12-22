@@ -64,28 +64,40 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             return false;
         }
 
-        public bool Update(EnrollmentModel enrollment)
+        public bool Update(int enrollmentId, bool isApproved, string declineReason)
         {
-            //List<SqlParameter> parameters = new List<SqlParameter>();
+            List<SqlParameter> parameters;
+            string UpdateQuery;
 
-            //parameters.Add(new SqlParameter("@EnrollmentStatus", enrollment.EnrollmentStatus));
-            //parameters.Add(new SqlParameter("@PrerequisiteMaterial", enrollment.PrerequisiteMaterial));
-            //parameters.Add(new SqlParameter("@UserId", enrollment.UserId));
-            //parameters.Add(new SqlParameter("@TrainingId", enrollment.TrainingId));
-            //parameters.Add(new SqlParameter("@DeclineReason", enrollment.DeclineReason));
+            if (isApproved)
+            {
+                UpdateQuery = @"UPDATE [dbo].[Enrollment]
+                                SET [EnrollmentStatus] = @EnrollmentStatus,
+	                                [DeclineReason] = DEFAULT
+                                WHERE [EnrollmentId] = @EnrollmentId;";
 
-            //const string UpdateEnrollmentQuery =
-            //  @"UPDATE [dbo].[Enrollment]
-            //    SET [EnrollmentStatus] = @EnrollmentStatus,
-            //     [PrerequisiteMaterial] = @PrerequisiteMaterial,
-            //        [DeclineReason] = @DeclineReason
-            //    WHERE [UserId] = @UserId AND [TrainingId] = @TrainingId;";
+                parameters = new List<SqlParameter>()
+                {
+                    new SqlParameter("@EnrollmentStatus", EnrollmentStatusEnum.Approved.ToString()),
+                    new SqlParameter("@EnrollmentId", enrollmentId)
+                };
+            }
+            else
+            {
+                UpdateQuery = @"UPDATE [dbo].[Enrollment]
+                                SET [EnrollmentStatus] = @EnrollmentStatus,
+	                                [DeclineReason] = @DeclineReason
+                                WHERE [EnrollmentId] = @EnrollmentId;";
 
-            //return DbCommand.InsertUpdateData(UpdateEnrollmentQuery, parameters) > 0;
-            throw new NotImplementedException();
+                parameters = new List<SqlParameter>()
+                {
+                    new SqlParameter("@EnrollmentStatus", EnrollmentStatusEnum.Declined.ToString()),
+                    new SqlParameter("@DeclineReason", declineReason),
+                    new SqlParameter("@EnrollmentId", enrollmentId)
+                };
+            }
+            return DbCommand.InsertUpdateData(UpdateQuery, parameters) > 0;
         }
-
-        //public bool Delete(int userId, int trainingId) { }
 
         public EnrollmentModel Get(int userId, int trainingId)
         {
@@ -94,7 +106,8 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             { new SqlParameter("@UserId", userId) , new SqlParameter("@TrainingId", trainingId) };
 
             const string GetEnrollmentQuery =
-              @"SELECT *
+                @"
+                SELECT *
                 FROM [dbo].[Enrollment]
                 WHERE [UserId] = @UserId AND [TrainingId] = @TrainingId;";
 
@@ -144,36 +157,181 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             return enrollmentsList;
         }
 
-        public IEnumerable<EnrollmentModel> GetAllByManager(string manager)
+        public IEnumerable<EnrollmentViewModel> GetAllByManagerTraining(int managerId, int trainingId)
         {
-            EnrollmentModel enrollment;
-            List<EnrollmentModel> enrollmentsList = new List<EnrollmentModel>();
+            EnrollmentViewModel enrollment;
+            List<EnrollmentViewModel> enrollmentsList = new List<EnrollmentViewModel>();
 
-            List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter("@Manager", manager) };
+            List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter("@ManagerId", managerId), new SqlParameter("@TrainingId", trainingId) };
 
-            const string GetEnrollmentsByManager =
-              @"SELECT en.*
+            const string GetEnrollmentsByTrainingManager =
+                @"
+                SELECT en.[EnrollmentId], euser.[UserId], euser.[FirstName], euser.[LastName], euser.[Email], en.[EnrollmentDate], t.[TrainingId], t.[TrainingName], t.[PriorityDepartment], dept.[DepartmentName] AS [PriorityDepartmentName], t.[Capacity]
                 FROM [dbo].[Enrollment] AS en
+                INNER JOIN [dbo].[Training] AS t
+                ON en.[TrainingId] = t.[TrainingId]
+                INNER JOIN [dbo].[Department] as dept
+                ON t.[PriorityDepartment] = dept.[DepartmentId]
                 INNER JOIN [dbo].[EndUser] AS euser
                 ON en.[UserId] = euser.[UserId]
-                WHERE euser.[Manager] = @Manager;";
+                INNER JOIN [dbo].[Department] AS d
+                ON euser.[DepartmentId] = d.[DepartmentId]
+                WHERE euser.ManagerId = @ManagerId and t.TrainingId = @TrainingId;";
 
-            using (SqlDataReader reader = DbCommand.GetDataWithConditions(GetEnrollmentsByManager, parameters))
+            using (SqlDataReader reader = DbCommand.GetDataWithConditions(GetEnrollmentsByTrainingManager, parameters))
             {
                 while (reader.Read())
                 {
-                    enrollment = new EnrollmentModel()
+                    enrollment = new EnrollmentViewModel()
                     {
                         EnrollmentId = reader.GetInt16(reader.GetOrdinal("EnrollmentId")),
-                        UserId = reader.GetInt16(reader.GetOrdinal("UserId")),
-                        TrainingId = reader.GetInt16(reader.GetOrdinal("TrainingId")),
+                        EmployeeId = reader.GetInt16(reader.GetOrdinal("UserId")),
+                        FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                        LastName = reader.GetString(reader.GetOrdinal("LastName")),
+                        Email = reader.GetString(reader.GetOrdinal("Email")),
                         EnrollmentDate = reader.GetDateTime(reader.GetOrdinal("EnrollmentDate")),
-                        EnrollmentStatus = reader.GetString(reader.GetOrdinal("EnrollmentStatus"))
+                        TrainingName = reader.GetString(reader.GetOrdinal("TrainingName")),
+                        TrainingId = trainingId,
+                        PriorityDepartmentName = reader.GetString(reader.GetOrdinal("PriorityDepartmentName")),
+                        Capacity = reader.GetInt16(reader.GetOrdinal("Capacity"))
                     };
                     enrollmentsList.Add(enrollment);
                 }
             }
             return enrollmentsList;
+        }
+
+        public IEnumerable<EnrollmentViewModel> GetAllByManager(int managerId)
+        {
+            EnrollmentViewModel enrollment = null;
+            List<EnrollmentViewModel> enrollmentsList = new List<EnrollmentViewModel>();
+
+            const string GetEnrollmentsByManager =
+                @"
+                SELECT en.[EnrollmentId], en.[EnrollmentStatus], euser.[UserId], euser.[FirstName], euser.[LastName], euser.[Email], d.[DepartmentName], en.[EnrollmentDate], t.[TrainingId], t.[TrainingName], t.[PriorityDepartment], dept.[DepartmentName] AS [PriorityDepartmentName], t.[Capacity]
+                FROM [dbo].[Enrollment] AS en
+                INNER JOIN [dbo].[Training] AS t
+                ON en.[TrainingId] = t.[TrainingId]
+                INNER JOIN [dbo].[Department] as dept
+                ON t.[PriorityDepartment] = dept.[DepartmentId]
+                INNER JOIN [dbo].[EndUser] AS euser
+                ON en.[UserId] = euser.[UserId]
+                INNER JOIN [dbo].[Department] AS d
+                ON euser.[DepartmentId] = d.[DepartmentId]
+                WHERE euser.ManagerId = @ManagerId;";
+
+            List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter("@ManagerId", managerId) };
+
+            using (SqlDataReader reader = DbCommand.GetDataWithConditions(GetEnrollmentsByManager, parameters))
+            {
+                while (reader.Read())
+                {
+                    enrollment = new EnrollmentViewModel()
+                    {
+                        EnrollmentId = reader.GetInt16(reader.GetOrdinal("EnrollmentId")),
+                        EnrollmentStatus = reader.GetString(reader.GetOrdinal("EnrollmentStatus")),
+                        EmployeeId = reader.GetInt16(reader.GetOrdinal("UserId")),
+                        FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                        LastName = reader.GetString(reader.GetOrdinal("LastName")),
+                        Email = reader.GetString(reader.GetOrdinal("Email")),
+                        EmployeeDepartment = reader.GetString(reader.GetOrdinal("DepartmentName")),
+                        EnrollmentDate = reader.GetDateTime(reader.GetOrdinal("EnrollmentDate")),
+                        TrainingName = reader.GetString(reader.GetOrdinal("TrainingName")),
+                        TrainingId = reader.GetInt16(reader.GetOrdinal("TrainingId")),
+                        PriorityDepartmentName = reader.GetString(reader.GetOrdinal("PriorityDepartmentName")),
+                        Capacity = reader.GetInt16(reader.GetOrdinal("Capacity"))
+                    };
+                    enrollmentsList.Add(enrollment);
+                }
+            }
+            return enrollmentsList;
+        }
+
+        public IEnumerable<PrerequisiteMaterialViewModel> GetPrerequisiteMaterialsByEnrollment(int enrollmentId)
+        {
+            PrerequisiteMaterialViewModel prerequisiteMaterial = null;
+            List<PrerequisiteMaterialViewModel> prerequisiteMaterialsList = new List<PrerequisiteMaterialViewModel>();
+
+            const string GetPrerequisiteMaterialsByEnrollment =
+                @"SELECT pm.*, p.[Description], e.[EnrollmentStatus]
+                FROM [dbo].[PrerequisiteMaterial] AS pm
+                INNER JOIN [dbo].[Prerequisite] AS p
+                ON pm.[PrerequisiteId] = p.[PrerequisiteId]
+                INNER JOIN [dbo].[Enrollment] AS e
+                ON pm.[EnrollmentId] = e.EnrollmentId
+                WHERE pm.[EnrollmentId] = @EnrollmentId";
+
+            List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter("@EnrollmentId", enrollmentId) };
+
+            using (SqlDataReader reader = DbCommand.GetDataWithConditions(GetPrerequisiteMaterialsByEnrollment, parameters))
+            {
+                while (reader.Read())
+                {
+                    prerequisiteMaterial = new PrerequisiteMaterialViewModel()
+                    {
+                        PrerequisiteMaterialId = reader.GetInt16(reader.GetOrdinal("PrerequisiteMaterialId")),
+                        EnrollmentId = reader.GetInt16(reader.GetOrdinal("EnrollmentId")),
+                        PrerequisiteId = reader.GetInt16(reader.GetOrdinal("PrerequisiteId")),
+                        Description = reader.GetString(reader.GetOrdinal("Description")),
+                        PrerequisiteMaterialURL = reader.GetString(reader.GetOrdinal("URL")),
+                        EnrollmentStatus = reader.GetString(reader.GetOrdinal("EnrollmentStatus"))
+                    };
+                    prerequisiteMaterialsList.Add(prerequisiteMaterial);
+                }
+            }
+            return prerequisiteMaterialsList;
+        }
+
+        public UserEnrollmentViewModel GetUserByEnrollment(int enrollmentId)
+        {
+            const string GetUserByEnrollment =
+                @"SELECT euser.[Email], a.[Username], t.[TrainingName]
+                FROM [dbo].[Enrollment] AS e
+                INNER JOIN [dbo].[Training] AS t
+                ON e.[TrainingId] = t.[TrainingId]
+                INNER JOIN [dbo].[EndUser] AS euser
+                ON e.[UserId] = euser.[UserId]
+                INNER JOIN [dbo].[Account] AS a
+                ON e.[UserId] = a.[UserId]
+                WHERE e.[EnrollmentId] = @EnrollmentId;";
+
+            UserEnrollmentViewModel user = null;
+            List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter("@EnrollmentId", enrollmentId) };
+
+            using (SqlDataReader reader = DbCommand.GetDataWithConditions(GetUserByEnrollment, parameters))
+            {
+                while (reader.Read())
+                {
+                    user = new UserEnrollmentViewModel()
+                    {
+                        Email = reader.GetString(reader.GetOrdinal("Email")),
+                        Username = reader.GetString(reader.GetOrdinal("Username")),
+                        TrainingName = reader.GetString(reader.GetOrdinal("TrainingName"))
+                    };
+                }
+            }
+            return user;
+        }
+
+        public string GetDeclineReasonByEnrollment(int enrollmentId)
+        {
+            string declineReason = null;
+
+            const string GetDeclineReasonByEnrollment =
+                @"SELECT [DeclineReason]
+                FROM [dbo].[Enrollment]
+                WHERE [EnrollmentId] = @EnrollmentId";
+
+            List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter("@EnrollmentId", enrollmentId) };
+
+            using (SqlDataReader reader = DbCommand.GetDataWithConditions(GetDeclineReasonByEnrollment, parameters))
+            {
+                if (reader.Read())
+                {
+                    declineReason = reader.GetString(reader.GetOrdinal("DeclineReason"));
+                }
+            }
+            return declineReason;
         }
     }
 }

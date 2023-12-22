@@ -30,16 +30,17 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             }
         }
 
-        public LoginModel GetByUsername(string username)
+        public UserViewModel GetByUsername(string username)
         {
-            LoginModel user = null;
+            UserViewModel user = null;
             List<SqlParameter> parameters = new List<SqlParameter>()
             {
                 new SqlParameter("@Username", username)
             };
 
             const string GetUserByUsernameQuery =
-              @"SELECT euser.[UserId], euser.[RoleId], acc.[Username]
+                @" 
+                SELECT euser.[UserId], euser.[RoleId], euser.[FirstName], euser.[LastName], [euser].[Email], acc.[Username]
                 FROM [dbo].[EndUser] euser WITH(NOLOCK)
                 INNER JOIN [dbo].[Account] acc WITH(NOLOCK) ON euser.[UserId] = acc.[UserId]
                 INNER JOIN [dbo].[Role] r WITH(NOLOCK) ON euser.[RoleId] = r.[RoleId]
@@ -49,7 +50,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             {
                 if (reader.Read())
                 {
-                    user = new LoginModel()
+                    user = new UserViewModel()
                     {
                         UserId = reader.GetInt16(reader.GetOrdinal("UserId")),
                         Username = reader.GetString(reader.GetOrdinal("Username")),
@@ -57,7 +58,10 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                         {
                             RoleId = reader.GetInt16(reader.GetOrdinal("RoleId")),
                             RoleName = (RoleEnum)reader.GetInt16(reader.GetOrdinal("RoleId"))
-                        }
+                        },
+                        FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                        LastName = reader.GetString(reader.GetOrdinal("LastName")),
+                        Email = reader.GetString(reader.GetOrdinal("Email"))
                     };
                 }
             }

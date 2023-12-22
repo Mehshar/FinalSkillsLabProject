@@ -20,7 +20,7 @@ namespace FinalSkillsLabProject.BL
         {
             return this._accountDAL.AuthenticateUser(model);
         }
-        public LoginModel GetByUsername(string username)
+        public UserViewModel GetByUsername(string username)
         {
             return this._accountDAL.GetByUsername(username);
         }

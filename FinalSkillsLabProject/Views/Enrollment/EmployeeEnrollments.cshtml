@@ -1,0 +1,87 @@
+﻿@model List<FinalSkillsLabProject.Common.Models.EnrollmentViewModel>
+
+@{
+    ViewBag.Title = "Employee Enrollments";
+}
+
+@section ExcludeBodyContent {
+    <head>
+        <link rel="stylesheet" href="~/Content/AccordionStyle.css" />
+        <script type="text/javascript" src="~/Scripts/GetPrerequisiteMaterialsScript.js"></script>
+    </head>
+
+    <div class="mx-5 mt-5 header">
+        <div class="row">
+            <div class="col-2 header-text">
+                Employee
+            </div>
+
+            <div class="col-2 header-text">
+                Department
+            </div>
+
+            <div class="col-2 header-text">
+                Training
+            </div>
+
+            <div class="col-2 header-text">
+                Enrollment Date
+            </div>
+
+            <div class="col-2 header-text">
+                Priority Department
+            </div>
+        </div>
+    </div>
+
+    <div class="pt-4 p-5">
+        <div class="accordion" id="enrollmentAccordion">
+            @foreach (var enrollment in Model)
+            {
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="heading_@enrollment.EmployeeId@enrollment.TrainingId">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_@enrollment.EmployeeId@enrollment.TrainingId" aria-expanded="false" aria-controls="collapse_@enrollment.EmployeeId@enrollment.TrainingId" data-enrollment-id="@enrollment.EnrollmentId">
+                            <div class="col-2 accordion-text">
+                                @enrollment.FirstName @enrollment.LastName
+                            </div>
+
+                            <div class="col-2 accordion-text">
+                                @enrollment.EmployeeDepartment
+                            </div>
+
+                            <div class="col-2 accordion-text ms-1">
+                                @enrollment.TrainingName
+                            </div>
+
+                            <div class="col-2 accordion-text ms-3">
+                                @enrollment.EnrollmentDate.ToShortDateString()
+                            </div>
+
+                            <div class="col-2 accordion-text ms-1">
+                                @enrollment.PriorityDepartmentName
+                            </div>
+
+                            @if (enrollment.EnrollmentStatus == "Approved")
+                            {
+                                <span class="badge bg-success">@enrollment.EnrollmentStatus</span>
+                            }
+                            else if (enrollment.EnrollmentStatus == "Pending")
+                            {
+                                <span class="badge bg-warning text-dark">@enrollment.EnrollmentStatus</span>
+                            }
+                            else if (enrollment.EnrollmentStatus == "Declined")
+                            {
+                                <span class="badge bg-danger">@enrollment.EnrollmentStatus</span>
+                            }
+                        </button>
+                    </h2>
+
+                    <div id="collapse_@enrollment.EmployeeId@enrollment.TrainingId" class="accordion-collapse collapse" aria-labelledby="heading_@enrollment.EmployeeId@enrollment.TrainingId" data-bs-parent="#enrollmentAccordion">
+                        <div class="accordion-body" id="body_@enrollment.EnrollmentId">
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}

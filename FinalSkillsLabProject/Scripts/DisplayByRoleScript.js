@@ -2,7 +2,7 @@
     var btnCreateTraining = $("#btnCreateTraining");
     var btnEdit = $(".btnEdit");
     var btnEnroll = $(".btnEnroll");
-    var btnEmployeeEnrollments = $(".btnEmployeeEnrollments");
+    var enrollmentsNavLink = $("#enrollmentsNavLink");
 
     $.ajax({
         type: "GET",
@@ -20,8 +20,8 @@
                 btnEnroll.removeClass("d-none");
             }
 
-            if (btnEmployeeEnrollments.length && currentRole === "Manager") {
-                btnEmployeeEnrollments.removeClass("d-none");
+            if (enrollmentsNavLink.length && (currentRole === "Manager" || currentRole === "Admin")) {
+                enrollmentsNavLink.removeClass("d-none");
             }
         }
     });

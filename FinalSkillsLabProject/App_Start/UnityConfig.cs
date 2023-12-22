@@ -38,6 +38,8 @@ namespace FinalSkillsLabProject
             container.RegisterType<IUserBL, UserBL>();
             container.RegisterType<IUserDAL, UserDAL>();
 
+            container.RegisterType<IEmailNotificationBL, EmailNotificationBL>();
+
             DependencyResolver.SetResolver(new UnityDependencyResolver(container));
         }
     }

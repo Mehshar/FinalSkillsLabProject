@@ -288,6 +288,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\AboutStyle.css" />
+    <Content Include="Content\AccordionStyle.css" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
     <Content Include="Content\bootstrap-grid.rtl.css" />
@@ -342,6 +343,9 @@
     <Content Include="Scripts\ClickableRowScript.js" />
     <Content Include="Scripts\CreateEnrollmentScript.js" />
     <Content Include="Scripts\CreateTrainingScript.js" />
+    <Content Include="Scripts\EnrollmentApprovalScript.js" />
+    <Content Include="Scripts\EnrollmentRejectionScript.js" />
+    <Content Include="Scripts\GetPrerequisiteMaterialsScript.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
     <Content Include="Scripts\jquery-3.4.1.slim.js" />
@@ -354,6 +358,7 @@
     <Content Include="Scripts\LoginScript.js" />
     <Content Include="Scripts\ManagerDropdownScript.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\NewTabScript.js" />
     <Content Include="Scripts\PasswordVisibility.js" />
     <Content Include="Scripts\SignupScript.js" />
     <Content Include="Scripts\toastr.js" />
@@ -383,6 +388,8 @@
     <Content Include="Views\Common\DenyAccess.cshtml" />
     <Content Include="Views\Enrollment\Enroll.cshtml" />
     <Content Include="Views\Shared\Error404.cshtml" />
+    <Content Include="Views\Enrollment\EmployeeEnrollments.cshtml" />
+    <Content Include="Views\Enrollment\TrainingEnrollmentsMaterials.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -12,6 +12,7 @@ using System.Threading;
 using System.Web;
 using System.Web.Mvc;
 using System.Configuration;
+using FinalSkillsLabProject.Authorization;
 
 namespace FinalSkillsLabProject.Controllers
 {
@@ -25,12 +26,14 @@ namespace FinalSkillsLabProject.Controllers
         private readonly ITrainingBL _trainingBL;
         private readonly IPrerequisiteBL _prerequisiteBL;
         private readonly IEnrollmentBL _enrollmentBL;
+        private readonly IEmailNotificationBL _emailNotificationBL;
 
-        public EnrollmentController(ITrainingBL trainingBL, IPrerequisiteBL prerequisiteBL, IEnrollmentBL enrollmentBL)
+        public EnrollmentController(ITrainingBL trainingBL, IPrerequisiteBL prerequisiteBL, IEnrollmentBL enrollmentBL, IEmailNotificationBL emailNotificationBL)
         {
             _trainingBL = trainingBL;
             _prerequisiteBL = prerequisiteBL;
             _enrollmentBL = enrollmentBL;
+            _emailNotificationBL = emailNotificationBL;
         }
 
         [HttpGet]
@@ -123,6 +126,43 @@ namespace FinalSkillsLabProject.Controllers
             {
                 throw;
             }
+        }
+
+        [HttpGet]
+        [CustomAuthorization("Manager,Admin")]
+        public ActionResult EmployeeEnrollments()
+        {
+            List<EnrollmentViewModel> employeeEnrollmentsList = _enrollmentBL.GetAllByManager((int)Session["CurrentUserId"]).ToList();
+            return View(employeeEnrollmentsList);
+        }
+
+        [CustomAuthorization("Manager,Admin")]
+        public ActionResult TrainingEnrollmentsMaterials(int id)
+        {
+            List<PrerequisiteMaterialViewModel> prerequisiteMaterialsList = _enrollmentBL.GetPrerequisiteMaterialsByEnrollment(id).ToList();
+            return PartialView(prerequisiteMaterialsList);
+        }
+
+        [CustomAuthorization("Manager,Admin")]
+        public JsonResult ManageEnrollment(int enrollmentId, bool isApproved, string declineReason)
+        {
+            bool result = _enrollmentBL.Update(enrollmentId, isApproved, declineReason);
+            UserEnrollmentViewModel user = _enrollmentBL.GetUserByEnrollment(enrollmentId);
+            if (result)
+            {
+                UserViewModel requestHandler = (UserViewModel)Session["CurrentUser"];
+                string requestHandlerName = $"{requestHandler.FirstName} {requestHandler.LastName}";
+                _emailNotificationBL.SendEmail(isApproved, user.Email, user.Username, user.TrainingName, requestHandlerName, requestHandler.Role.RoleName.ToString().ToLower(), requestHandler.Email, declineReason);
+            }
+            return Json(new { result = result });
+        }
+
+        [HttpGet]
+        [CustomAuthorization("Manager,Admin")]
+        public JsonResult GetDeclineReasonByEnrollment(int enrollmentId)
+        {
+            string declineReason = _enrollmentBL.GetDeclineReasonByEnrollment(enrollmentId);
+            return Json(new { result = declineReason }, JsonRequestBehavior.AllowGet);
         }
     }
 }

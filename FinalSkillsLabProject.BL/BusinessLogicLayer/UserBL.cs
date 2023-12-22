@@ -68,7 +68,7 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
         private void CheckInsertDuplicate(string nic, string email, string mobileNum, string username)
         {
             List<UserModel> usersList = GetAll().ToList();
-            LoginModel account = this._accountDAL.GetByUsername(username);
+            UserViewModel account = this._accountDAL.GetByUsername(username);
             string message = "";
 
             // true when there is NIC duplication
