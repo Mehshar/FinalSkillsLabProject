@@ -7,6 +7,7 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
 
+    <script type="text/javascript" src="~/Scripts/DisplayByRoleScript.js"></script>
     <script type="text/javascript" src="~/Scripts/NewTabScript.js"></script>
     <script type="text/javascript" src="~/Scripts/EnrollmentApprovalScript.js"></script>
     <script type="text/javascript" src="~/Scripts/EnrollmentRejectionScript.js"></script>
@@ -24,6 +25,19 @@
 </head>
 
 <body>
+    <div class="card mb-3 manager-details-card d-none">
+        <div class="row g-0">
+            <div class="col-md-1 bg-light rounded-start d-flex align-items-center">
+                <p class="m-0 ms-3">Manager</p>
+            </div>
+            <div class="col-md-10">
+                <div class="card-body">
+                    <p class="m-0 manager-details"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     @foreach (var prerequisiteMaterial in Model)
     {
         <div class="card mb-3">

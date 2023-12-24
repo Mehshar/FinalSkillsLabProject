@@ -20,5 +20,8 @@ namespace FinalSkillsLabProject.Common.Models
         public string PriorityDepartmentName { get; set; }
         public int Capacity { get; set; }
         public string EnrollmentStatus { get; set; }
+        public string ManagerFirstName { get; set; }
+        public string ManagerLastName { get; set; }
+        public string ManagerEmail { get; set; }
     }
 }

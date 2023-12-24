@@ -132,7 +132,17 @@ namespace FinalSkillsLabProject.Controllers
         [CustomAuthorization("Manager,Admin")]
         public ActionResult EmployeeEnrollments()
         {
-            List<EnrollmentViewModel> employeeEnrollmentsList = _enrollmentBL.GetAllByManager((int)Session["CurrentUserId"]).ToList();
+            List<EnrollmentViewModel> employeeEnrollmentsList = null;
+            
+            if (Session["CurrentRole"].ToString().Equals("Admin"))
+            {
+                employeeEnrollmentsList = _enrollmentBL.GetAll().ToList();
+            }
+
+            else if (Session["CurrentRole"].ToString().Equals("Manager"))
+            {
+                employeeEnrollmentsList = _enrollmentBL.GetAllByManager((int)Session["CurrentUserId"]).ToList();
+            }
             return View(employeeEnrollmentsList);
         }
 
@@ -152,7 +162,7 @@ namespace FinalSkillsLabProject.Controllers
             {
                 UserViewModel requestHandler = (UserViewModel)Session["CurrentUser"];
                 string requestHandlerName = $"{requestHandler.FirstName} {requestHandler.LastName}";
-                _emailNotificationBL.SendEmail(isApproved, user.Email, user.Username, user.TrainingName, requestHandlerName, requestHandler.Role.RoleName.ToString().ToLower(), requestHandler.Email, declineReason);
+                _emailNotificationBL.SendEmail(isApproved, user.Email, user.Username, user.TrainingName, requestHandlerName, requestHandler.Role.RoleName.ToString().ToLower(), requestHandler.Email, declineReason, user.ManagerEmail);
             }
             return Json(new { result = result });
         }

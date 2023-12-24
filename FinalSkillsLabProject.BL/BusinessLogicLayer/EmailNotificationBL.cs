@@ -7,12 +7,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Configuration;
 using FinalSkillsLabProject.BL.Interfaces;
+using FinalSkillsLabProject.Common.Enums;
 
 namespace FinalSkillsLabProject.BL.BusinessLogicLayer
 {
     public class EmailNotificationBL : IEmailNotificationBL
     {
-        public void SendEmail(bool isApproved, string recipient, string username, string training, string requestHandlerName, string requestHandlerRole, string managerEmail, string declineReason)
+        public void SendEmail(bool isApproved, string recipient, string username, string training, string requestHandlerName, string requestHandlerRole, string requestHandlerEmail, string declineReason, string managerEmail)
         {
             string smtpServer = ConfigurationManager.AppSettings["smtpServer"];
             int port = int.Parse(ConfigurationManager.AppSettings["port"]);
@@ -28,7 +29,8 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
 
             var mailMessage = new MailMessage(sender, recipient);
 
-            mailMessage.CC.Add(managerEmail);
+            mailMessage.CC.Add(requestHandlerEmail);
+            if (requestHandlerRole.Equals(RoleEnum.Admin.ToString().ToLower())) { mailMessage.CC.Add(managerEmail); }
             mailMessage.Subject = GetEmailSubject(isApproved);
             mailMessage.Body = GetEmailBody(username, training, isApproved, requestHandlerName, requestHandlerRole, declineReason);
             mailMessage.IsBodyHtml = true;

@@ -129,27 +129,44 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             return enrollment;
         }
 
-        public IEnumerable<EnrollmentModel> GetAll()
+        public IEnumerable<EnrollmentViewModel> GetAll()
         {
-            EnrollmentModel enrollment;
-            List<EnrollmentModel> enrollmentsList = new List<EnrollmentModel>();
+            EnrollmentViewModel enrollment;
+            List<EnrollmentViewModel> enrollmentsList = new List<EnrollmentViewModel>();
 
             const string GetAllEnrollmentsQuery =
-              @"SELECT *
-                FROM [dbo].[Enrollment];";
+              @"SELECT euser.[UserId], euser.[FirstName] AS EFirstName, euser.[LastName] AS ELastName, euser.[Email] AS EEmail, d.[DepartmentName], meuser.[FirstName] AS MFirstName, meuser.[LastName] AS MLastName, meuser.[Email] AS MEmail, t.[TrainingName], pd.[DepartmentName] AS PriorityDeptName, e.[EnrollmentDate], e.[EnrollmentId], e.[EnrollmentStatus]
+                FROM [dbo].[Enrollment] AS e
+                INNER JOIN [dbo].[Training] AS t
+                ON e.[TrainingId] = t.[TrainingId]
+                INNER JOIN [dbo].[Department] AS pd
+                ON t.[PriorityDepartment] = pd.[DepartmentId]
+                INNER JOIN [dbo].[EndUser] AS euser
+                ON e.[UserId] = euser.[UserId]
+                INNER JOIN [dbo].[Department] AS d
+                ON euser.[DepartmentId] = d.[DepartmentId]
+                LEFT JOIN [dbo].[EndUser] AS meuser
+                ON meuser.[UserId] = euser.[ManagerId];";
 
             using (SqlDataReader reader = DbCommand.GetData(GetAllEnrollmentsQuery))
             {
                 while (reader.Read())
                 {
-                    enrollment = new EnrollmentModel()
+                    enrollment = new EnrollmentViewModel()
                     {
                         EnrollmentId = reader.GetInt16(reader.GetOrdinal("EnrollmentId")),
-                        UserId = reader.GetInt16(reader.GetOrdinal("UserId")),
-                        TrainingId = reader.GetInt16(reader.GetOrdinal("TrainingId")),
+                        EmployeeId = reader.GetInt16(reader.GetOrdinal("UserId")),
+                        FirstName = reader.GetString(reader.GetOrdinal("EFirstName")),
+                        LastName = reader.GetString(reader.GetOrdinal("ELastName")),
+                        Email = reader.GetString(reader.GetOrdinal("EEmail")),
+                        EmployeeDepartment = reader.GetString(reader.GetOrdinal("DepartmentName")),
                         EnrollmentDate = reader.GetDateTime(reader.GetOrdinal("EnrollmentDate")),
+                        TrainingName = reader.GetString(reader.GetOrdinal("TrainingName")),
+                        PriorityDepartmentName = reader.GetString(reader.GetOrdinal("PriorityDeptName")),
                         EnrollmentStatus = reader.GetString(reader.GetOrdinal("EnrollmentStatus")),
-                        DeclineReason = reader.GetString(reader.GetOrdinal("DeclineReason"))
+                        ManagerFirstName = reader.GetString(reader.GetOrdinal("MFirstName")),
+                        ManagerLastName = reader.GetString(reader.GetOrdinal("MLastName")),
+                        ManagerEmail = reader.GetString(reader.GetOrdinal("MEmail"))
                     };
                     enrollmentsList.Add(enrollment);
                 }
@@ -285,12 +302,14 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
         public UserEnrollmentViewModel GetUserByEnrollment(int enrollmentId)
         {
             const string GetUserByEnrollment =
-                @"SELECT euser.[Email], a.[Username], t.[TrainingName]
+                @"SELECT euser.[Email], a.[Username], t.[TrainingName], meuser.[FirstName] AS MFirstName, meuser.[LastName] AS MLastName, meuser.[Email] AS MEmail
                 FROM [dbo].[Enrollment] AS e
                 INNER JOIN [dbo].[Training] AS t
                 ON e.[TrainingId] = t.[TrainingId]
                 INNER JOIN [dbo].[EndUser] AS euser
                 ON e.[UserId] = euser.[UserId]
+                LEFT JOIN [dbo].[EndUser] AS meuser
+                ON meuser.[UserId] = euser.[ManagerId]
                 INNER JOIN [dbo].[Account] AS a
                 ON e.[UserId] = a.[UserId]
                 WHERE e.[EnrollmentId] = @EnrollmentId;";
@@ -306,7 +325,10 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                     {
                         Email = reader.GetString(reader.GetOrdinal("Email")),
                         Username = reader.GetString(reader.GetOrdinal("Username")),
-                        TrainingName = reader.GetString(reader.GetOrdinal("TrainingName"))
+                        TrainingName = reader.GetString(reader.GetOrdinal("TrainingName")),
+                        ManagerFirstName = reader.GetString(reader.GetOrdinal("MFirstName")),
+                        ManagerLastName = reader.GetString(reader.GetOrdinal("MLastName")),
+                        ManagerEmail = reader.GetString(reader.GetOrdinal("MEmail"))
                     };
                 }
             }

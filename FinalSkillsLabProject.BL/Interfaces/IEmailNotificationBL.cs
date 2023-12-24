@@ -8,6 +8,6 @@ namespace FinalSkillsLabProject.BL.Interfaces
 {
     public interface IEmailNotificationBL
     {
-        void SendEmail(bool isApproved, string recipient, string username, string training, string requestHandlerName, string requestHandlerRole, string managerEmail, string declineReason);
+        void SendEmail(bool isApproved, string recipient, string username, string training, string requestHandlerName, string requestHandlerRole, string requestHandlerEmail, string declineReason, string managerEmail);
     }
 }

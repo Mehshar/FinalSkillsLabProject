@@ -29,7 +29,7 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
             return this._enrollmentDAL.Get(userId, trainingId);
         }
 
-        public IEnumerable<EnrollmentModel> GetAll()
+        public IEnumerable<EnrollmentViewModel> GetAll()
         {
             return this._enrollmentDAL.GetAll();
         }

@@ -9,7 +9,7 @@ namespace FinalSkillsLabProject.BL.Interfaces
         bool Update(int enrollmentId, bool isApproved, string declineReason);
         //void Delete(EnrollmentModel model);
         EnrollmentModel Get(int userId, int trainingId);
-        IEnumerable<EnrollmentModel> GetAll();
+        IEnumerable<EnrollmentViewModel> GetAll();
         IEnumerable<EnrollmentViewModel> GetAllByManagerTraining(int managerId, int trainingId);
         IEnumerable<EnrollmentViewModel> GetAllByManager(int managerId);
         IEnumerable<PrerequisiteMaterialViewModel> GetPrerequisiteMaterialsByEnrollment(int enrollmentId);

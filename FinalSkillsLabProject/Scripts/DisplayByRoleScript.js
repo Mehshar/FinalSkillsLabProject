@@ -3,6 +3,7 @@
     var btnEdit = $(".btnEdit");
     var btnEnroll = $(".btnEnroll");
     var enrollmentsNavLink = $("#enrollmentsNavLink");
+    var managerDetailsCard = $(".manager-details-card");
 
     $.ajax({
         type: "GET",
@@ -22,6 +23,10 @@
 
             if (enrollmentsNavLink.length && (currentRole === "Manager" || currentRole === "Admin")) {
                 enrollmentsNavLink.removeClass("d-none");
+            }
+
+            if (managerDetailsCard.length && currentRole === "Admin") {
+                managerDetailsCard.removeClass("d-none");
             }
         }
     });

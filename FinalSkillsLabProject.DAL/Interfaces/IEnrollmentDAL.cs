@@ -8,7 +8,7 @@ namespace FinalSkillsLabProject.DAL.Interfaces
         bool Add(EnrollmentModel enrollment, List<PrerequisiteMaterialModel> prerequisiteMaterialsList);
         bool Update(int enrollmentId, bool isApproved, string declineReason);
         EnrollmentModel Get(int userId, int trainingId);
-        IEnumerable<EnrollmentModel> GetAll();
+        IEnumerable<EnrollmentViewModel> GetAll();
         IEnumerable<EnrollmentViewModel> GetAllByManagerTraining(int managerId, int trainingId);
         IEnumerable<EnrollmentViewModel> GetAllByManager(int managerId);
         IEnumerable<PrerequisiteMaterialViewModel> GetPrerequisiteMaterialsByEnrollment(int enrollmentId);
