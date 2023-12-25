@@ -8,7 +8,6 @@
 
     function extractPlaceholder(fieldName) {
         var input = document.querySelector("#" + fieldName);
-        console.log(input.getAttribute("placeholder"))
         return input.getAttribute("placeholder") || "";
     }
 

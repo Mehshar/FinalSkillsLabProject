@@ -4,7 +4,6 @@
     font-family: 'Poppins', sans-serif;
 }
 
-
 body {
     background: rgb(238, 174, 202);
     background: radial-gradient(circle, rgba(238, 174, 202, 1) 6%, rgba(148, 187, 233, 1) 100%);
@@ -39,8 +38,8 @@ body {
     transition: 0.5s;
 }
 
-#signUpText {
-    /*color: rgb(233, 148, 184);*/
+#signUpText,
+#logInText {
     color: #8f528b;
 }
 
@@ -50,7 +49,6 @@ body {
     background-color: #f0f0f0;
     margin: 10px 0;
     height: 55px;
-    /*border-radius: 55px;*/
     display: grid;
     grid-template-columns: 15% 85%;
     padding: 0 0.4rem;
@@ -84,7 +82,8 @@ span {
     font-size: small;
 }
 
-#btnLogin {
+#btnLogin,
+#btnSignup {
     width: 150px;
     background-image: linear-gradient(to right, rgba(238, 174, 202, 1) 6%, rgba(148, 187, 233, 1) 100%);
     border: none;
@@ -99,47 +98,59 @@ span {
     transition: 0.5s;
 }
 
-    #btnLogin:hover {
+    #btnLogin:hover,
+    #btnSignup:hover {
         background-image: linear-gradient(to left, rgba(238, 174, 202, 1) 6%, rgba(148, 187, 233, 1) 100%);
     }
 
 .hr-line {
     position: relative;
-    /*  new lines  */
     text-align: center;
     font-size: 15px;
 }
 
-    .hr-line:before {
-        content: " ";
-        display: block;
-        height: 1px;
-        width: 140px;
-        position: absolute;
-        top: 50%;
-        left: 0;
-        /*background: rgba(238, 174, 202, 1);*/
-        background-image: linear-gradient(to right, rgba(238, 174, 202, 1) 6%, rgba(148, 187, 233, 1) 100%);
-    }
+#LoginForm .hr-line:before,
+#SignupForm .hr-line:before {
+    content: " ";
+    display: flex;
+    height: 1px;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    background-image: linear-gradient(to right, rgba(238, 174, 202, 1) 6%, rgba(148, 187, 233, 1) 100%);
+}
 
-    .hr-line:after {
-        content: " ";
-        height: 1px;
-        width: 140px;
-        /*background: rgba(238, 174, 202, 1);*/
-        background-image: linear-gradient(to left, rgba(238, 174, 202, 1) 6%, rgba(148, 187, 233, 1) 100%);
-        display: block;
-        position: absolute;
-        top: 50%;
-        right: 0;
-    }
+#LoginForm .hr-line:before {
+    width: 140px;
+}
+
+#SignupForm .hr-line:before {
+    width: 180px;
+}
+
+#LoginForm .hr-line:after,
+#SignupForm .hr-line:after {
+    content: " ";
+    height: 1px;
+    background-image: linear-gradient(to left, rgba(238, 174, 202, 1) 6%, rgba(148, 187, 233, 1) 100%);
+    display: flex;
+    position: absolute;
+    top: 50%;
+    right: 0;
+}
+
+#LoginForm .hr-line:after {
+    width: 140px;
+}
+
+#SignupForm .hr-line:after {
+    width: 180px;
+}
 
 .inner-content {
     width: 450px;
     box-shadow: -1px 0px 13px 3px rgba(0, 0, 0, 0.20);
     backdrop-filter: blur(5px);
-    /*            --bs-bg-opacity: 1;
-            background-color: rgba(255,255,255,0.75), var(--bs-bg-opacity)) !important;*/
 }
 
 .left-column {
@@ -152,13 +163,13 @@ span {
     justify-content: center;
 }
 
-.social-icon {
+#LoginForm .social-icon,
+#SignupForm .social-icon {
     height: 46px;
     width: 46px;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 0 0.45rem;
     color: #333;
     border-radius: 50%;
     border: 1px solid #333;
@@ -167,20 +178,42 @@ span {
     transition: 0.3s;
 }
 
-    .social-icon:hover {
-        /*                color: rgba(148, 187, 233, 1);
-                border-color: rgba(238, 174, 202, 1);*/
+#LoginForm .social-icon {
+    margin: 0 0.45rem;
+}
 
-        color: rgba(148, 187, 233, 1);
-        border-color: white;
-    }
+#SignupForm .social-icon {
+    margin: 0 0.95rem;
+}
 
-/* Disable autocomplete background in Chrome/Safari */
-/* Change the white to any color */
+.social-icon:hover {
+    color: rgba(148, 187, 233, 1);
+    border-color: white;
+}
+
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 30px #f0f0f0 inset !important;
+    -webkit-box-shadow: 0 0 0 30px white inset !important;
     border-radius: 49px;
 }
+
+/* Sign Up Page */
+#departmentDropdown,
+#managerDropdown {
+    width: 24rem;
+}
+
+.dropdown-text {
+    font-weight: 500 !important;
+    font-size: 1.0rem;
+}
+
+.custom-select {
+    color: #808080 !important;
+}
+
+    .custom-select option:not(:disabled) {
+        color: #000000;
+    }

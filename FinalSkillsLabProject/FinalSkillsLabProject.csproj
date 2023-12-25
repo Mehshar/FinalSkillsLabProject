@@ -315,10 +315,10 @@
     <Content Include="Content\Images\login-image.png" />
     <Content Include="Content\Images\error-404.png" />
     <Content Include="Content\Images\Home_1_Colored.png" />
+    <Content Include="Content\Images\Signup.png" />
     <Content Include="Content\Images\wave_1.svg" />
     <Content Include="Content\LoadingElementStyle.css" />
-    <Content Include="Content\LoginStyle.css" />
-    <Content Include="Content\SignupStyle.css" />
+    <Content Include="Content\SignupLoginStyle.css" />
     <Content Include="Content\toastr.css" />
     <Content Include="Content\toastr.min.css" />
     <Content Include="favicon.ico" />

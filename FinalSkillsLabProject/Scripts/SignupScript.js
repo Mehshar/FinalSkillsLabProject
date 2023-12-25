@@ -6,14 +6,30 @@
         return false;
     });
 
+    function extractPlaceholder(fieldName) {
+        var input = document.querySelector("#" + fieldName);
+        return input.getAttribute("placeholder") || "";
+    }
+
     function extractLabelValue(fieldName) {
         var label = $("Label[for='" + fieldName + "']");
         return label.length > 0 ? label.text().trim() : "";
     }
 
     function validateFieldValues() {
-        var fields = ["nic", "firstName", "lastName", "email", "mobileNum", "departmentDropdown", "managerDropdown", "username", "password"];
-        fields.forEach(function (field) {
+        var dropdowns = ["departmentDropdown", "managerDropdown"];
+        var inputFields = ["nic", "firstName", "lastName", "email", "mobileNum", "username", "password"];
+
+        inputFields.forEach(function (field) {
+            var value = $("#" + field).val();
+            if (value = "" || value == null || value.trim() === "") {
+                var placeholder = extractPlaceholder(field);
+                toastr.error(placeholder + " cannot be empty");
+                return false;
+            }
+        });
+
+        dropdowns.forEach(function (field) {
             var value = $("#" + field).val();
             if (value == "" || value == null || value.trim() == "") {
                 var label = extractLabelValue(field);
@@ -31,8 +47,8 @@
         var lastName = $("#lastName").val().trim();
         var email = $("#email").val().trim();
         var mobileNum = $("#mobileNum").val().trim();
-        var departmentId = parseInt($("#departmentDropdown").val().trim());
-        var managerId = parseInt($("#managerDropdown").val().trim());
+        var departmentId = parseInt($("#departmentDropdown").val());
+        var managerId = parseInt($("#managerDropdown").val());
         var username = $("#username").val().trim();
         var password = $("#password").val().trim();
 
