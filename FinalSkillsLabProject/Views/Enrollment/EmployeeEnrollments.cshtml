@@ -67,15 +67,15 @@
 
                             @if (enrollment.EnrollmentStatus == "Approved")
                             {
-                                <span class="badge bg-success">@enrollment.EnrollmentStatus</span>
+                                <span id="badge_@enrollment.EnrollmentId" class="badge bg-success">@enrollment.EnrollmentStatus</span>
                             }
                             else if (enrollment.EnrollmentStatus == "Pending")
                             {
-                                <span class="badge bg-warning text-dark">@enrollment.EnrollmentStatus</span>
+                                <span id="badge_@enrollment.EnrollmentId" class="badge bg-warning text-dark">@enrollment.EnrollmentStatus</span>
                             }
                             else if (enrollment.EnrollmentStatus == "Declined")
                             {
-                                <span class="badge bg-danger">@enrollment.EnrollmentStatus</span>
+                                <span id="badge_@enrollment.EnrollmentId" class="badge bg-danger">@enrollment.EnrollmentStatus</span>
                             }
                         </button>
                     </h2>

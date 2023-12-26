@@ -8,12 +8,12 @@
 
             setTimeout(function () {
                 $('.manager-details').text(managerDetails);
-                var enrollmentStatus = $('[data-enrollmentstatus]').data('enrollmentstatus');
-                if (enrollmentStatus === "Approved") {
+                var enrollmentStatus = $("#badge_" + enrollmentId).text();
+                if (enrollmentStatus == "Approved") {
                     $('.btnApprove').prop('disabled', true).removeClass('btn-outline-success').addClass('btn-outline-secondary');
                 }
 
-                else if (enrollmentStatus === "Declined") {
+                else if (enrollmentStatus == "Declined") {
                     $('.btnReject').prop('disabled', true).removeClass('btn-outline-danger').addClass('btn-outline-secondary');
                     $('.declineReasontextarea').prop('readonly', true);
                     $('.declineReason').removeClass('d-none');
