@@ -36,15 +36,26 @@
             </div>
         </div>
 
+        @*<div class="form-group py-3">
+                <label for="deadline" class="control-label col-md-2 pb-2">Deadline</label>
+                <div class="col-md-10">
+                    @{
+                        string minDate = DateTime.Now.ToString("yyyy-MM-ddTHH:mm");
+                    }
+                    <input type="datetime-local" name="deadline" id="deadline" class="form-control" min="@minDate" required />
+                </div>
+            </div>*@
+
         <div class="form-group py-3">
             <label for="deadline" class="control-label col-md-2 pb-2">Deadline</label>
             <div class="col-md-10">
                 @{
-                    string minDate = DateTime.Now.ToString("yyyy-MM-ddTHH:mm");
+                    string minDate = DateTime.Now.ToString("yyyy-MM-dd");
                 }
-                <input type="datetime-local" name="deadline" id="deadline" class="form-control" min="@minDate" required />
+                <input type="date" name="deadline" id="deadline" class="form-control" min="@minDate" required />
             </div>
         </div>
+
 
         <div class="form-group py-3">
             <label for="capacity" class="control-label col-md-2 pb-2">Capacity</label>

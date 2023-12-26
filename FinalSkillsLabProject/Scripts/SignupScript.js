@@ -19,13 +19,14 @@
     function validateFieldValues() {
         var dropdowns = ["departmentDropdown", "managerDropdown"];
         var inputFields = ["nic", "firstName", "lastName", "email", "mobileNum", "username", "password"];
+        var isValid = true;
 
         inputFields.forEach(function (field) {
             var value = $("#" + field).val();
             if (value = "" || value == null || value.trim() === "") {
                 var placeholder = extractPlaceholder(field);
                 toastr.error(placeholder + " cannot be empty");
-                return false;
+                isValid = false;
             }
         });
 
@@ -34,13 +35,16 @@
             if (value == "" || value == null || value.trim() == "") {
                 var label = extractLabelValue(field);
                 toastr.error(label + " cannot be empty");
-                return false;
+                isValid = false;
             }
         });
+        return isValid;
     }
 
     $("#btnSignup").click(function () {
-        validateFieldValues();
+        if (!validateFieldValues()) {
+            return false;
+        }
 
         var nic = $("#nic").val().trim();
         var firstName = $("#firstName").val().trim();

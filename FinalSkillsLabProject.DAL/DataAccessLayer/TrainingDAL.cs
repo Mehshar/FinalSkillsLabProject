@@ -16,10 +16,18 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             parameters.Add(new SqlParameter("@TrainingName", training.TrainingName));
             parameters.Add(new SqlParameter("@Description", training.Description));
             parameters.Add(new SqlParameter("@Deadline", training.Deadline));
-            parameters.Add(new SqlParameter("@PriorityDepartment", training.PriorityDepartment));
+            if (training.PriorityDepartment == -1)
+            {
+                parameters.Add(new SqlParameter("@PriorityDepartment", DBNull.Value));
+            }
+            else
+            {
+                parameters.Add(new SqlParameter("@PriorityDepartment", training.PriorityDepartment));
+            }
+
             parameters.Add(new SqlParameter("@Capacity", training.Capacity));
-            
-            if(prerequisitesList == null)
+
+            if (prerequisitesList == null)
             {
                 parameters.Add(new SqlParameter("@PrerequisiteIds", ""));
             }
@@ -68,7 +76,14 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             parameters.Add(new SqlParameter("@TrainingName", training.TrainingName));
             parameters.Add(new SqlParameter("@Description", training.Description));
             parameters.Add(new SqlParameter("@Deadline", training.Deadline));
-            parameters.Add(new SqlParameter("@PriorityDepartment", Convert.ToInt16(training.PriorityDepartment)));
+            if (training.PriorityDepartment == -1)
+            {
+                parameters.Add(new SqlParameter("@PriorityDepartment", DBNull.Value));
+            }
+            else
+            {
+                parameters.Add(new SqlParameter("@PriorityDepartment", Convert.ToInt16(training.PriorityDepartment)));
+            }
             parameters.Add(new SqlParameter("@Capacity", Convert.ToInt16(training.Capacity)));
             parameters.Add(new SqlParameter("@TrainingId", Convert.ToInt16(training.TrainingId)));
 
@@ -119,7 +134,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                         TrainingName = reader.GetString(reader.GetOrdinal("TrainingName")),
                         Description = reader.GetString(reader.GetOrdinal("Description")),
                         Deadline = reader.GetDateTime(reader.GetOrdinal("Deadline")),
-                        PriorityDepartment = reader.GetInt16(reader.GetOrdinal("PriorityDepartment")),
+                        PriorityDepartment = reader.IsDBNull(reader.GetOrdinal("PriorityDepartment")) ? null : (int?)reader.GetInt16(reader.GetOrdinal("PriorityDepartment")),
                         PriorityDepartmentName = reader.IsDBNull(reader.GetOrdinal("DepartmentName")) ? null : reader.GetString(reader.GetOrdinal("DepartmentName")),
                         Capacity = reader.GetInt16(reader.GetOrdinal("Capacity"))
                     };
@@ -149,15 +164,8 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                     training.TrainingName = reader.GetString(reader.GetOrdinal("TrainingName"));
                     training.Description = reader.GetString(reader.GetOrdinal("Description"));
                     training.Deadline = reader.GetDateTime(reader.GetOrdinal("Deadline"));
-                    training.PriorityDepartment = reader.GetInt16(reader.GetOrdinal("PriorityDepartment"));
-                    if (reader.IsDBNull(reader.GetOrdinal("DepartmentName")))
-                    {
-                        training.PriorityDepartmentName = null;
-                    }
-                    else
-                    {
-                        training.PriorityDepartmentName = reader.GetString(reader.GetOrdinal("DepartmentName"));
-                    }
+                    training.PriorityDepartment = reader.IsDBNull(reader.GetOrdinal("PriorityDepartment")) ? null : (int?)reader.GetInt16(reader.GetOrdinal("PriorityDepartment"));
+                    training.PriorityDepartmentName = reader.IsDBNull(reader.GetOrdinal("DepartmentName")) ? null : reader.GetString(reader.GetOrdinal("DepartmentName"));
                     training.Capacity = reader.GetInt16(reader.GetOrdinal("Capacity"));
 
                     trainingList.Add(training);
@@ -190,7 +198,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                         TrainingName = reader.GetString(reader.GetOrdinal("TrainingName")),
                         Description = reader.GetString(reader.GetOrdinal("Description")),
                         Deadline = reader.GetDateTime(reader.GetOrdinal("Deadline")),
-                        PriorityDepartment = reader.GetInt16(reader.GetOrdinal("PriorityDepartment")),
+                        PriorityDepartment = reader.IsDBNull(reader.GetOrdinal("PriorityDepartment")) ? null : (int?)reader.GetInt16(reader.GetOrdinal("PriorityDepartment")),
                         PriorityDepartmentName = reader.IsDBNull(reader.GetOrdinal("DepartmentName")) ? null : reader.GetString(reader.GetOrdinal("DepartmentName")),
                         Capacity = reader.GetInt16(reader.GetOrdinal("Capacity"))
                     };

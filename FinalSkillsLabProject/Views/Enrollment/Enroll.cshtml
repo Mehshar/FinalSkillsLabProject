@@ -53,7 +53,7 @@
             <div class="form-group py-3">
                 <label for="deadline" class="control-label col-md-2 pb-2">Deadline</label>
                 <div class="col-md-10">
-                    <input type="datetime" name="deadline" id="deadline" class="form-control" value="@Model.Deadline" readonly />
+                    <input type="datetime" name="deadline" id="deadline" class="form-control" value="@Model.Deadline.ToShortDateString()" readonly />
                 </div>
             </div>
 
