@@ -1,4 +1,4 @@
-﻿@model IEnumerable<FinalSkillsLabProject.Common.Models.TrainingModel>
+﻿@model List<FinalSkillsLabProject.Common.Models.TrainingModel>
 
 @{
     ViewBag.Title = "All Trainings";
@@ -43,7 +43,7 @@
             </tr>
         </thead>
 
-        @foreach (var training in ViewBag.Trainings)
+        @foreach (var training in Model)
         {
             <tr class="clickable-row font-1" data-href="@Url.Action("Details", "Training", new { id = training.TrainingId })">
                 <td>

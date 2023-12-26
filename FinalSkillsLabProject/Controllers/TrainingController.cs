@@ -24,8 +24,7 @@ namespace FinalSkillsLabProject.Controllers
         public ActionResult Index()
         {
             List<TrainingModel> trainingsList = _trainingBL.GetAll().ToList();
-            ViewBag.Trainings = trainingsList;
-            return View();
+            return View(trainingsList);
         }
 
         [HttpGet]

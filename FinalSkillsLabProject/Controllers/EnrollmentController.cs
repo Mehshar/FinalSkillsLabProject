@@ -13,6 +13,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Configuration;
 using FinalSkillsLabProject.Authorization;
+using FinalSkillsLabProject.Common.Enums;
 
 namespace FinalSkillsLabProject.Controllers
 {
@@ -136,12 +137,12 @@ namespace FinalSkillsLabProject.Controllers
             
             if (Session["CurrentRole"].ToString().Equals("Admin"))
             {
-                employeeEnrollmentsList = _enrollmentBL.GetAll().ToList();
+                employeeEnrollmentsList = _enrollmentBL.GetAll().Where(x => x.EnrollmentStatus != EnrollmentStatusEnum.Selected.ToString()).ToList();
             }
 
             else if (Session["CurrentRole"].ToString().Equals("Manager"))
             {
-                employeeEnrollmentsList = _enrollmentBL.GetAllByManager((int)Session["CurrentUserId"]).ToList();
+                employeeEnrollmentsList = _enrollmentBL.GetAllByManager((int)Session["CurrentUserId"]).Where(x => x.EnrollmentStatus != EnrollmentStatusEnum.Selected.ToString()).ToList();
             }
             return View(employeeEnrollmentsList);
         }
