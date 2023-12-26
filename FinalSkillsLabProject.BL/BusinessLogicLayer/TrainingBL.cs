@@ -71,6 +71,11 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
             return this._trainingDAL.GetAllByUser(userId);
         }
 
+        public IEnumerable<TrainingModel> GetNotEnrolledTrainings(int userId)
+        {
+            return this._trainingDAL.GetNotEnrolledTrainings(userId);
+        }
+
         private void CheckInsertUpdateDuplicate(TrainingModel training)
         {
             if (training != null)

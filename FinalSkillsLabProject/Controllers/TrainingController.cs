@@ -23,7 +23,7 @@ namespace FinalSkillsLabProject.Controllers
 
         public ActionResult Index()
         {
-            List<TrainingModel> trainingsList = _trainingBL.GetAll().ToList();
+            List<TrainingModel> trainingsList = _trainingBL.GetNotEnrolledTrainings((int)Session["CurrentUserId"]).ToList();
             return View(trainingsList);
         }
 

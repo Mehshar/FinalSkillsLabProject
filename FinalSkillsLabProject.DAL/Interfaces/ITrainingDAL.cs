@@ -11,5 +11,6 @@ namespace FinalSkillsLabProject.DAL.Interfaces
         TrainingModel Get(int trainingId);
         IEnumerable<TrainingModel> GetAll();
         IEnumerable<TrainingModel> GetAllByUser(int userId);
+        IEnumerable<TrainingModel> GetNotEnrolledTrainings(int userId);
     }
 }

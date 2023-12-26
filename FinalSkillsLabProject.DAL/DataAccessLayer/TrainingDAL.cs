@@ -207,5 +207,42 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             }
             return trainingsList;
         }
+
+        public IEnumerable<TrainingModel> GetNotEnrolledTrainings(int userId)
+        {
+            TrainingModel training;
+            List<TrainingModel> trainingsList = new List<TrainingModel>();
+            List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter("@UserId", userId) };
+
+            const string GetNotEnrolledTrainings =
+                @"SELECT *
+                FROM Training t
+                LEFT JOIN [dbo].[Department] as d
+                ON t.[PriorityDepartment] = d.DepartmentId
+                WHERE NOT EXISTS (
+                    SELECT 1
+                    FROM Enrollment e
+                    WHERE e.UserId = @UserId
+                        AND e.TrainingId = t.TrainingId);";
+
+            using (SqlDataReader reader = DbCommand.GetDataWithConditions(GetNotEnrolledTrainings, parameters))
+            {
+                while (reader.Read())
+                {
+                    training = new TrainingModel()
+                    {
+                        TrainingId = reader.GetInt16(reader.GetOrdinal("TrainingId")),
+                        TrainingName = reader.GetString(reader.GetOrdinal("TrainingName")),
+                        Description = reader.GetString(reader.GetOrdinal("Description")),
+                        Deadline = reader.GetDateTime(reader.GetOrdinal("Deadline")),
+                        PriorityDepartment = reader.IsDBNull(reader.GetOrdinal("PriorityDepartment")) ? null : (int?)reader.GetInt16(reader.GetOrdinal("PriorityDepartment")),
+                        PriorityDepartmentName = reader.IsDBNull(reader.GetOrdinal("DepartmentName")) ? null : reader.GetString(reader.GetOrdinal("DepartmentName")),
+                        Capacity = reader.GetInt16(reader.GetOrdinal("Capacity"))
+                    };
+                    trainingsList.Add(training);
+                }
+            }
+            return trainingsList;
+        }
     }
 }
