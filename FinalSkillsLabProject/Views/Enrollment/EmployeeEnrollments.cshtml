@@ -39,8 +39,8 @@
             @foreach (var enrollment in Model)
             {
                 <div class="accordion-item">
-                    <h2 class="accordion-header" id="heading_@enrollment.EmployeeId@enrollment.TrainingId">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_@enrollment.EmployeeId@enrollment.TrainingId" aria-expanded="false" aria-controls="collapse_@enrollment.EmployeeId@enrollment.TrainingId" data-enrollment-id="@enrollment.EnrollmentId">
+                    <h2 class="accordion-header" id="heading_@enrollment.EnrollmentId">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_@enrollment.EnrollmentId" aria-expanded="false" aria-controls="collapse_@enrollment.EnrollmentId" data-enrollment-id="@enrollment.EnrollmentId">
                             <div class="col-2 accordion-text">
                                 @enrollment.FirstName @enrollment.LastName
                             </div>
@@ -80,7 +80,7 @@
                         </button>
                     </h2>
 
-                    <div id="collapse_@enrollment.EmployeeId@enrollment.TrainingId" class="accordion-collapse collapse" aria-labelledby="heading_@enrollment.EmployeeId@enrollment.TrainingId" data-bs-parent="#enrollmentAccordion">
+                    <div id="collapse_@enrollment.EnrollmentId" class="accordion-collapse collapse" aria-labelledby="heading_@enrollment.EnrollmentId" data-bs-parent="#enrollmentAccordion">
                         <div class="accordion-body" id="body_@enrollment.EnrollmentId">
                         </div>
                     </div>
