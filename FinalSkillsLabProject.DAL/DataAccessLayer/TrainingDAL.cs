@@ -4,12 +4,13 @@ using FinalSkillsLabProject.DAL.Common;
 using FinalSkillsLabProject.Common.Models;
 using FinalSkillsLabProject.DAL.Interfaces;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 
 namespace FinalSkillsLabProject.DAL.DataAccessLayer
 {
     public class TrainingDAL : ITrainingDAL
     {
-        public void Add(TrainingModel training, List<int> prerequisitesList)
+        public async Task AddAsync(TrainingModel training, List<int> prerequisitesList)
         {
             List<SqlParameter> parameters = new List<SqlParameter>();
 
@@ -66,10 +67,10 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
 
                 COMMIT";
 
-            DbCommand.InsertUpdateData(InsertTrainingQuery, parameters);
+            await DbCommand.InsertUpdateDataAsync(InsertTrainingQuery, parameters);
         }
 
-        public void Update(TrainingModel training)
+        public async Task UpdateAsync(TrainingModel training)
         {
             List<SqlParameter> parameters = new List<SqlParameter>();
 
@@ -96,7 +97,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
 	                [Capacity] = @Capacity
                 WHERE [TrainingId] = @TrainingId;";
 
-            DbCommand.InsertUpdateData(UpdateTrainingQuery, parameters);
+            await DbCommand.InsertUpdateDataAsync(UpdateTrainingQuery, parameters);
         }
 
         public bool Delete(int trainingId)

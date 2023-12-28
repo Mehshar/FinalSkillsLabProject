@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using FinalSkillsLabProject.Common.Models;
+using System.Threading.Tasks;
 
 namespace FinalSkillsLabProject.BL.BusinessLogicLayer
 {
@@ -17,13 +18,13 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
             this._prerequisiteDAL = prerequisiteDAL;
         }
 
-        public string Add(PrerequisiteModel prerequisite, int trainingId)
+        public async Task<string> AddAsync(PrerequisiteModel prerequisite, int trainingId)
         {
             try
             {
                 PrerequisiteModel prerequisiteModel = GetAll().FirstOrDefault(x => x.Description.Equals(prerequisite.Description));
                 CheckInsertUpdateDuplicate(prerequisiteModel);
-                this._prerequisiteDAL.Add(prerequisite, trainingId);
+                await this._prerequisiteDAL.AddAsync(prerequisite, trainingId);
                 return "Prerequisite added successfully!";
             }
 
@@ -34,7 +35,7 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
 
         }
 
-        public string Update(PrerequisiteModel prerequisite)
+        public async Task<string> UpdateAsync(PrerequisiteModel prerequisite)
         {
             try
             {
@@ -42,7 +43,7 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
                     .Where(x => x.PrerequisiteId != prerequisite.PrerequisiteId)
                     .FirstOrDefault(x => x.Description.Equals(prerequisite.Description));
                 CheckInsertUpdateDuplicate(prerequisiteModel);
-                this._prerequisiteDAL.Update(prerequisite);
+                await this._prerequisiteDAL.UpdateAsync(prerequisite);
                 return "Prerequisite updated successfully!";
             }
 

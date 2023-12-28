@@ -1,4 +1,5 @@
 ﻿using FinalSkillsLabProject.Common.Models;
+using System.Threading.Tasks;
 
 namespace FinalSkillsLabProject.DAL.Interfaces
 {
@@ -7,6 +8,6 @@ namespace FinalSkillsLabProject.DAL.Interfaces
         bool AuthenticateUser(LoginModel model);
         UserViewModel GetByUsername(string username);
         AccountModel GetByUsernameAndUserId(string username, int userId);
-        bool Update(AccountModel account);
+        Task<bool> UpdateAsync(AccountModel account);
     }
 }

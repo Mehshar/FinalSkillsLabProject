@@ -5,12 +5,13 @@ using FinalSkillsLabProject.DAL.Common;
 using FinalSkillsLabProject.Common.Models;
 using FinalSkillsLabProject.DAL.Interfaces;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 
 namespace FinalSkillsLabProject.DAL.DataAccessLayer
 {
     public class UserDAL : IUserDAL
     {
-        public bool Add(SignUpModel model)
+        public async Task<bool> AddAsync(SignUpModel model)
         {
             List<SqlParameter> parameters = new List<SqlParameter>()
             {
@@ -42,10 +43,10 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
 
                 COMMIT;";
 
-            return DbCommand.InsertUpdateData(AddUserQuery, parameters) > 0;
+            return await DbCommand.InsertUpdateDataAsync(AddUserQuery, parameters) > 0;
         }
 
-        public bool Update(UserModel user)
+        public async Task<bool> UpdateAsync(UserModel user)
         {
             List<SqlParameter> parameters = new List<SqlParameter>()
             {
@@ -72,7 +73,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
 	                [RoleId] = @RoleId
                 WHERE [UserId] = @UserId;";
 
-            return DbCommand.InsertUpdateData(UpdateUserQuery, parameters) > 0;
+            return await DbCommand.InsertUpdateDataAsync(UpdateUserQuery, parameters) > 0;
         }
 
         public bool Delete(int userId)

@@ -6,12 +6,13 @@ using FinalSkillsLabProject.Common.Models;
 using FinalSkillsLabProject.DAL.Common;
 using FinalSkillsLabProject.DAL.Interfaces;
 using FinalSkillsLabProject.Common.Enums;
+using System.Threading.Tasks;
 
 namespace FinalSkillsLabProject.DAL.DataAccessLayer
 {
     public class EnrollmentDAL : IEnrollmentDAL
     {
-        public bool Add(EnrollmentModel enrollment, List<PrerequisiteMaterialModel> prerequisiteMaterialsList)
+        public async Task<bool> AddAsync(EnrollmentModel enrollment, List<PrerequisiteMaterialModel> prerequisiteMaterialsList)
         {
             List<SqlParameter> parameters = new List<SqlParameter>()
             {
@@ -36,7 +37,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
 
                 COMMIT;";
 
-            int rowsAffected = DbCommand.InsertUpdateData(InsertEnrollmentQuery, parameters);
+            int rowsAffected = await DbCommand.InsertUpdateDataAsync(InsertEnrollmentQuery, parameters);
 
             if (rowsAffected > 0)
             {
@@ -57,14 +58,14 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                         INSERT INTO [dbo].[PrerequisiteMaterial] ([EnrollmentId], [PrerequisiteId], [URL])
                         VALUES (@EnrollmentId, @PrerequisiteId, @URL)";
 
-                    DbCommand.InsertUpdateData(InsertPrerequisiteMaterialQuery, prerequisiteMaterialParameters);
+                    await DbCommand.InsertUpdateDataAsync(InsertPrerequisiteMaterialQuery, prerequisiteMaterialParameters);
                 }
                 return true;
             }
             return false;
         }
 
-        public bool Update(int enrollmentId, bool isApproved, string declineReason)
+        public async Task<bool> UpdateAsync(int enrollmentId, bool isApproved, string declineReason)
         {
             List<SqlParameter> parameters;
             string UpdateQuery;
@@ -96,7 +97,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                     new SqlParameter("@EnrollmentId", enrollmentId)
                 };
             }
-            return DbCommand.InsertUpdateData(UpdateQuery, parameters) > 0;
+            return await DbCommand.InsertUpdateDataAsync(UpdateQuery, parameters) > 0;
         }
 
         public EnrollmentModel Get(int userId, int trainingId)

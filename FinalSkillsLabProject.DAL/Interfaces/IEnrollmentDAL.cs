@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using FinalSkillsLabProject.Common.Models;
 
 namespace FinalSkillsLabProject.DAL.Interfaces
 {
     public interface IEnrollmentDAL
     {
-        bool Add(EnrollmentModel enrollment, List<PrerequisiteMaterialModel> prerequisiteMaterialsList);
-        bool Update(int enrollmentId, bool isApproved, string declineReason);
+        Task<bool> AddAsync(EnrollmentModel enrollment, List<PrerequisiteMaterialModel> prerequisiteMaterialsList);
+        Task<bool> UpdateAsync(int enrollmentId, bool isApproved, string declineReason);
         EnrollmentModel Get(int userId, int trainingId);
         IEnumerable<EnrollmentViewModel> GetAll();
         IEnumerable<EnrollmentViewModel> GetAllByManagerTraining(int managerId, int trainingId);

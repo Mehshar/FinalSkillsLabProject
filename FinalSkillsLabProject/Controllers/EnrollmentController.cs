@@ -91,10 +91,10 @@ namespace FinalSkillsLabProject.Controllers
                     TrainingId = trainingId
                 };
 
-                bool isSuccess = _enrollmentBL.Add(enrollment, prerequisiteMaterialsList);
+                bool isSuccess = await _enrollmentBL.AddAsync(enrollment, prerequisiteMaterialsList);
                 return Json(new { result = isSuccess, url = Url.Action("Index", "Training") });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return Json(new { result = false });
             }
@@ -137,7 +137,8 @@ namespace FinalSkillsLabProject.Controllers
             
             if (Session["CurrentRole"].ToString().Equals("Admin"))
             {
-                employeeEnrollmentsList = _enrollmentBL.GetAll().Where(x => x.EnrollmentStatus != EnrollmentStatusEnum.Selected.ToString()).ToList();
+                //employeeEnrollmentsList = _enrollmentBL.GetAll().Where(x => x.EnrollmentStatus != EnrollmentStatusEnum.Selected.ToString()).ToList();
+                employeeEnrollmentsList = _enrollmentBL.GetAll().ToList();
             }
 
             else if (Session["CurrentRole"].ToString().Equals("Manager"))
@@ -155,9 +156,9 @@ namespace FinalSkillsLabProject.Controllers
         }
 
         [CustomAuthorization("Manager,Admin")]
-        public JsonResult ManageEnrollment(int enrollmentId, bool isApproved, string declineReason)
+        public async Task<JsonResult> ManageEnrollment(int enrollmentId, bool isApproved, string declineReason)
         {
-            bool result = _enrollmentBL.Update(enrollmentId, isApproved, declineReason);
+            bool result = await _enrollmentBL.UpdateAsync(enrollmentId, isApproved, declineReason);
             UserEnrollmentViewModel user = _enrollmentBL.GetUserByEnrollment(enrollmentId);
             if (result)
             {

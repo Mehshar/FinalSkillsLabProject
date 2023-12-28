@@ -3,12 +3,13 @@ using FinalSkillsLabProject.DAL.Common;
 using FinalSkillsLabProject.Common.Models;
 using FinalSkillsLabProject.DAL.Interfaces;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 
 namespace FinalSkillsLabProject.DAL.DataAccessLayer
 {
     public class PrerequisiteDAL : IPrerequisiteDAL
     {
-        public void Add(PrerequisiteModel prerequisite, int trainingId)
+        public async Task AddAsync(PrerequisiteModel prerequisite, int trainingId)
         {
             List<SqlParameter> parameters = new List<SqlParameter>()
             {
@@ -32,10 +33,10 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
 
                 COMMIT;";
 
-            DbCommand.InsertUpdateData(InsertPrerequisiteQuery, parameters);
+            await DbCommand.InsertUpdateDataAsync(InsertPrerequisiteQuery, parameters);
         }
 
-        public void Update(PrerequisiteModel prerequisite)
+        public async Task UpdateAsync(PrerequisiteModel prerequisite)
         {
             List<SqlParameter> parameters = new List<SqlParameter>()
             {
@@ -50,7 +51,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
 	                [Description] = @Description
                 WHERE [PrerequisiteId] = @PrerequisiteId;";
 
-            DbCommand.InsertUpdateData(UpdatePrerequisiteQuery, parameters);
+            await DbCommand.InsertUpdateDataAsync(UpdatePrerequisiteQuery, parameters);
         }
 
         public bool Delete(int prerequisiteId)

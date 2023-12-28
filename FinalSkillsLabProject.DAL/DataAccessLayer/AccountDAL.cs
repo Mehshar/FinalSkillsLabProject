@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using FinalSkillsLabProject.Common.Models;
 using FinalSkillsLabProject.DAL.Common;
+using System.Threading.Tasks;
 
 namespace FinalSkillsLabProject.DAL.DataAccessLayer
 {
@@ -100,7 +101,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             return user;
         }
 
-        public bool Update(AccountModel account)
+        public async Task<bool> UpdateAsync(AccountModel account)
         {
             List<SqlParameter> parameters = new List<SqlParameter>()
             {
@@ -115,7 +116,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
 	                [Password] = @Password
                 WHERE [UserId] = @UserId;";
 
-            return DbCommand.InsertUpdateData(UpdateAccountQuery, parameters) > 0;
+            return await DbCommand.InsertUpdateDataAsync(UpdateAccountQuery, parameters) > 0;
         }
     }
 }

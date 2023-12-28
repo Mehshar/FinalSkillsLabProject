@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using FinalSkillsLabProject.Common.Models;
+using System.Threading.Tasks;
 
 namespace FinalSkillsLabProject.BL.BusinessLogicLayer
 {
@@ -17,13 +18,13 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
             this._departmentDAL = departmentDAL;
         }
 
-        public string Add(DepartmentModel department)
+        public async Task<string> AddAsync(DepartmentModel department)
         {
             try
             {
                 DepartmentModel dept = GetAll().FirstOrDefault(x => x.DepartmentName.Equals(department.DepartmentName));
                 CheckInsertUpdateDuplicate(dept);
-                this._departmentDAL.Add(department);
+                await this._departmentDAL.AddAsync(department);
                 return "Department created successfully!";
             }
 
@@ -48,7 +49,7 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
             return this._departmentDAL.GetManagerByDepartment(departmentId);
         }
 
-        public string Update(DepartmentModel department)
+        public async Task<string> UpdateAsync(DepartmentModel department)
         {
             try
             {
@@ -56,7 +57,7 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
                     .Where(x => x.DepartmentId != department.DepartmentId)
                     .FirstOrDefault(x => x.DepartmentName.Equals(department.DepartmentName));
                 CheckInsertUpdateDuplicate(dept);
-                this._departmentDAL.Update(department);
+                await this._departmentDAL.UpdateAsync(department);
                 return "Department updated successfully!";
             }
 

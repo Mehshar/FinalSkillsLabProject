@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using FinalSkillsLabProject.Common.Models;
 
 namespace FinalSkillsLabProject.BL.Interfaces
 {
     public interface IDepartmentBL
     {
-        string Add(DepartmentModel department);
-        string Update(DepartmentModel department);
+        Task<string> AddAsync(DepartmentModel department);
+        Task<string> UpdateAsync(DepartmentModel department);
         //void Delete(DepartmentModel department);
         DepartmentModel Get(int departmentId);
         IEnumerable<DepartmentModel> GetAll();

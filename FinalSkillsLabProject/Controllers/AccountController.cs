@@ -2,6 +2,7 @@
 using FinalSkillsLabProject.Common.Models;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 using System.Web.Security;
 
@@ -52,9 +53,9 @@ namespace FinalSkillsLabProject.Controllers
         }
 
         [HttpPost]
-        public JsonResult Signup(SignUpModel signUp)
+        public async Task<JsonResult> Signup(SignUpModel signUp)
         {
-            string result = _userBL.Add(signUp);
+            string result = await _userBL.AddAsync(signUp);
             return Json(new { result = result, url = Url.Action("Login", "Account") });
         }
 

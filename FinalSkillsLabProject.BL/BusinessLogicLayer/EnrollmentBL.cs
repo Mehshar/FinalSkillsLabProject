@@ -2,6 +2,7 @@
 using FinalSkillsLabProject.DAL.Interfaces;
 using System.Collections.Generic;
 using FinalSkillsLabProject.Common.Models;
+using System.Threading.Tasks;
 
 namespace FinalSkillsLabProject.BL.BusinessLogicLayer
 {
@@ -14,14 +15,14 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
             this._enrollmentDAL = enrollmentDAL;
         }
 
-        public bool Add(EnrollmentModel enrollment, List<PrerequisiteMaterialModel> prerequisiteMaterialsList)
+        public async Task<bool> AddAsync(EnrollmentModel enrollment, List<PrerequisiteMaterialModel> prerequisiteMaterialsList)
         {
-            return this._enrollmentDAL.Add(enrollment, prerequisiteMaterialsList);
+            return await this._enrollmentDAL.AddAsync(enrollment, prerequisiteMaterialsList);
         }
 
-        public bool Update(int enrollmentId, bool isApproved, string declineReason)
+        public async Task<bool> UpdateAsync(int enrollmentId, bool isApproved, string declineReason)
         {
-            return this._enrollmentDAL.Update(enrollmentId, isApproved, declineReason);
+            return await this._enrollmentDAL.UpdateAsync(enrollmentId, isApproved, declineReason);
         }
 
         public EnrollmentModel Get(int userId, int trainingId)

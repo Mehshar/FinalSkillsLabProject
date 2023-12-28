@@ -4,12 +4,13 @@ using System.Data.SqlClient;
 using FinalSkillsLabProject.Common.Models;
 using FinalSkillsLabProject.DAL.Interfaces;
 using FinalSkillsLabProject.Common.Enums;
+using System.Threading.Tasks;
 
 namespace FinalSkillsLabProject.DAL.DataAccessLayer
 {
     public class DepartmentDAL : IDepartmentDAL
     {
-        public bool Add(DepartmentModel department)
+        public async Task<bool> AddAsync(DepartmentModel department)
         {
             List<SqlParameter> parameters = new List<SqlParameter>();
 
@@ -23,9 +24,9 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
 
                 SELECT @department_key = @@IDENTITY";
 
-            return DbCommand.InsertUpdateData(InsertDepartmentQuery, parameters) > 0;
+            return await DbCommand.InsertUpdateDataAsync(InsertDepartmentQuery, parameters) > 0;
         }
-        public bool Update(DepartmentModel department)
+        public async Task<bool> UpdateAsync(DepartmentModel department)
         {
             List<SqlParameter> parameters = new List<SqlParameter>();
 
@@ -37,7 +38,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                 SET [DepartmentName] = @DepartmentName
                 WHERE [DepartmentId] = @DepartmentId;";
 
-            return DbCommand.InsertUpdateData(UpdateDepartmentQuery, parameters) > 0;
+            return await DbCommand.InsertUpdateDataAsync(UpdateDepartmentQuery, parameters) > 0;
         }
         //public void Delete(DepartmentModel department) { }
         public DepartmentModel Get(int departmentId)

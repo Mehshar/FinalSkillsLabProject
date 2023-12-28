@@ -3,6 +3,7 @@ using FinalSkillsLabProject.BL.Interfaces;
 using FinalSkillsLabProject.Common.Exceptions;
 using FinalSkillsLabProject.DAL.Interfaces;
 using FinalSkillsLabProject.Common.Models;
+using System.Threading.Tasks;
 
 namespace FinalSkillsLabProject.BL
 {
@@ -25,12 +26,12 @@ namespace FinalSkillsLabProject.BL
             return this._accountDAL.GetByUsername(username);
         }
 
-        public string Update(AccountModel account)
+        public async Task<string> UpdateAsync(AccountModel account)
         {
             try
             {
                 CheckUpdateDuplicate(account.UserId, account.Username);
-                this._accountDAL.Update(account);
+                await this._accountDAL.UpdateAsync(account);
                 return "Account successfully updated!";
             }
 

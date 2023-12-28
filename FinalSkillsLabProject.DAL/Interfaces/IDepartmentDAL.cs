@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using FinalSkillsLabProject.Common.Models;
 
 namespace FinalSkillsLabProject.DAL.Interfaces
 {
     public interface IDepartmentDAL
     {
-        bool Add(DepartmentModel department);
-        bool Update(DepartmentModel department);
+        Task<bool> AddAsync(DepartmentModel department);
+        Task<bool>UpdateAsync(DepartmentModel department);
         //void Delete(DepartmentModel department);
         DepartmentModel Get(int departmentId);
         IEnumerable<DepartmentModel> GetAll();

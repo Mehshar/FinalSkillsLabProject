@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Data;
+using System.Threading.Tasks;
 
 namespace FinalSkillsLabProject.DAL.Common
 {
@@ -33,7 +34,7 @@ namespace FinalSkillsLabProject.DAL.Common
             return cmd.ExecuteReader(CommandBehavior.CloseConnection);
         }
 
-        public static int InsertUpdateData(string query, List<SqlParameter> parameters)
+        public static async Task<int> InsertUpdateDataAsync(string query, List<SqlParameter> parameters)
         {
             DAL dal = new DAL();
             int numOfRowsAffected = 0;
@@ -58,7 +59,7 @@ namespace FinalSkillsLabProject.DAL.Common
                         }
                     });
                 }
-                numOfRowsAffected = cmd.ExecuteNonQuery();
+                numOfRowsAffected = await cmd.ExecuteNonQueryAsync();
 
                 foreach (var parameter in parameters)
                 {

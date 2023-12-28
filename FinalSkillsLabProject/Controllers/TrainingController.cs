@@ -4,6 +4,7 @@ using FinalSkillsLabProject.Common.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace FinalSkillsLabProject.Controllers
@@ -38,9 +39,9 @@ namespace FinalSkillsLabProject.Controllers
 
         [HttpPost]
         [CustomAuthorization("Admin")]
-        public JsonResult Create(TrainingModel training, List<int> prerequisitesList)
+        public async Task<JsonResult> Create(TrainingModel training, List<int> prerequisitesList)
         {
-            string result = _trainingBL.Add(training, prerequisitesList);
+            string result =await _trainingBL.AddAsync(training, prerequisitesList);
             return Json(new { result = result, url = Url.Action("Index", "Training") });
         }
 
@@ -66,9 +67,9 @@ namespace FinalSkillsLabProject.Controllers
 
         [HttpPost]
         [CustomAuthorization("Admin")]
-        public JsonResult SaveEdit(TrainingModel training)
+        public async Task<JsonResult> SaveEdit(TrainingModel training)
         {
-            string result = _trainingBL.Update(training);
+            string result = await _trainingBL.UpdateAsync(training);
             return Json(new { result = result, url = Url.Action("Index", "Training") });
         }
     }

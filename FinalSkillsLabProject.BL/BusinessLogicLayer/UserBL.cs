@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using FinalSkillsLabProject.Common.Models;
+using System.Threading.Tasks;
 
 namespace FinalSkillsLabProject.BL.BusinessLogicLayer
 {
@@ -19,12 +20,12 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
             this._accountDAL = accountDAL;
         }
 
-        public string Add(SignUpModel model)
+        public async Task<string> AddAsync(SignUpModel model)
         {
             try
             {
                 CheckInsertDuplicate(model.NIC, model.Email, model.MobileNum, model.Username);
-                this._userDAL.Add(model);
+                await this._userDAL.AddAsync(model);
                 return "Account created successfully!";
             }
 
@@ -34,12 +35,12 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
             }
         }
 
-        public string Update(UserModel user)
+        public async Task<string> UpdateAsync(UserModel user)
         {
             try
             {
                 CheckUpdateDuplicate(user.UserId, user.NIC, user.Email, user.MobileNum);
-                this._userDAL.Update(user);
+                await this._userDAL.UpdateAsync(user);
                 return "User updated successfully!";
             }
 

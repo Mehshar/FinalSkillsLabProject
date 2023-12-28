@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using FinalSkillsLabProject.Common.Models;
 
 namespace FinalSkillsLabProject.BL.Interfaces
 {
     public interface IEnrollmentBL
     {
-        bool Add(EnrollmentModel enrollment, List<PrerequisiteMaterialModel> prerequisiteMaterialsList);
-        bool Update(int enrollmentId, bool isApproved, string declineReason);
+        Task<bool> AddAsync(EnrollmentModel enrollment, List<PrerequisiteMaterialModel> prerequisiteMaterialsList);
+        Task<bool> UpdateAsync(int enrollmentId, bool isApproved, string declineReason);
         //void Delete(EnrollmentModel model);
         EnrollmentModel Get(int userId, int trainingId);
         IEnumerable<EnrollmentViewModel> GetAll();

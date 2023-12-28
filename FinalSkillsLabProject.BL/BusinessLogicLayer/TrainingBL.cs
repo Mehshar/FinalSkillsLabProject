@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using FinalSkillsLabProject.Common.Models;
+using System.Threading.Tasks;
 
 namespace FinalSkillsLabProject.BL.BusinessLogicLayer
 {
@@ -17,13 +18,13 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
             this._trainingDAL = trainingDAL;
         }
 
-        public string Add(TrainingModel training, List<int> prerequisitesList)
+        public async Task<string> AddAsync(TrainingModel training, List<int> prerequisitesList)
         {
             try
             {
                 TrainingModel trainingModel = GetAll().FirstOrDefault(x => x.TrainingName.Equals(training.TrainingName));
                 CheckInsertUpdateDuplicate(trainingModel);
-                this._trainingDAL.Add(training, prerequisitesList);
+                await this._trainingDAL.AddAsync(training, prerequisitesList);
                 return "Training created successfully!";
             }
 
@@ -33,7 +34,7 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
             }
         }
 
-        public string Update(TrainingModel training)
+        public async Task<string> UpdateAsync(TrainingModel training)
         {
             try
             {
@@ -41,7 +42,7 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
                     .Where(x => x.TrainingId != training.TrainingId)
                     .FirstOrDefault(x => x.TrainingName.Equals(training.TrainingName));
                 CheckInsertUpdateDuplicate(trainingModel);
-                this._trainingDAL.Update(training);
+                await this._trainingDAL.UpdateAsync(training);
                 return "Training updated successfully!";
             }
 
