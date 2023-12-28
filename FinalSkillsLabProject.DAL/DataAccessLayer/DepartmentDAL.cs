@@ -41,7 +41,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             return await DbCommand.InsertUpdateDataAsync(UpdateDepartmentQuery, parameters) > 0;
         }
         //public void Delete(DepartmentModel department) { }
-        public DepartmentModel Get(int departmentId)
+        public async Task<DepartmentModel> GetAsync(int departmentId)
         {
             DepartmentModel department = null;
             List<SqlParameter> parameters = new List<SqlParameter>();
@@ -53,7 +53,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                 FROM [dbo].[Department]
                 WHERE [DepartmentId] = @DepartmentId;";
 
-            using (SqlDataReader reader = DbCommand.GetDataWithConditions(GetDepartmentQuery, parameters))
+            using (SqlDataReader reader = await DbCommand.GetDataWithConditionsAsync(GetDepartmentQuery, parameters))
             {
                 if (reader.Read())
                 {
@@ -67,16 +67,16 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             return department;
         }
 
-        public IEnumerable<DepartmentModel> GetAll()
+        public async Task<IEnumerable<DepartmentModel>> GetAllAsync()
         {
             DepartmentModel department;
             List<DepartmentModel> departmentsList = new List<DepartmentModel>();
 
             const string GetAllDepartmentsQuery =
               @"SELECT *
-                FROM [dbo].[Department] ";
+                FROM [dbo].[Department];";
 
-            using (SqlDataReader reader = DbCommand.GetData(GetAllDepartmentsQuery))
+            using (SqlDataReader reader = await DbCommand.GetDataAsync(GetAllDepartmentsQuery))
             {
                 while (reader.Read())
                 {
@@ -91,7 +91,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             return departmentsList;
         }
 
-        public IEnumerable<UserModel> GetManagerByDepartment(int departmentId)
+        public async Task<IEnumerable<UserModel>> GetManagerByDepartmentAsync(int departmentId)
         {
             const string GetManagerByDepartmentQuery =
               @"SELECT [UserId], [FirstName], [LastName]
@@ -107,7 +107,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             UserModel user;
             List<UserModel> managersList = new List<UserModel>();
 
-            using (SqlDataReader reader = DbCommand.GetDataWithConditions(GetManagerByDepartmentQuery, parameters))
+            using (SqlDataReader reader = await DbCommand.GetDataWithConditionsAsync(GetManagerByDepartmentQuery, parameters))
             {
                 while (reader.Read())
                 {

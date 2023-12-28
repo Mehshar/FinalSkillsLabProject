@@ -7,7 +7,7 @@ namespace FinalSkillsLabProject.DAL.Common
 {
     public static class DbCommand
     {
-        public static SqlDataReader GetData(string query)
+        public static async Task<SqlDataReader> GetDataAsync(string query)
         {
             DAL dal = new DAL();
             SqlCommand cmd = new SqlCommand(query, dal.Connection)
@@ -15,10 +15,10 @@ namespace FinalSkillsLabProject.DAL.Common
                 CommandType = CommandType.Text
             };
 
-            return cmd.ExecuteReader(CommandBehavior.CloseConnection);
+            return await cmd.ExecuteReaderAsync(CommandBehavior.CloseConnection);
         }
 
-        public static SqlDataReader GetDataWithConditions(string query, List<SqlParameter> parameters)
+        public static async Task<SqlDataReader> GetDataWithConditionsAsync(string query, List<SqlParameter> parameters)
         {
             DAL dal = new DAL();
             SqlCommand cmd = new SqlCommand(query, dal.Connection);
@@ -31,7 +31,7 @@ namespace FinalSkillsLabProject.DAL.Common
                     cmd.Parameters.AddWithValue(parameter.ParameterName, parameter.Value);
                 });
             }
-            return cmd.ExecuteReader(CommandBehavior.CloseConnection);
+            return await cmd.ExecuteReaderAsync(CommandBehavior.CloseConnection);
         }
 
         public static async Task<int> InsertUpdateDataAsync(string query, List<SqlParameter> parameters)
@@ -73,7 +73,7 @@ namespace FinalSkillsLabProject.DAL.Common
             return numOfRowsAffected;
         }
 
-        public static int DeleteData(string query, SqlParameter parameter)
+        public static async Task<int> DeleteDataAsync(string query, SqlParameter parameter)
         {
             DAL dal = new DAL();
             int rowsAffected = 0;
@@ -87,7 +87,7 @@ namespace FinalSkillsLabProject.DAL.Common
                     cmd.Parameters.AddWithValue(parameter.ParameterName, parameter.Value);
                 }
 
-                rowsAffected = cmd.ExecuteNonQuery();
+                rowsAffected = await cmd.ExecuteNonQueryAsync();
             }
             dal.CloseConnection();
             return rowsAffected;

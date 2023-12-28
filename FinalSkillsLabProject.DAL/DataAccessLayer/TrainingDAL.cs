@@ -100,7 +100,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             await DbCommand.InsertUpdateDataAsync(UpdateTrainingQuery, parameters);
         }
 
-        public bool Delete(int trainingId)
+        public async Task<bool> DeleteAsync(int trainingId)
         {
             SqlParameter parameter = new SqlParameter("@TrainingId", trainingId);
 
@@ -108,10 +108,10 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
               @"DELETE FROM [dbo].[Training]
                 WHERE [TrainingId] = @TrainingId;";
 
-            return DbCommand.DeleteData(DeleteTrainingQuery, parameter) > 0;
+            return await DbCommand.DeleteDataAsync(DeleteTrainingQuery, parameter) > 0;
         }
 
-        public TrainingModel Get(int trainingId)
+        public async Task<TrainingModel> GetAsync(int trainingId)
         {
             TrainingModel training = null;
             List<SqlParameter> parameters = new List<SqlParameter>();
@@ -125,7 +125,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                 ON t.[PriorityDepartment] = d.[DepartmentId]
                 WHERE [TrainingId] = @TrainingId;";
 
-            using (SqlDataReader reader = DbCommand.GetDataWithConditions(GetTrainingQuery, parameters))
+            using (SqlDataReader reader = await DbCommand.GetDataWithConditionsAsync(GetTrainingQuery, parameters))
             {
                 if (reader.Read())
                 {
@@ -144,7 +144,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             return training;
         }
 
-        public IEnumerable<TrainingModel> GetAll()
+        public async Task<IEnumerable<TrainingModel>> GetAllAsync()
         {
             TrainingModel training;
             List<TrainingModel> trainingList = new List<TrainingModel>();
@@ -155,7 +155,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                 LEFT JOIN [dbo].[Department] as d
                 ON t.[PriorityDepartment] = d.DepartmentId;";
 
-            using (SqlDataReader reader = DbCommand.GetData(GetAllTrainingsQuery))
+            using (SqlDataReader reader = await DbCommand.GetDataAsync(GetAllTrainingsQuery))
             {
                 while (reader.Read())
                 {
@@ -175,7 +175,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             return trainingList;
         }
 
-        public IEnumerable<TrainingModel> GetAllByUser(int userId)
+        public async Task<IEnumerable<TrainingModel>> GetAllByUserAsync(int userId)
         {
             TrainingModel training;
             List<TrainingModel> trainingsList = new List<TrainingModel>();
@@ -189,7 +189,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                 ON e.[TrainingId] = t.[TrainingId]
                 WHERE e.[UserId] = @UserId;";
 
-            using (SqlDataReader reader = DbCommand.GetDataWithConditions(GetTrainingsByUserQuery, parameters))
+            using (SqlDataReader reader = await DbCommand.GetDataWithConditionsAsync(GetTrainingsByUserQuery, parameters))
             {
                 while (reader.Read())
                 {
@@ -209,7 +209,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             return trainingsList;
         }
 
-        public IEnumerable<TrainingModel> GetNotEnrolledTrainings(int userId)
+        public async Task<IEnumerable<TrainingModel>> GetNotEnrolledTrainingsAsync(int userId)
         {
             TrainingModel training;
             List<TrainingModel> trainingsList = new List<TrainingModel>();
@@ -226,7 +226,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                     WHERE e.UserId = @UserId
                         AND e.TrainingId = t.TrainingId);";
 
-            using (SqlDataReader reader = DbCommand.GetDataWithConditions(GetNotEnrolledTrainings, parameters))
+            using (SqlDataReader reader = await DbCommand.GetDataWithConditionsAsync(GetNotEnrolledTrainings, parameters))
             {
                 while (reader.Read())
                 {

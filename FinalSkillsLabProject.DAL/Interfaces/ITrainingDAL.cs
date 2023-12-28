@@ -8,10 +8,10 @@ namespace FinalSkillsLabProject.DAL.Interfaces
     {
         Task AddAsync(TrainingModel training, List<int> prerequisitesList);
         Task UpdateAsync(TrainingModel training);
-        bool Delete(int trainingId);
-        TrainingModel Get(int trainingId);
-        IEnumerable<TrainingModel> GetAll();
-        IEnumerable<TrainingModel> GetAllByUser(int userId);
-        IEnumerable<TrainingModel> GetNotEnrolledTrainings(int userId);
+        Task<bool> DeleteAsync(int trainingId);
+        Task<TrainingModel> GetAsync(int trainingId);
+        Task<IEnumerable<TrainingModel>> GetAllAsync();
+        Task<IEnumerable<TrainingModel>> GetAllByUserAsync(int userId);
+        Task<IEnumerable<TrainingModel>> GetNotEnrolledTrainingsAsync(int userId);
     }
 }

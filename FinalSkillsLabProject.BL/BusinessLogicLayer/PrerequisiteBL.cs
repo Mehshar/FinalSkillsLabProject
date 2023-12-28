@@ -22,7 +22,7 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
         {
             try
             {
-                PrerequisiteModel prerequisiteModel = GetAll().FirstOrDefault(x => x.Description.Equals(prerequisite.Description));
+                PrerequisiteModel prerequisiteModel = (await GetAllAsync()).FirstOrDefault(x => x.Description.Equals(prerequisite.Description));
                 CheckInsertUpdateDuplicate(prerequisiteModel);
                 await this._prerequisiteDAL.AddAsync(prerequisite, trainingId);
                 return "Prerequisite added successfully!";
@@ -39,7 +39,7 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
         {
             try
             {
-                PrerequisiteModel prerequisiteModel = GetAll()
+                PrerequisiteModel prerequisiteModel = (await GetAllAsync())
                     .Where(x => x.PrerequisiteId != prerequisite.PrerequisiteId)
                     .FirstOrDefault(x => x.Description.Equals(prerequisite.Description));
                 CheckInsertUpdateDuplicate(prerequisiteModel);
@@ -53,19 +53,19 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
             }
         }
 
-        public bool Delete(int prerequisiteId)
+        public async Task<bool> DeleteAsync(int prerequisiteId)
         {
-            return this._prerequisiteDAL.Delete(prerequisiteId);
+            return await this._prerequisiteDAL.DeleteAsync(prerequisiteId);
         }
 
-        public IEnumerable<PrerequisiteModel> GetAll()
+        public async Task<IEnumerable<PrerequisiteModel>> GetAllAsync()
         {
-            return this._prerequisiteDAL.GetAll();
+            return await this._prerequisiteDAL.GetAllAsync();
         }
 
-        public IEnumerable<PrerequisiteModel> GetAllByTraining(int trainingId)
+        public async Task<IEnumerable<PrerequisiteModel>> GetAllByTrainingAsync(int trainingId)
         {
-            return this._prerequisiteDAL.GetAllByTraining(trainingId);
+            return await this._prerequisiteDAL.GetAllByTrainingAsync(trainingId);
         }
 
         private void CheckInsertUpdateDuplicate(PrerequisiteModel prerequisite)

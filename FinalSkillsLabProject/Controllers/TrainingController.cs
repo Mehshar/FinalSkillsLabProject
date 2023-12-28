@@ -22,18 +22,18 @@ namespace FinalSkillsLabProject.Controllers
             _prerequisiteBL = prerequisiteBL;
         }
 
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
-            List<TrainingModel> trainingsList = _trainingBL.GetNotEnrolledTrainings((int)Session["CurrentUserId"]).ToList();
+            List<TrainingModel> trainingsList = (await _trainingBL.GetNotEnrolledTrainingsAsync((int)Session["CurrentUserId"])).ToList();
             return View(trainingsList);
         }
 
         [HttpGet]
         [CustomAuthorization("Admin")]
-        public ActionResult Create()
+        public async Task<ActionResult> Create()
         {
-            ViewBag.Departments = _departmentBL.GetAll().ToList();
-            ViewBag.Prerequisites = _prerequisiteBL.GetAll().ToList();
+            ViewBag.Departments =  (await _departmentBL.GetAllAsync()).ToList();
+            ViewBag.Prerequisites = (await _prerequisiteBL.GetAllAsync()).ToList();
             return View();
         }
 
@@ -45,23 +45,23 @@ namespace FinalSkillsLabProject.Controllers
             return Json(new { result = result, url = Url.Action("Index", "Training") });
         }
 
-        public ActionResult Details(int? id)
+        public async Task<ActionResult> Details(int? id)
         {
             if (id == null) { return View("Error404"); }
-            TrainingModel training = _trainingBL.Get((int)id);
+            TrainingModel training = await _trainingBL.GetAsync((int)id);
             if (training == null) { return View("Error404"); }
-            ViewBag.Prerequisites = _prerequisiteBL.GetAllByTraining((int)id).ToList();
+            ViewBag.Prerequisites = (await _prerequisiteBL.GetAllByTrainingAsync((int)id)).ToList();
             return View(training);
         }
 
         [HttpGet]
         [CustomAuthorization("Admin")]
-        public ActionResult Edit(int? id)
+        public async Task<ActionResult> Edit(int? id)
         {
             if (id == null) { return View("Error404"); }
-            TrainingModel training = _trainingBL.Get((int)id);
+            TrainingModel training = await _trainingBL.GetAsync((int)id);
             if (training == null) { return View("Error404"); }
-            ViewBag.Departments = _departmentBL.GetAll().Where(x => x.DepartmentId != training.PriorityDepartment).ToList();
+            ViewBag.Departments = (await _departmentBL.GetAllAsync()).Where(x => x.DepartmentId != training.PriorityDepartment).ToList();
             return View(training);
         }
 

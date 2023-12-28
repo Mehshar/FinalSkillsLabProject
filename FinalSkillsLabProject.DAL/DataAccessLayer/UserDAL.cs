@@ -76,7 +76,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             return await DbCommand.InsertUpdateDataAsync(UpdateUserQuery, parameters) > 0;
         }
 
-        public bool Delete(int userId)
+        public async Task<bool> DeleteAsync(int userId)
         {
             SqlParameter parameter = new SqlParameter("@UserId", userId);
 
@@ -84,10 +84,10 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
               @"DELETE FROM [dbo].[EndUser]
                 WHERE [UserId] = @UserId;";
 
-            return DbCommand.DeleteData(DeleteUserQuery, parameter) > 0;
+            return await DbCommand.DeleteDataAsync(DeleteUserQuery, parameter) > 0;
         }
 
-        public UserModel Get(int userId)
+        public async Task<UserModel> GetAsync(int userId)
         {
             UserModel user = null;
             List<SqlParameter> parameters = new List<SqlParameter>()
@@ -100,7 +100,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                 FROM [dbo].[EndUser]
                 WHERE [UserId] = @UserId;";
 
-            using (SqlDataReader reader = DbCommand.GetDataWithConditions(GetUserQuery, parameters))
+            using (SqlDataReader reader = await DbCommand.GetDataWithConditionsAsync(GetUserQuery, parameters))
             {
                 if (reader.Read())
                 {
@@ -121,7 +121,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             return user;
         }
 
-        public IEnumerable<UserModel> GetAll()
+        public async Task<IEnumerable<UserModel>> GetAllAsync()
         {
             UserModel user;
             List<UserModel> usersList = new List<UserModel>();
@@ -130,7 +130,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
               @"SELECT *
                 FROM [dbo].[EndUser];";
 
-            using (SqlDataReader reader = DbCommand.GetData(GetAllUsersQuery))
+            using (SqlDataReader reader = await DbCommand.GetDataAsync(GetAllUsersQuery))
             {
                 while (reader.Read())
                 {

@@ -22,7 +22,7 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
         {
             try
             {
-                DepartmentModel dept = GetAll().FirstOrDefault(x => x.DepartmentName.Equals(department.DepartmentName));
+                DepartmentModel dept = (await GetAllAsync()).FirstOrDefault(x => x.DepartmentName.Equals(department.DepartmentName));
                 CheckInsertUpdateDuplicate(dept);
                 await this._departmentDAL.AddAsync(department);
                 return "Department created successfully!";
@@ -34,26 +34,26 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
             }
         }
 
-        public DepartmentModel Get(int departmentId)
+        public async Task<DepartmentModel> GetAsync(int departmentId)
         {
-            return this._departmentDAL.Get(departmentId);
+            return await this._departmentDAL.GetAsync(departmentId);
         }
 
-        public IEnumerable<DepartmentModel> GetAll()
+        public async Task<IEnumerable<DepartmentModel>> GetAllAsync()
         {
-            return this._departmentDAL.GetAll();
+            return await this._departmentDAL.GetAllAsync();
         }
 
-        public IEnumerable<UserModel> GetManagerByDepartment(int departmentId)
+        public async Task<IEnumerable<UserModel>> GetManagerByDepartmentAsync(int departmentId)
         {
-            return this._departmentDAL.GetManagerByDepartment(departmentId);
+            return await this._departmentDAL.GetManagerByDepartmentAsync(departmentId);
         }
 
         public async Task<string> UpdateAsync(DepartmentModel department)
         {
             try
             {
-                DepartmentModel dept = GetAll()
+                DepartmentModel dept = (await GetAllAsync())
                     .Where(x => x.DepartmentId != department.DepartmentId)
                     .FirstOrDefault(x => x.DepartmentName.Equals(department.DepartmentName));
                 CheckInsertUpdateDuplicate(dept);

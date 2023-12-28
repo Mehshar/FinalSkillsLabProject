@@ -5,9 +5,9 @@ namespace FinalSkillsLabProject.DAL.Interfaces
 {
     public interface IAccountDAL
     {
-        bool AuthenticateUser(LoginModel model);
-        UserViewModel GetByUsername(string username);
-        AccountModel GetByUsernameAndUserId(string username, int userId);
+        Task<bool> AuthenticateUserAsync(LoginModel model);
+        Task<UserViewModel> GetByUsernameAsync(string username);
+        Task<AccountModel> GetByUsernameAndUserIdAsync(string username, int userId);
         Task<bool> UpdateAsync(AccountModel account);
     }
 }

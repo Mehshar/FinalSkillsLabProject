@@ -8,8 +8,8 @@ namespace FinalSkillsLabProject.BL.Interfaces
     {
         Task<string> AddAsync(PrerequisiteModel prerequisite, int trainingId);
         Task<string> UpdateAsync(PrerequisiteModel prerequisite);
-        bool Delete(int prerequisiteId);
-        IEnumerable<PrerequisiteModel> GetAll();
-        IEnumerable<PrerequisiteModel> GetAllByTraining(int trainingId);
+        Task<bool> DeleteAsync(int prerequisiteId);
+        Task<IEnumerable<PrerequisiteModel>> GetAllAsync();
+        Task<IEnumerable<PrerequisiteModel>> GetAllByTrainingAsync(int trainingId);
     }
 }

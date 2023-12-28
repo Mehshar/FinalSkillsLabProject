@@ -24,7 +24,7 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
         {
             try
             {
-                CheckInsertDuplicate(model.NIC, model.Email, model.MobileNum, model.Username);
+                await CheckInsertDuplicate(model.NIC, model.Email, model.MobileNum, model.Username);
                 await this._userDAL.AddAsync(model);
                 return "Account created successfully!";
             }
@@ -39,7 +39,7 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
         {
             try
             {
-                CheckUpdateDuplicate(user.UserId, user.NIC, user.Email, user.MobileNum);
+                await CheckUpdateDuplicate(user.UserId, user.NIC, user.Email, user.MobileNum);
                 await this._userDAL.UpdateAsync(user);
                 return "User updated successfully!";
             }
@@ -50,26 +50,26 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
             }
         }
 
-        public bool Delete(int userId)
+        public async Task<bool> DeleteAsync(int userId)
         {
-            return this._userDAL.Delete(userId);
+            return await this._userDAL.DeleteAsync(userId);
         }
 
-        public UserModel Get(int userId)
+        public async Task<UserModel> GetAsync(int userId)
         {
-            return this._userDAL.Get(userId);
+            return await this._userDAL.GetAsync(userId);
         }
 
-        public IEnumerable<UserModel> GetAll()
+        public async Task<IEnumerable<UserModel>> GetAllAsync()
         {
-            return this._userDAL.GetAll();
+            return await this._userDAL.GetAllAsync();
         }
 
         // Validations
-        private void CheckInsertDuplicate(string nic, string email, string mobileNum, string username)
+        private async Task CheckInsertDuplicate(string nic, string email, string mobileNum, string username)
         {
-            List<UserModel> usersList = GetAll().ToList();
-            UserViewModel account = this._accountDAL.GetByUsername(username);
+            List<UserModel> usersList = (await GetAllAsync()).ToList();
+            UserViewModel account = await this._accountDAL.GetByUsernameAsync(username);
             string message = "";
 
             // true when there is NIC duplication
@@ -102,9 +102,9 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
             }
         }
 
-        private void CheckUpdateDuplicate(int userId, string nic, string email, string mobileNum)
+        private async Task CheckUpdateDuplicate(int userId, string nic, string email, string mobileNum)
         {
-            List<UserModel> usersList = GetAll().Where(x => x.UserId != userId).ToList();
+            List<UserModel> usersList = (await GetAllAsync()).Where(x => x.UserId != userId).ToList();
             string message = "";
 
             if (usersList.FirstOrDefault(x => x.NIC.Equals(nic)) != null)

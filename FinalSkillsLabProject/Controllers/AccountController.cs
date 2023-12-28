@@ -30,12 +30,12 @@ namespace FinalSkillsLabProject.Controllers
         }
 
         [HttpPost]
-        public JsonResult Authenticate(LoginModel loginModel)
+        public async Task<JsonResult> Authenticate(LoginModel loginModel)
         {
-            bool isUserValid = _accountBL.AuthenticateUser(loginModel);
+            bool isUserValid = await _accountBL.AuthenticateUserAsync(loginModel);
             if (isUserValid)
             {
-                UserViewModel user = _accountBL.GetByUsername(loginModel.Username);
+                UserViewModel user = await _accountBL.GetByUsernameAsync(loginModel.Username);
                 SetSessionVariables(user);
 
                 // for authentication to work using FormsAuthentication class
@@ -46,9 +46,9 @@ namespace FinalSkillsLabProject.Controllers
         }
 
         [HttpGet]
-        public ActionResult Signup()
+        public async Task<ActionResult> Signup()
         {
-            ViewBag.Departments = _departmentBL.GetAll().ToList();
+            ViewBag.Departments = (await _departmentBL.GetAllAsync()).ToList();
             return View();
         }
 
@@ -59,9 +59,9 @@ namespace FinalSkillsLabProject.Controllers
             return Json(new { result = result, url = Url.Action("Login", "Account") });
         }
 
-        public JsonResult GetDepartmentManagers(int departmentId)
+        public async Task<JsonResult> GetDepartmentManagers(int departmentId)
         {
-            List<UserModel> managersList = _departmentBL.GetManagerByDepartment(departmentId).ToList();
+            List<UserModel> managersList = (await _departmentBL.GetManagerByDepartmentAsync(departmentId)).ToList();
             return Json(new { managers = managersList });
         }
 

@@ -17,20 +17,20 @@ namespace FinalSkillsLabProject.BL
             this._accountDAL = accountDAL;
         }
 
-        public bool AuthenticateUser(LoginModel model)
+        public async Task<bool> AuthenticateUserAsync(LoginModel model)
         {
-            return this._accountDAL.AuthenticateUser(model);
+            return await this._accountDAL.AuthenticateUserAsync(model);
         }
-        public UserViewModel GetByUsername(string username)
+        public async Task<UserViewModel> GetByUsernameAsync(string username)
         {
-            return this._accountDAL.GetByUsername(username);
+            return await this._accountDAL.GetByUsernameAsync(username);
         }
 
         public async Task<string> UpdateAsync(AccountModel account)
         {
             try
             {
-                CheckUpdateDuplicate(account.UserId, account.Username);
+                await CheckUpdateDuplicate(account.UserId, account.Username);
                 await this._accountDAL.UpdateAsync(account);
                 return "Account successfully updated!";
             }
@@ -41,9 +41,9 @@ namespace FinalSkillsLabProject.BL
             }
         }
 
-        private void CheckUpdateDuplicate(int userId, string username)
+        private async Task CheckUpdateDuplicate(int userId, string username)
         {
-            AccountModel account = this._accountDAL.GetByUsernameAndUserId(username, userId);
+            AccountModel account = await this._accountDAL.GetByUsernameAndUserIdAsync(username, userId);
             string message = "";
             if (account != null)
             {

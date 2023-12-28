@@ -100,7 +100,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             return await DbCommand.InsertUpdateDataAsync(UpdateQuery, parameters) > 0;
         }
 
-        public EnrollmentModel Get(int userId, int trainingId)
+        public async Task<EnrollmentModel> GetAsync(int userId, int trainingId)
         {
             EnrollmentModel enrollment = null;
             List<SqlParameter> parameters = new List<SqlParameter>()
@@ -112,7 +112,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                 FROM [dbo].[Enrollment]
                 WHERE [UserId] = @UserId AND [TrainingId] = @TrainingId;";
 
-            using (SqlDataReader reader = DbCommand.GetDataWithConditions(GetEnrollmentQuery, parameters))
+            using (SqlDataReader reader = await DbCommand.GetDataWithConditionsAsync(GetEnrollmentQuery, parameters))
             {
                 if (reader.Read())
                 {
@@ -130,7 +130,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             return enrollment;
         }
 
-        public IEnumerable<EnrollmentViewModel> GetAll()
+        public async Task<IEnumerable<EnrollmentViewModel>> GetAllAsync()
         {
             EnrollmentViewModel enrollment;
             List<EnrollmentViewModel> enrollmentsList = new List<EnrollmentViewModel>();
@@ -149,7 +149,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                 LEFT JOIN [dbo].[EndUser] AS meuser
                 ON meuser.[UserId] = euser.[ManagerId];";
 
-            using (SqlDataReader reader = DbCommand.GetData(GetAllEnrollmentsQuery))
+            using (SqlDataReader reader = await DbCommand.GetDataAsync(GetAllEnrollmentsQuery))
             {
                 while (reader.Read())
                 {
@@ -175,7 +175,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             return enrollmentsList;
         }
 
-        public IEnumerable<EnrollmentViewModel> GetAllByManagerTraining(int managerId, int trainingId)
+        public async Task<IEnumerable<EnrollmentViewModel>> GetAllByManagerTrainingAsync(int managerId, int trainingId)
         {
             EnrollmentViewModel enrollment;
             List<EnrollmentViewModel> enrollmentsList = new List<EnrollmentViewModel>();
@@ -196,7 +196,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                 ON euser.[DepartmentId] = d.[DepartmentId]
                 WHERE euser.ManagerId = @ManagerId and t.TrainingId = @TrainingId;";
 
-            using (SqlDataReader reader = DbCommand.GetDataWithConditions(GetEnrollmentsByTrainingManager, parameters))
+            using (SqlDataReader reader = await DbCommand.GetDataWithConditionsAsync(GetEnrollmentsByTrainingManager, parameters))
             {
                 while (reader.Read())
                 {
@@ -219,7 +219,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             return enrollmentsList;
         }
 
-        public IEnumerable<EnrollmentViewModel> GetAllByManager(int managerId)
+        public async Task<IEnumerable<EnrollmentViewModel>> GetAllByManagerAsync(int managerId)
         {
             EnrollmentViewModel enrollment = null;
             List<EnrollmentViewModel> enrollmentsList = new List<EnrollmentViewModel>();
@@ -240,7 +240,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
 
             List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter("@ManagerId", managerId) };
 
-            using (SqlDataReader reader = DbCommand.GetDataWithConditions(GetEnrollmentsByManager, parameters))
+            using (SqlDataReader reader = await DbCommand.GetDataWithConditionsAsync(GetEnrollmentsByManager, parameters))
             {
                 while (reader.Read())
                 {
@@ -265,7 +265,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             return enrollmentsList;
         }
 
-        public IEnumerable<PrerequisiteMaterialViewModel> GetPrerequisiteMaterialsByEnrollment(int enrollmentId)
+        public async Task<IEnumerable<PrerequisiteMaterialViewModel>> GetPrerequisiteMaterialsByEnrollmentAsync(int enrollmentId)
         {
             PrerequisiteMaterialViewModel prerequisiteMaterial = null;
             List<PrerequisiteMaterialViewModel> prerequisiteMaterialsList = new List<PrerequisiteMaterialViewModel>();
@@ -281,7 +281,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
 
             List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter("@EnrollmentId", enrollmentId) };
 
-            using (SqlDataReader reader = DbCommand.GetDataWithConditions(GetPrerequisiteMaterialsByEnrollment, parameters))
+            using (SqlDataReader reader = await DbCommand.GetDataWithConditionsAsync(GetPrerequisiteMaterialsByEnrollment, parameters))
             {
                 while (reader.Read())
                 {
@@ -300,7 +300,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             return prerequisiteMaterialsList;
         }
 
-        public UserEnrollmentViewModel GetUserByEnrollment(int enrollmentId)
+        public async Task<UserEnrollmentViewModel> GetUserByEnrollmentAsync(int enrollmentId)
         {
             const string GetUserByEnrollment =
                 @"SELECT euser.[Email], a.[Username], t.[TrainingName], meuser.[FirstName] AS MFirstName, meuser.[LastName] AS MLastName, meuser.[Email] AS MEmail
@@ -318,7 +318,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             UserEnrollmentViewModel user = null;
             List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter("@EnrollmentId", enrollmentId) };
 
-            using (SqlDataReader reader = DbCommand.GetDataWithConditions(GetUserByEnrollment, parameters))
+            using (SqlDataReader reader = await DbCommand.GetDataWithConditionsAsync(GetUserByEnrollment, parameters))
             {
                 while (reader.Read())
                 {
@@ -336,7 +336,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             return user;
         }
 
-        public string GetDeclineReasonByEnrollment(int enrollmentId)
+        public async Task<string> GetDeclineReasonByEnrollmentAsync(int enrollmentId)
         {
             string declineReason = null;
 
@@ -347,7 +347,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
 
             List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter("@EnrollmentId", enrollmentId) };
 
-            using (SqlDataReader reader = DbCommand.GetDataWithConditions(GetDeclineReasonByEnrollment, parameters))
+            using (SqlDataReader reader = await DbCommand.GetDataWithConditionsAsync(GetDeclineReasonByEnrollment, parameters))
             {
                 if (reader.Read())
                 {

@@ -22,7 +22,7 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
         {
             try
             {
-                TrainingModel trainingModel = GetAll().FirstOrDefault(x => x.TrainingName.Equals(training.TrainingName));
+                TrainingModel trainingModel = (await GetAllAsync()).FirstOrDefault(x => x.TrainingName.Equals(training.TrainingName));
                 CheckInsertUpdateDuplicate(trainingModel);
                 await this._trainingDAL.AddAsync(training, prerequisitesList);
                 return "Training created successfully!";
@@ -38,7 +38,7 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
         {
             try
             {
-                TrainingModel trainingModel = GetAll()
+                TrainingModel trainingModel = (await GetAllAsync())
                     .Where(x => x.TrainingId != training.TrainingId)
                     .FirstOrDefault(x => x.TrainingName.Equals(training.TrainingName));
                 CheckInsertUpdateDuplicate(trainingModel);
@@ -52,29 +52,29 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
             }
         }
 
-        public bool Delete(int trainingId)
+        public async Task<bool> DeleteAsync(int trainingId)
         {
-            return this._trainingDAL.Delete(trainingId);
+            return await this._trainingDAL.DeleteAsync(trainingId);
         }
 
-        public TrainingModel Get(int trainingId)
+        public async Task<TrainingModel> GetAsync(int trainingId)
         {
-            return this._trainingDAL.Get(trainingId);
+            return await this._trainingDAL.GetAsync(trainingId);
         }
 
-        public IEnumerable<TrainingModel> GetAll()
+        public async Task<IEnumerable<TrainingModel>> GetAllAsync()
         {
-            return this._trainingDAL.GetAll();
+            return await this._trainingDAL.GetAllAsync();
         }
 
-        public IEnumerable<TrainingModel> GetAllByUser(int userId)
+        public async Task<IEnumerable<TrainingModel>> GetAllByUserAsync(int userId)
         {
-            return this._trainingDAL.GetAllByUser(userId);
+            return await this._trainingDAL.GetAllByUserAsync(userId);
         }
 
-        public IEnumerable<TrainingModel> GetNotEnrolledTrainings(int userId)
+        public async Task<IEnumerable<TrainingModel>> GetNotEnrolledTrainingsAsync(int userId)
         {
-            return this._trainingDAL.GetNotEnrolledTrainings(userId);
+            return await this._trainingDAL.GetNotEnrolledTrainingsAsync(userId);
         }
 
         private void CheckInsertUpdateDuplicate(TrainingModel training)

@@ -8,8 +8,8 @@ namespace FinalSkillsLabProject.BL.Interfaces
     {
         Task<string> AddAsync(SignUpModel model);
         Task<string> UpdateAsync(UserModel user);
-        bool Delete(int userId);
-        UserModel Get(int userId);
-        IEnumerable<UserModel> GetAll();
+        Task<bool> DeleteAsync(int userId);
+        Task<UserModel> GetAsync(int userId);
+        Task<IEnumerable<UserModel>> GetAllAsync();
     }
 }

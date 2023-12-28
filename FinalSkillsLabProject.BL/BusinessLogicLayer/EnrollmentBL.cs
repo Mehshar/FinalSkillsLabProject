@@ -25,39 +25,39 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
             return await this._enrollmentDAL.UpdateAsync(enrollmentId, isApproved, declineReason);
         }
 
-        public EnrollmentModel Get(int userId, int trainingId)
+        public async Task<EnrollmentModel> GetAsync(int userId, int trainingId)
         {
-            return this._enrollmentDAL.Get(userId, trainingId);
+            return await this._enrollmentDAL.GetAsync(userId, trainingId);
         }
 
-        public IEnumerable<EnrollmentViewModel> GetAll()
+        public async Task<IEnumerable<EnrollmentViewModel>> GetAllAsync()
         {
-            return this._enrollmentDAL.GetAll();
+            return await this._enrollmentDAL.GetAllAsync();
         }
 
-        public IEnumerable<EnrollmentViewModel> GetAllByManagerTraining(int managerId, int trainingId)
+        public async Task<IEnumerable<EnrollmentViewModel>> GetAllByManagerTrainingAsync(int managerId, int trainingId)
         {
-            return this._enrollmentDAL.GetAllByManagerTraining(managerId, trainingId);
+            return await this._enrollmentDAL.GetAllByManagerTrainingAsync(managerId, trainingId);
         }
 
-        public IEnumerable<EnrollmentViewModel> GetAllByManager(int managerId)
+        public async Task<IEnumerable<EnrollmentViewModel>> GetAllByManagerAsync(int managerId)
         {
-            return this._enrollmentDAL.GetAllByManager(managerId);
+            return await this._enrollmentDAL.GetAllByManagerAsync(managerId);
         }
 
-        public IEnumerable<PrerequisiteMaterialViewModel> GetPrerequisiteMaterialsByEnrollment(int enrollmentId)
+        public async Task<IEnumerable<PrerequisiteMaterialViewModel>> GetPrerequisiteMaterialsByEnrollmentAsync(int enrollmentId)
         {
-            return this._enrollmentDAL.GetPrerequisiteMaterialsByEnrollment(enrollmentId);
+            return await this._enrollmentDAL.GetPrerequisiteMaterialsByEnrollmentAsync(enrollmentId);
         }
 
-        public UserEnrollmentViewModel GetUserByEnrollment(int enrollmentId)
+        public async Task<UserEnrollmentViewModel> GetUserByEnrollmentAsync(int enrollmentId)
         {
-            return this._enrollmentDAL.GetUserByEnrollment(enrollmentId);
+            return await this._enrollmentDAL.GetUserByEnrollmentAsync(enrollmentId);
         }
 
-        public string GetDeclineReasonByEnrollment(int enrollmentId)
+        public async Task<string> GetDeclineReasonByEnrollmentAsync(int enrollmentId)
         {
-            return this._enrollmentDAL.GetDeclineReasonByEnrollment(enrollmentId);
+            return await this._enrollmentDAL.GetDeclineReasonByEnrollmentAsync(enrollmentId);
         }
     }
 }

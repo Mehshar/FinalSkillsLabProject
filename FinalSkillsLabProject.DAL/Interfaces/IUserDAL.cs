@@ -8,8 +8,8 @@ namespace FinalSkillsLabProject.DAL.Interfaces
     {
         Task<bool> AddAsync(SignUpModel model);
         Task<bool> UpdateAsync(UserModel user);
-        bool Delete(int userId);
-        UserModel Get(int userId);
-        IEnumerable<UserModel> GetAll();
+        Task<bool> DeleteAsync(int userId);
+        Task<UserModel> GetAsync(int userId);
+        Task<IEnumerable<UserModel>> GetAllAsync();
     }
 }

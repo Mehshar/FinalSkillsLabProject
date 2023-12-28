@@ -54,7 +54,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             await DbCommand.InsertUpdateDataAsync(UpdatePrerequisiteQuery, parameters);
         }
 
-        public bool Delete(int prerequisiteId)
+        public async Task<bool> DeleteAsync(int prerequisiteId)
         {
             SqlParameter parameter = new SqlParameter("@PrerequisiteId", prerequisiteId);
 
@@ -62,10 +62,10 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
               @"DELETE FROM [dbo].[Prerequisite]
                 WHERE [PrerequisiteId] = @PrerequisiteId;";
 
-            return DbCommand.DeleteData(DeletePrerequisiteQuery, parameter) > 0;
+            return await DbCommand.DeleteDataAsync(DeletePrerequisiteQuery, parameter) > 0;
         }
 
-        public IEnumerable<PrerequisiteModel> GetAll()
+        public async Task<IEnumerable<PrerequisiteModel>> GetAllAsync()
         {
             PrerequisiteModel prerequisite;
             List<PrerequisiteModel> prerequisitesList = new List<PrerequisiteModel>();
@@ -74,7 +74,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
               @"SELECT *
                 FROM [dbo].[Prerequisite];";
 
-            using (SqlDataReader reader = DbCommand.GetData(GetAllPrerequisitesQuery))
+            using (SqlDataReader reader = await DbCommand.GetDataAsync(GetAllPrerequisitesQuery))
             {
                 while (reader.Read())
                 {
@@ -90,7 +90,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             return prerequisitesList;
         }
 
-        public IEnumerable<PrerequisiteModel> GetAllByTraining(int trainingId)
+        public async Task<IEnumerable<PrerequisiteModel>> GetAllByTrainingAsync(int trainingId)
         {
             PrerequisiteModel prerequisite;
             List<PrerequisiteModel> prerequisitesList = new List<PrerequisiteModel>();
@@ -107,7 +107,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                 ON tp.[PrerequisiteId] = p.[PrerequisiteId]
                 WHERE tp.[TrainingId] = @TrainingId;";
 
-            using (SqlDataReader reader = DbCommand.GetDataWithConditions(GetPrerequisitesByTrainingQuery, parameters))
+            using (SqlDataReader reader = await DbCommand.GetDataWithConditionsAsync(GetPrerequisitesByTrainingQuery, parameters))
             {
                 while (reader.Read())
                 {

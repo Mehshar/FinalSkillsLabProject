@@ -38,12 +38,12 @@ namespace FinalSkillsLabProject.Controllers
         }
 
         [HttpGet]
-        public ActionResult Enroll(int? id)
+        public async Task<ActionResult> Enroll(int? id)
         {
             if (id == null) { return View("Error404"); }
-            TrainingModel training = _trainingBL.Get((int)id);
+            TrainingModel training = await _trainingBL.GetAsync((int)id);
             if (training == null) { return View("Error404"); }
-            ViewBag.Prerequisites = _prerequisiteBL.GetAllByTraining((int)id);
+            ViewBag.Prerequisites = _prerequisiteBL.GetAllByTrainingAsync((int)id);
             return View(training);
         }
 
@@ -123,7 +123,7 @@ namespace FinalSkillsLabProject.Controllers
                 string link = await task;
                 return link;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -131,27 +131,27 @@ namespace FinalSkillsLabProject.Controllers
 
         [HttpGet]
         [CustomAuthorization("Manager,Admin")]
-        public ActionResult EmployeeEnrollments()
+        public async Task<ActionResult> EmployeeEnrollments()
         {
             List<EnrollmentViewModel> employeeEnrollmentsList = null;
             
             if (Session["CurrentRole"].ToString().Equals("Admin"))
             {
                 //employeeEnrollmentsList = _enrollmentBL.GetAll().Where(x => x.EnrollmentStatus != EnrollmentStatusEnum.Selected.ToString()).ToList();
-                employeeEnrollmentsList = _enrollmentBL.GetAll().ToList();
+                employeeEnrollmentsList = (await _enrollmentBL.GetAllAsync()).ToList();
             }
 
             else if (Session["CurrentRole"].ToString().Equals("Manager"))
             {
-                employeeEnrollmentsList = _enrollmentBL.GetAllByManager((int)Session["CurrentUserId"]).Where(x => x.EnrollmentStatus != EnrollmentStatusEnum.Selected.ToString()).ToList();
+                employeeEnrollmentsList = (await _enrollmentBL.GetAllByManagerAsync((int)Session["CurrentUserId"])).Where(x => x.EnrollmentStatus != EnrollmentStatusEnum.Selected.ToString()).ToList();
             }
             return View(employeeEnrollmentsList);
         }
 
         [CustomAuthorization("Manager,Admin")]
-        public ActionResult TrainingEnrollmentsMaterials(int id)
+        public async Task<ActionResult> TrainingEnrollmentsMaterials(int id)
         {
-            List<PrerequisiteMaterialViewModel> prerequisiteMaterialsList = _enrollmentBL.GetPrerequisiteMaterialsByEnrollment(id).ToList();
+            List<PrerequisiteMaterialViewModel> prerequisiteMaterialsList = (await _enrollmentBL.GetPrerequisiteMaterialsByEnrollmentAsync(id)).ToList();
             return PartialView(prerequisiteMaterialsList);
         }
 
@@ -159,7 +159,7 @@ namespace FinalSkillsLabProject.Controllers
         public async Task<JsonResult> ManageEnrollment(int enrollmentId, bool isApproved, string declineReason)
         {
             bool result = await _enrollmentBL.UpdateAsync(enrollmentId, isApproved, declineReason);
-            UserEnrollmentViewModel user = _enrollmentBL.GetUserByEnrollment(enrollmentId);
+            UserEnrollmentViewModel user = await _enrollmentBL.GetUserByEnrollmentAsync(enrollmentId);
             if (result)
             {
                 UserViewModel requestHandler = (UserViewModel)Session["CurrentUser"];
@@ -171,9 +171,9 @@ namespace FinalSkillsLabProject.Controllers
 
         [HttpGet]
         [CustomAuthorization("Manager,Admin")]
-        public JsonResult GetDeclineReasonByEnrollment(int enrollmentId)
+        public async Task<JsonResult> GetDeclineReasonByEnrollment(int enrollmentId)
         {
-            string declineReason = _enrollmentBL.GetDeclineReasonByEnrollment(enrollmentId);
+            string declineReason = await _enrollmentBL.GetDeclineReasonByEnrollmentAsync(enrollmentId);
             return Json(new { result = declineReason }, JsonRequestBehavior.AllowGet);
         }
     }

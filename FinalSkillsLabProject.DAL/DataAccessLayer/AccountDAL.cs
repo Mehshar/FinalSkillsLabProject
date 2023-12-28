@@ -10,7 +10,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
 {
     public class AccountDAL : IAccountDAL
     {
-        public bool AuthenticateUser(LoginModel model)
+        public async Task<bool> AuthenticateUserAsync(LoginModel model)
         {
             const string AuthenticateUserQuery =
               @"SELECT euser.*, acc.*
@@ -25,13 +25,13 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                 new SqlParameter("@Password", model.Password)
             };
 
-            using (SqlDataReader reader = DbCommand.GetDataWithConditions(AuthenticateUserQuery, parameters))
+            using (SqlDataReader reader = await DbCommand.GetDataWithConditionsAsync(AuthenticateUserQuery, parameters))
             {
                 return reader.HasRows;
             }
         }
 
-        public UserViewModel GetByUsername(string username)
+        public async Task<UserViewModel> GetByUsernameAsync(string username)
         {
             UserViewModel user = null;
             List<SqlParameter> parameters = new List<SqlParameter>()
@@ -47,7 +47,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                 INNER JOIN [dbo].[Role] r WITH(NOLOCK) ON euser.[RoleId] = r.[RoleId]
                 WHERE acc.[Username] = @Username;";
 
-            using (SqlDataReader reader = DbCommand.GetDataWithConditions(GetUserByUsernameQuery, parameters))
+            using (SqlDataReader reader = await DbCommand.GetDataWithConditionsAsync(GetUserByUsernameQuery, parameters))
             {
                 if (reader.Read())
                 {
@@ -70,7 +70,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
         }
 
         // Getting a user with a different UserId, who has a specific username
-        public AccountModel GetByUsernameAndUserId(string username, int userId)
+        public async Task<AccountModel> GetByUsernameAndUserIdAsync(string username, int userId)
         {
             AccountModel user = null;
             List<SqlParameter> parameters = new List<SqlParameter>()
@@ -86,7 +86,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                 INNER JOIN [dbo].[Role] r WITH(NOLOCK) ON euser.[RoleId] = r.[RoleId]
                 WHERE acc.[Username] = @Username AND euser.[UserId] != @UserId;";
 
-            using (SqlDataReader reader = DbCommand.GetDataWithConditions(GetUserByUsernameAndUserId, parameters))
+            using (SqlDataReader reader = await DbCommand.GetDataWithConditionsAsync(GetUserByUsernameAndUserId, parameters))
             {
                 if (reader.Read())
                 {

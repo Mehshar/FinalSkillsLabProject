@@ -9,9 +9,9 @@ namespace FinalSkillsLabProject.DAL.Interfaces
         Task<bool> AddAsync(DepartmentModel department);
         Task<bool>UpdateAsync(DepartmentModel department);
         //void Delete(DepartmentModel department);
-        DepartmentModel Get(int departmentId);
-        IEnumerable<DepartmentModel> GetAll();
-        IEnumerable<UserModel> GetManagerByDepartment(int departmentId);
+        Task<DepartmentModel> GetAsync(int departmentId);
+        Task<IEnumerable<DepartmentModel>> GetAllAsync();
+        Task<IEnumerable<UserModel>> GetManagerByDepartmentAsync(int departmentId);
     }
 
 }
