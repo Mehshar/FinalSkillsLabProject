@@ -13,5 +13,6 @@ namespace FinalSkillsLabProject.BL.Interfaces
         Task<IEnumerable<TrainingModel>> GetAllAsync();
         Task<IEnumerable<TrainingModel>> GetAllByUserAsync(int userId);
         Task<IEnumerable<TrainingModel>> GetNotEnrolledTrainingsAsync(int userId);
+        Task<IEnumerable<TrainingModel>> GetByDeadlineAsync();
     }
 }

@@ -3,16 +3,22 @@ using FinalSkillsLabProject.DAL.Interfaces;
 using System.Collections.Generic;
 using FinalSkillsLabProject.Common.Models;
 using System.Threading.Tasks;
+using FinalSkillsLabProject.DAL.DataAccessLayer;
+using System.Linq;
 
 namespace FinalSkillsLabProject.BL.BusinessLogicLayer
 {
     public class EnrollmentBL : IEnrollmentBL
     {
         private readonly IEnrollmentDAL _enrollmentDAL;
+        private readonly ITrainingDAL _trainingDAL;
+        private readonly IEmailNotificationBL _emailNotificationBL;
 
-        public EnrollmentBL(IEnrollmentDAL enrollmentDAL)
+        public EnrollmentBL(IEnrollmentDAL enrollmentDAL, ITrainingDAL trainingDAL, IEmailNotificationBL emailNotificationBL)
         {
             this._enrollmentDAL = enrollmentDAL;
+            _trainingDAL = trainingDAL;
+            _emailNotificationBL = emailNotificationBL;
         }
 
         public async Task<bool> AddAsync(EnrollmentModel enrollment, List<PrerequisiteMaterialModel> prerequisiteMaterialsList)
@@ -58,6 +64,29 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
         public async Task<string> GetDeclineReasonByEnrollmentAsync(int enrollmentId)
         {
             return await this._enrollmentDAL.GetDeclineReasonByEnrollmentAsync(enrollmentId);
+        }
+
+        public async Task<IEnumerable<EnrollmentSelectionViewModel>> UpdateAfterDeadlineAsync(int trainingId, string declineReason)
+        {
+            return await this._enrollmentDAL.UpdateAfterDeadlineAsync(trainingId, declineReason);
+        }
+
+        public async Task EnrollmentAutomaticProcessing()
+        {
+            List<TrainingModel> trainingsList = (await _trainingDAL.GetByDeadlineAsync()).ToList();
+            List<EnrollmentSelectionViewModel> enrollmentsList;
+            bool isSelected;
+            string declineReason = "Training capacity reached";
+
+            foreach (TrainingModel training in trainingsList)
+            {
+                enrollmentsList = (await UpdateAfterDeadlineAsync(training.TrainingId, declineReason)).ToList();
+                isSelected = true;
+                foreach (EnrollmentSelectionViewModel selectedEnrollment in enrollmentsList)
+                {
+                    _emailNotificationBL.SendSelectionEmail(isSelected, selectedEnrollment);
+                }
+            }
         }
     }
 }

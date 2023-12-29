@@ -356,5 +356,95 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             }
             return declineReason;
         }
+
+        public async Task<IEnumerable<EnrollmentSelectionViewModel>> UpdateAfterDeadlineAsync(int trainingId, string declineReason)
+        {
+            const string UpdateEnrollmentsAfterDeadlineQuery =
+                @"BEGIN TRANSACTION;
+
+                WITH RankedEnrollments AS (
+                    SELECT
+                        E.EnrollmentId,
+                        E.UserId,
+                        E.TrainingId,
+                        E.EnrollmentStatus,
+                        ROW_NUMBER() OVER (
+                            PARTITION BY E.TrainingId
+                            ORDER BY
+                                CASE
+                                    WHEN D.DepartmentId = T.PriorityDepartment THEN 0
+                                    ELSE 1
+                                END,
+                                E.EnrollmentDate
+                        ) AS SelectionRank
+                    FROM
+                        Enrollment E
+                        INNER JOIN Training T ON E.TrainingId = T.TrainingId
+                        INNER JOIN EndUser U ON E.UserId = U.UserId
+                        INNER JOIN Department D ON U.DepartmentId = D.DepartmentId
+                    WHERE
+                        E.TrainingId = @TrainingId
+                        AND E.EnrollmentStatus = 'Approved'
+                )
+
+                UPDATE E
+                SET
+                    E.EnrollmentStatus = CASE
+                        WHEN RE.SelectionRank <= T.Capacity THEN 'Selected'
+                        ELSE 'Pending'
+                    END
+                FROM
+                    Enrollment E
+                    INNER JOIN RankedEnrollments RE ON E.EnrollmentId = RE.EnrollmentId
+                    INNER JOIN Training T ON E.TrainingId = T.TrainingId
+                WHERE
+                    E.TrainingId = @TrainingId;
+
+                UPDATE Enrollment
+                SET EnrollmentStatus = 'Declined', DeclineReason = @DeclineReason
+                WHERE TrainingId = @TrainingId AND EnrollmentStatus != 'Selected' AND EnrollmentStatus != 'Declined';
+
+                COMMIT;
+
+                SELECT t.[TrainingName], t.[Deadline], a.[Username], eu.[Email], meu.[FirstName] AS ManagerFirstName, meu.[LastName] AS ManagerLastName, meu.[Email] AS ManagerEmail
+                FROM [dbo].[Enrollment] e
+                INNER JOIN [dbo].[Training] t
+                ON e.[TrainingId] = t.[TrainingId]
+                INNER JOIN [dbo].[EndUser] eu
+                ON e.[UserId] = eu.[UserId]
+                INNER JOIN [dbo].[Account] a
+                ON eu.[UserId] = a.[UserId]
+                INNER JOIN [dbo].[EndUser] meu
+                ON eu.[ManagerId] = meu.[UserId]
+                WHERE e.[EnrollmentStatus] = 'Selected' AND e.[TrainingId] = @TrainingId;";
+
+            List<SqlParameter> parameters = new List<SqlParameter>()
+            {
+                new SqlParameter("@TrainingId", trainingId),
+                new SqlParameter("@DeclineReason", declineReason)
+            };
+
+            EnrollmentSelectionViewModel enrollment;
+            List<EnrollmentSelectionViewModel> enrollmentsList = new List<EnrollmentSelectionViewModel>();
+
+            using (SqlDataReader reader = await DbCommand.GetDataWithConditionsAsync(UpdateEnrollmentsAfterDeadlineQuery, parameters))
+            {
+                while (reader.Read())
+                {
+                    enrollment = new EnrollmentSelectionViewModel()
+                    {
+                        TrainingName = reader.GetString(reader.GetOrdinal("TrainingName")),
+                        Deadline = reader.GetDateTime(reader.GetOrdinal("Deadline")),
+                        EmployeeUsername = reader.GetString(reader.GetOrdinal("Username")),
+                        EmployeeEmail = reader.GetString(reader.GetOrdinal("Email")),
+                        ManagerFirstName = reader.GetString(reader.GetOrdinal("ManagerFirstName")),
+                        ManagerLastName = reader.GetString(reader.GetOrdinal("ManagerLastName")),
+                        ManagerEmail = reader.GetString(reader.GetOrdinal("ManagerEmail"))
+                    };
+                    enrollmentsList.Add(enrollment);
+                }
+            }
+            return enrollmentsList;
+        }
     }
 }

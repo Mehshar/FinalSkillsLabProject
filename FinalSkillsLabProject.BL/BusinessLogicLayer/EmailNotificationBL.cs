@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Configuration;
 using FinalSkillsLabProject.BL.Interfaces;
 using FinalSkillsLabProject.Common.Enums;
+using FinalSkillsLabProject.Common.Models;
 
 namespace FinalSkillsLabProject.BL.BusinessLogicLayer
 {
@@ -44,9 +45,48 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
                 throw ex;
             }
         }
+
+        public void SendSelectionEmail(bool isSelected, EnrollmentSelectionViewModel selectedEnrollment)
+        {
+            string smtpServer = ConfigurationManager.AppSettings["smtpServer"];
+            int port = int.Parse(ConfigurationManager.AppSettings["port"]);
+            string sender = ConfigurationManager.AppSettings["sender"];
+            string password = ConfigurationManager.AppSettings["password"];
+
+            var smtpClient = new SmtpClient(smtpServer);
+
+            smtpClient.Port = port;
+            smtpClient.EnableSsl = true;
+            smtpClient.UseDefaultCredentials = false;
+            smtpClient.Credentials = new NetworkCredential(sender, password);
+
+            var mailMessage = new MailMessage(sender, selectedEnrollment.EmployeeEmail);
+
+            mailMessage.CC.Add(selectedEnrollment.ManagerEmail);
+            mailMessage.Subject = GetSelectionEmailSubject(isSelected);
+            mailMessage.Body = GetSelectionEmailBody(isSelected, selectedEnrollment);
+            mailMessage.IsBodyHtml = true;
+
+            try
+            {
+                Task.Run(() => smtpClient.SendMailAsync(mailMessage)).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         private string GetEmailSubject(bool isApproved)
         {
             string result = isApproved ? "Approved" : "Rejected";
+            string subject = $"Training Request - {result}";
+            return subject;
+        }
+
+        private string GetSelectionEmailSubject(bool isSelected)
+        {
+            string result = isSelected ? "Selected" : "Rejected";
             string subject = $"Training Request - {result}";
             return subject;
         }
@@ -90,6 +130,49 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
                              {requestHandlerRole}, <strong>{requestHandler}</strong>.</p>
                             <p><strong>Reason for Decline: </strong>{declineReason}</p>
                             <p>Please liaise with your manager for further information.</p>
+                            <p>Regards, </br>SkillsHub Team</p>
+                        </body>
+                    </html>";
+            }
+            return htmlBody;
+        }
+
+        private string GetSelectionEmailBody(bool isSelected, EnrollmentSelectionViewModel selectedEnrollment)
+        {
+            string result = isSelected ? "selected" : "rejected";
+            string htmlBody;
+
+            if (isSelected)
+            {
+                htmlBody =
+                    $@"
+                    <html>
+                        <head>
+                            <title>Enrollment Response</title>
+                        </head>
+
+                        <body>
+                            <p>Hello <strong>{selectedEnrollment.EmployeeUsername}</strong>,</p>
+                            <p>You have been selected for the training, <strong>{selectedEnrollment.TrainingName}</strong>, that closed on {selectedEnrollment.Deadline.ToShortDateString()}.</p>
+                            <p>Please liaise with your manager, <strong>{selectedEnrollment.ManagerFirstName} {selectedEnrollment.ManagerLastName}</strong>, for further information.</p>
+                            <p>Regards, </br>SkillsHub Team</p>
+                        </body>
+                    </html>";
+            }
+
+            else
+            {
+                htmlBody =
+                    $@"
+                    <html>
+                        <head>
+                            <title>Enrollment Response</title>
+                        </head>
+
+                        <body>
+                            <p>Hello <strong>{selectedEnrollment.EmployeeUsername}</strong>,</p>
+                            <p>Your enrollment request for the training, <strong>{selectedEnrollment.TrainingName}</strong>, has been <strong>{result}</strong>.</p>
+                            <p><strong>Reason for Decline: </strong>The training capacity has been reached and you did not have priority.</p>
                             <p>Regards, </br>SkillsHub Team</p>
                         </body>
                     </html>";

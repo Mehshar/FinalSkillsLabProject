@@ -11,36 +11,38 @@ namespace FinalSkillsLabProject
 {
     public static class UnityConfig
     {
+        public static IUnityContainer UnityContainer { get; internal set; }
+
         public static void RegisterComponents()
         {
-			var container = new UnityContainer();
+            UnityContainer = new UnityContainer();
 
             // register all your components with the container here
             // it is NOT necessary to register your controllers
 
             // e.g. container.RegisterType<ITestService, TestService>();
 
-            container.RegisterType<IAccountDAL, AccountDAL>();
-            container.RegisterType<IAccountBL, AccountBL>();
+            UnityContainer.RegisterType<IAccountDAL, AccountDAL>();
+            UnityContainer.RegisterType<IAccountBL, AccountBL>();
 
-            container.RegisterType<IDepartmentBL, DepartmentBL>();
-            container.RegisterType<IDepartmentDAL, DepartmentDAL>();
+            UnityContainer.RegisterType<IDepartmentBL, DepartmentBL>();
+            UnityContainer.RegisterType<IDepartmentDAL, DepartmentDAL>();
 
-            container.RegisterType<IEnrollmentBL, EnrollmentBL>();
-            container.RegisterType<IEnrollmentDAL, EnrollmentDAL>();
+            UnityContainer.RegisterType<IEnrollmentBL, EnrollmentBL>();
+            UnityContainer.RegisterType<IEnrollmentDAL, EnrollmentDAL>();
 
-            container.RegisterType<IPrerequisiteBL, PrerequisiteBL>();
-            container.RegisterType<IPrerequisiteDAL, PrerequisiteDAL>();
+            UnityContainer.RegisterType<IPrerequisiteBL, PrerequisiteBL>();
+            UnityContainer.RegisterType<IPrerequisiteDAL, PrerequisiteDAL>();
 
-            container.RegisterType<ITrainingBL, TrainingBL>();
-            container.RegisterType<ITrainingDAL, TrainingDAL>();
+            UnityContainer.RegisterType<ITrainingBL, TrainingBL>();
+            UnityContainer.RegisterType<ITrainingDAL, TrainingDAL>();
 
-            container.RegisterType<IUserBL, UserBL>();
-            container.RegisterType<IUserDAL, UserDAL>();
+            UnityContainer.RegisterType<IUserBL, UserBL>();
+            UnityContainer.RegisterType<IUserDAL, UserDAL>();
 
-            container.RegisterType<IEmailNotificationBL, EmailNotificationBL>();
+            UnityContainer.RegisterType<IEmailNotificationBL, EmailNotificationBL>();
 
-            DependencyResolver.SetResolver(new UnityDependencyResolver(container));
+            DependencyResolver.SetResolver(new UnityDependencyResolver(UnityContainer));
         }
     }
 }

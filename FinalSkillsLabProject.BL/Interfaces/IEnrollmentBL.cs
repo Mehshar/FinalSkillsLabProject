@@ -16,5 +16,7 @@ namespace FinalSkillsLabProject.BL.Interfaces
         Task<IEnumerable<PrerequisiteMaterialViewModel>> GetPrerequisiteMaterialsByEnrollmentAsync(int enrollmentId);
         Task<UserEnrollmentViewModel> GetUserByEnrollmentAsync(int enrollmentId);
         Task<string> GetDeclineReasonByEnrollmentAsync(int enrollmentId);
+        Task<IEnumerable<EnrollmentSelectionViewModel>> UpdateAfterDeadlineAsync(int trainingId, string declineReason);
+        Task EnrollmentAutomaticProcessing();
     }
 }

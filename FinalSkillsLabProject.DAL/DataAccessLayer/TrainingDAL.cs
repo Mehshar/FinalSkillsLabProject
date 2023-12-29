@@ -245,5 +245,29 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             }
             return trainingsList;
         }
+
+        public async Task<IEnumerable<TrainingModel>> GetByDeadlineAsync()
+        {
+            TrainingModel training;
+            List<TrainingModel> trainingsList = new List<TrainingModel>();
+
+            const string GetTrainingsByDeadline =
+                @"SELECT [TrainingId]
+                FROM [dbo].[Training]
+                WHERE [Deadline] <= GETDATE();";
+
+            using (SqlDataReader reader = await DbCommand.GetDataAsync(GetTrainingsByDeadline))
+            {
+                while (reader.Read())
+                {
+                    training = new TrainingModel()
+                    {
+                        TrainingId = reader.GetInt16(reader.GetOrdinal("TrainingId"))
+                    };
+                    trainingsList.Add(training);
+                }
+            }
+            return trainingsList;
+        }
     }
 }

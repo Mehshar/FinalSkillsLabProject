@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FinalSkillsLabProject.Common.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,5 +10,6 @@ namespace FinalSkillsLabProject.BL.Interfaces
     public interface IEmailNotificationBL
     {
         void SendEmail(bool isApproved, string recipient, string username, string training, string requestHandlerName, string requestHandlerRole, string requestHandlerEmail, string declineReason, string managerEmail);
+        void SendSelectionEmail(bool isSelected, EnrollmentSelectionViewModel selectedEnrollment);
     }
 }
