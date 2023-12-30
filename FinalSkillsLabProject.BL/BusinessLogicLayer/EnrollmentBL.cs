@@ -82,20 +82,20 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
             List<EnrollmentSelectionViewModel> selectedEnrollmentsList;
             List<EnrollmentSelectionViewModel> declinedEnrollmentsList;
             string declineReason = "Training capacity reached";
-            int delayMilliseconds = 2000;
+            int delayMilliseconds = 3000;
             foreach (TrainingModel training in trainingsList)
             {
                 declinedEnrollmentsList = (await UpdateAfterDeadlineAsync(training.TrainingId, declineReason)).ToList();
                 foreach (EnrollmentSelectionViewModel declinedEnrollment in declinedEnrollmentsList)
                 {
-                    _emailNotificationBL.SendSelectionEmail(false, declinedEnrollment);
+                    _emailNotificationBL.SendSelectionRejectionEmail(false, declinedEnrollment);
                     await Task.Delay(delayMilliseconds); // Introduce a delay
                 }
 
                 selectedEnrollmentsList = (await GetSelectedEnrollmentsByTrainingAsync(training.TrainingId)).ToList();
                 foreach (EnrollmentSelectionViewModel selectedEnrollment in selectedEnrollmentsList)
                 {
-                    _emailNotificationBL.SendSelectionEmail(true, selectedEnrollment);
+                    _emailNotificationBL.SendSelectionRejectionEmail(true, selectedEnrollment);
                     await Task.Delay(delayMilliseconds);
                 }
             }

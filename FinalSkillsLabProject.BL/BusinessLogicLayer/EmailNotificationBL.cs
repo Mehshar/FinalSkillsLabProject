@@ -9,75 +9,59 @@ using System.Configuration;
 using FinalSkillsLabProject.BL.Interfaces;
 using FinalSkillsLabProject.Common.Enums;
 using FinalSkillsLabProject.Common.Models;
+using Hangfire;
+using System.Net.Http;
 
 namespace FinalSkillsLabProject.BL.BusinessLogicLayer
 {
     public class EmailNotificationBL : IEmailNotificationBL
     {
-        public void SendEmail(bool isApproved, string recipient, string username, string training, string requestHandlerName, string requestHandlerRole, string requestHandlerEmail, string declineReason, string managerEmail)
+        private readonly string sender;
+        private readonly string password;
+        private string smtpServer;
+        private readonly int port;
+
+        public EmailNotificationBL()
         {
-            string smtpServer = ConfigurationManager.AppSettings["smtpServer"];
-            int port = int.Parse(ConfigurationManager.AppSettings["port"]);
-            string sender = ConfigurationManager.AppSettings["sender"];
-            string password = ConfigurationManager.AppSettings["password"];
+            smtpServer = ConfigurationManager.AppSettings["smtpServer"];
+            port = int.Parse(ConfigurationManager.AppSettings["port"]);
+            sender = ConfigurationManager.AppSettings["sender"];
+            password = ConfigurationManager.AppSettings["password"];
+        }
 
-            var smtpClient = new SmtpClient(smtpServer);
-
-            smtpClient.Port = port;
-            smtpClient.EnableSsl = true;
-            smtpClient.UseDefaultCredentials = false;
-            smtpClient.Credentials = new NetworkCredential(sender, password);
-
-            var mailMessage = new MailMessage(sender, recipient);
-
+        public void SendApprovalRejectionEmail(bool isApproved, string recipient, string username, string training, string requestHandlerName, string requestHandlerRole, string requestHandlerEmail, string declineReason, string managerEmail)
+        {
+            string subject = GetApprovalRejectionSubject(isApproved);
+            string body = GetApprovalRejectionEmailBody(username, training, isApproved, requestHandlerName, requestHandlerRole, declineReason);
+            MailMessage mailMessage = CreateMailMessage(sender, recipient, subject, body);
             mailMessage.CC.Add(requestHandlerEmail);
             if (requestHandlerRole.Equals(RoleEnum.Admin.ToString().ToLower())) { mailMessage.CC.Add(managerEmail); }
-            mailMessage.Subject = GetEmailSubject(isApproved);
-            mailMessage.Body = GetEmailBody(username, training, isApproved, requestHandlerName, requestHandlerRole, declineReason);
-            mailMessage.IsBodyHtml = true;
 
-            try
-            {
-                Task.Run(() => smtpClient.SendMailAsync(mailMessage)).ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            SendEmail(mailMessage);
         }
 
-        public void SendSelectionEmail(bool isSelected, EnrollmentSelectionViewModel selectedEnrollment)
+        public void SendSelectionRejectionEmail(bool isSelected, EnrollmentSelectionViewModel enrollment)
         {
-            string smtpServer = ConfigurationManager.AppSettings["smtpServer"];
-            int port = int.Parse(ConfigurationManager.AppSettings["port"]);
-            string sender = ConfigurationManager.AppSettings["sender"];
-            string password = ConfigurationManager.AppSettings["password"];
+            string subject = GetSelectionEmailSubject(isSelected);
+            string body = GetSelectionEmailBody(isSelected, enrollment);
+            MailMessage mailMessage = CreateMailMessage(sender, enrollment.EmployeeEmail, subject, body);
+            mailMessage.CC.Add(enrollment.ManagerEmail);
 
-            var smtpClient = new SmtpClient(smtpServer);
-
-            smtpClient.Port = port;
-            smtpClient.EnableSsl = true;
-            smtpClient.UseDefaultCredentials = false;
-            smtpClient.Credentials = new NetworkCredential(sender, password);
-
-            var mailMessage = new MailMessage(sender, selectedEnrollment.EmployeeEmail);
-
-            mailMessage.CC.Add(selectedEnrollment.ManagerEmail);
-            mailMessage.Subject = GetSelectionEmailSubject(isSelected);
-            mailMessage.Body = GetSelectionEmailBody(isSelected, selectedEnrollment);
-            mailMessage.IsBodyHtml = true;
-
-            //try
-            //{
-                Task.Run(() => smtpClient.SendMailAsync(mailMessage)).ConfigureAwait(false);
-            //}
-            //catch (Exception ex)
-            //{
-            //    throw ex;
-            //}
+            SendMailInBackground(mailMessage);
         }
 
-        private string GetEmailSubject(bool isApproved)
+        private MailMessage CreateMailMessage(string sender, string recipient, string subject, string body)
+        {
+            MailMessage mailMessage = new MailMessage(sender, recipient)
+            {
+                Subject = subject,
+                Body = body,
+                IsBodyHtml = true
+            };
+            return mailMessage;
+        }
+
+        private string GetApprovalRejectionSubject(bool isApproved)
         {
             string result = isApproved ? "Approved" : "Rejected";
             string subject = $"Training Request - {result}";
@@ -91,7 +75,7 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
             return subject;
         }
 
-        private string GetEmailBody(string username, string training, bool isApproved, string requestHandler, string requestHandlerRole, string declineReason)
+        private string GetApprovalRejectionEmailBody(string username, string training, bool isApproved, string requestHandlerName, string requestHandlerRole, string declineReason)
         {
             string result = isApproved ? "approved" : "rejected";
             string htmlBody;
@@ -108,7 +92,7 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
                         <body>
                             <p>Hello <strong>{username}</strong>,</p>
                             <p>Your enrollment request for the training, <strong>{training}</strong>, has been <strong>{result}</strong> by the
-                             {requestHandlerRole}, <strong>{requestHandler}</strong>.</p>
+                             {requestHandlerRole}, <strong>{requestHandlerName}</strong>.</p>
                             <p>Please liaise with your manager for further information.</p>
                             <p>Regards, </br>SkillsHub Team</p>
                         </body>
@@ -127,7 +111,7 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
                         <body>
                             <p>Hello <strong>{username}</strong>,</p>
                             <p>Your enrollment request for the training, <strong>{training}</strong>, has been <strong>{result}</strong> by the
-                             {requestHandlerRole}, <strong>{requestHandler}</strong>.</p>
+                             {requestHandlerRole}, <strong>{requestHandlerName}</strong>.</p>
                             <p><strong>Reason for Decline: </strong>{declineReason}</p>
                             <p>Please liaise with your manager for further information.</p>
                             <p>Regards, </br>SkillsHub Team</p>
@@ -178,6 +162,41 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
                     </html>";
             }
             return htmlBody;
+        }
+
+        private void SendEmail(MailMessage mailMessage)
+        {
+            using (SmtpClient smtpClient = new SmtpClient(smtpServer)
+            {
+                Port = port,
+                EnableSsl = true,
+                UseDefaultCredentials = false,
+                Credentials = new NetworkCredential(sender, password)
+            })
+            {
+                try
+                {
+                    Task.Run(() => smtpClient.SendMailAsync(mailMessage)).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+            }
+        }
+
+        private void SendMailInBackground(MailMessage mailMessage)
+        {
+            using (SmtpClient smtpClient = new SmtpClient(smtpServer)
+            {
+                Port = port,
+                EnableSsl = true,
+                UseDefaultCredentials = false,
+                Credentials = new NetworkCredential(sender, password)
+            })
+            {
+                smtpClient.Send(mailMessage);
+            }
         }
     }
 }

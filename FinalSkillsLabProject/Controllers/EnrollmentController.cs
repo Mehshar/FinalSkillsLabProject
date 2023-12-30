@@ -164,7 +164,7 @@ namespace FinalSkillsLabProject.Controllers
             {
                 UserViewModel requestHandler = (UserViewModel)Session["CurrentUser"];
                 string requestHandlerName = $"{requestHandler.FirstName} {requestHandler.LastName}";
-                _emailNotificationBL.SendEmail(isApproved, user.Email, user.Username, user.TrainingName, requestHandlerName, requestHandler.Role.RoleName.ToString().ToLower(), requestHandler.Email, declineReason, user.ManagerEmail);
+                _emailNotificationBL.SendApprovalRejectionEmail(isApproved, user.Email, user.Username, user.TrainingName, requestHandlerName, requestHandler.Role.RoleName.ToString().ToLower(), requestHandler.Email, declineReason, user.ManagerEmail);
             }
             return Json(new { result = result });
         }

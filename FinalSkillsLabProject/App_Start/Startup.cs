@@ -37,7 +37,7 @@ namespace FinalSkillsLabProject.App_Start
                 Authorization = new[] { new HangfireDashboardAuthorizationFilter() }
             });
 
-            //BackgroundJob.Schedule<IEnrollmentBL>(x => x.EnrollmentAutomaticProcessing(), TimeSpan.FromMinutes(1));
+            BackgroundJob.Schedule<IEnrollmentBL>(x => x.EnrollmentAutomaticProcessing(), TimeSpan.FromMinutes(1));
         }
     }
 }
