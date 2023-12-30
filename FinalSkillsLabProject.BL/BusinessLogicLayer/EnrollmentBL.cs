@@ -71,20 +71,32 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
             return await this._enrollmentDAL.UpdateAfterDeadlineAsync(trainingId, declineReason);
         }
 
+        public async Task<IEnumerable<EnrollmentSelectionViewModel>> GetSelectedEnrollmentsByTrainingAsync(int trainingId)
+        {
+            return await this._enrollmentDAL.GetSelectedEnrollmentsByTrainingAsync(trainingId);
+        }
+
         public async Task EnrollmentAutomaticProcessing()
         {
             List<TrainingModel> trainingsList = (await _trainingDAL.GetByDeadlineAsync()).ToList();
-            List<EnrollmentSelectionViewModel> enrollmentsList;
-            bool isSelected;
+            List<EnrollmentSelectionViewModel> selectedEnrollmentsList;
+            List<EnrollmentSelectionViewModel> declinedEnrollmentsList;
             string declineReason = "Training capacity reached";
-
+            int delayMilliseconds = 2000;
             foreach (TrainingModel training in trainingsList)
             {
-                enrollmentsList = (await UpdateAfterDeadlineAsync(training.TrainingId, declineReason)).ToList();
-                isSelected = true;
-                foreach (EnrollmentSelectionViewModel selectedEnrollment in enrollmentsList)
+                declinedEnrollmentsList = (await UpdateAfterDeadlineAsync(training.TrainingId, declineReason)).ToList();
+                foreach (EnrollmentSelectionViewModel declinedEnrollment in declinedEnrollmentsList)
                 {
-                    _emailNotificationBL.SendSelectionEmail(isSelected, selectedEnrollment);
+                    _emailNotificationBL.SendSelectionEmail(false, declinedEnrollment);
+                    await Task.Delay(delayMilliseconds); // Introduce a delay
+                }
+
+                selectedEnrollmentsList = (await GetSelectedEnrollmentsByTrainingAsync(training.TrainingId)).ToList();
+                foreach (EnrollmentSelectionViewModel selectedEnrollment in selectedEnrollmentsList)
+                {
+                    _emailNotificationBL.SendSelectionEmail(true, selectedEnrollment);
+                    await Task.Delay(delayMilliseconds);
                 }
             }
         }

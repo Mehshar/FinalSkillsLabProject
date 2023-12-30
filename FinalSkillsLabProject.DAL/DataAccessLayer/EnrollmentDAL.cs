@@ -362,6 +362,15 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             const string UpdateEnrollmentsAfterDeadlineQuery =
                 @"BEGIN TRANSACTION;
 
+                DECLARE @DeclinedEnrollments TABLE (
+                    EnrollmentId SMALLINT,
+                    UserId SMALLINT,
+                    TrainingId SMALLINT,
+	                EnrollmentDate DATE,
+                    EnrollmentStatus VARCHAR(10),
+                    DeclineReason VARCHAR(MAX)
+                );
+
                 WITH RankedEnrollments AS (
                     SELECT
                         E.EnrollmentId,
@@ -402,21 +411,22 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
 
                 UPDATE Enrollment
                 SET EnrollmentStatus = 'Declined', DeclineReason = @DeclineReason
+                OUTPUT INSERTED.EnrollmentId, INSERTED.UserId, INSERTED.TrainingId, INSERTED.EnrollmentDate, INSERTED.EnrollmentStatus, INSERTED.DeclineReason
+                INTO @DeclinedEnrollments
                 WHERE TrainingId = @TrainingId AND EnrollmentStatus != 'Selected' AND EnrollmentStatus != 'Declined';
 
-                COMMIT;
-
                 SELECT t.[TrainingName], t.[Deadline], a.[Username], eu.[Email], meu.[FirstName] AS ManagerFirstName, meu.[LastName] AS ManagerLastName, meu.[Email] AS ManagerEmail
-                FROM [dbo].[Enrollment] e
+                FROM @DeclinedEnrollments de
                 INNER JOIN [dbo].[Training] t
-                ON e.[TrainingId] = t.[TrainingId]
+                ON de.[TrainingId] = t.[TrainingId]
                 INNER JOIN [dbo].[EndUser] eu
-                ON e.[UserId] = eu.[UserId]
+                ON de.[UserId] = eu.[UserId]
                 INNER JOIN [dbo].[Account] a
                 ON eu.[UserId] = a.[UserId]
                 INNER JOIN [dbo].[EndUser] meu
                 ON eu.[ManagerId] = meu.[UserId]
-                WHERE e.[EnrollmentStatus] = 'Selected' AND e.[TrainingId] = @TrainingId;";
+
+                COMMIT;";
 
             List<SqlParameter> parameters = new List<SqlParameter>()
             {
@@ -442,6 +452,46 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                         ManagerEmail = reader.GetString(reader.GetOrdinal("ManagerEmail"))
                     };
                     enrollmentsList.Add(enrollment);
+                }
+            }
+            return enrollmentsList;
+        }
+
+        public async Task<IEnumerable<EnrollmentSelectionViewModel>> GetSelectedEnrollmentsByTrainingAsync(int trainingId)
+        {
+            const string GetSelectedEnrollmentsByTrainingQuery =
+                @"
+                SELECT t.[TrainingName], t.[Deadline], a.[Username], eu.[Email], meu.[FirstName] AS ManagerFirstName, meu.[LastName] AS ManagerLastName, meu.[Email] AS ManagerEmail
+                FROM [dbo].[Enrollment] e
+                INNER JOIN [dbo].[Training] t
+                ON e.[TrainingId] = t.[TrainingId]
+                INNER JOIN [dbo].[EndUser] eu
+                ON e.[UserId] = eu.[UserId]
+                INNER JOIN [dbo].[Account] a
+                ON eu.[UserId] = a.[UserId]
+                INNER JOIN [dbo].[EndUser] meu
+                ON eu.[ManagerId] = meu.[UserId]
+                WHERE e.[EnrollmentStatus] = 'Selected' AND e.[TrainingId] = @TrainingId;";
+
+            EnrollmentSelectionViewModel selectedEnrollment;
+            List<EnrollmentSelectionViewModel> enrollmentsList = new List<EnrollmentSelectionViewModel>();
+            List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter("@TrainingId", trainingId) };
+
+            using (SqlDataReader reader = await DbCommand.GetDataWithConditionsAsync(GetSelectedEnrollmentsByTrainingQuery, parameters))
+            {
+                while (reader.Read())
+                {
+                    selectedEnrollment = new EnrollmentSelectionViewModel()
+                    {
+                        TrainingName = reader.GetString(reader.GetOrdinal("TrainingName")),
+                        Deadline = reader.GetDateTime(reader.GetOrdinal("Deadline")),
+                        EmployeeUsername = reader.GetString(reader.GetOrdinal("Username")),
+                        EmployeeEmail = reader.GetString(reader.GetOrdinal("Email")),
+                        ManagerFirstName = reader.GetString(reader.GetOrdinal("ManagerFirstName")),
+                        ManagerLastName = reader.GetString(reader.GetOrdinal("ManagerLastName")),
+                        ManagerEmail = reader.GetString(reader.GetOrdinal("ManagerEmail"))
+                    };
+                    enrollmentsList.Add(selectedEnrollment);
                 }
             }
             return enrollmentsList;

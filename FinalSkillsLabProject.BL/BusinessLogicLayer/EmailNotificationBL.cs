@@ -67,14 +67,14 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
             mailMessage.Body = GetSelectionEmailBody(isSelected, selectedEnrollment);
             mailMessage.IsBodyHtml = true;
 
-            try
-            {
+            //try
+            //{
                 Task.Run(() => smtpClient.SendMailAsync(mailMessage)).ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    throw ex;
+            //}
         }
 
         private string GetEmailSubject(bool isApproved)

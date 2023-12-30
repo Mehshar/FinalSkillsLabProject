@@ -422,6 +422,8 @@
     <Content Include="Content\font-awesome.css" />
     <Content Include="Content\font-awesome.min.css" />
     <Content Include="Content\HomeStyle.css" />
+    <Content Include="Content\Images\AccessDenied.jpg" />
+    <Content Include="Content\Images\AccessDenied2.jpg" />
     <Content Include="Content\Images\login-image.png" />
     <Content Include="Content\Images\error-404.png" />
     <Content Include="Content\Images\Home_1_Colored.png" />
