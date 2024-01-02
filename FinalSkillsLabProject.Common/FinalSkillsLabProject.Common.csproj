@@ -301,6 +301,8 @@
   <ItemGroup>
     <Compile Include="Enums\EnrollmentStatusEnum.cs" />
     <Compile Include="Enums\RoleEnum.cs" />
+    <Compile Include="ErrorLogging\ILogger.cs" />
+    <Compile Include="ErrorLogging\Logger.cs" />
     <Compile Include="Exceptions\DuplicationException.cs" />
     <Compile Include="Models\AccountModel.cs" />
     <Compile Include="Models\DepartmentModel.cs" />

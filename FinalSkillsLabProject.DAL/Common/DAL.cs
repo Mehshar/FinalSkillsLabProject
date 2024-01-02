@@ -16,35 +16,19 @@ namespace FinalSkillsLabProject.DAL.Common
 
         public void OpenConnection()
         {
-            try
+            if (Connection.State == System.Data.ConnectionState.Open)
             {
-                if (Connection.State == System.Data.ConnectionState.Open)
-                {
-                    Connection.Close();
-                }
-                Connection.Open();
+                Connection.Close();
             }
-
-            catch (SqlException e)
-            {
-                throw e;
-            }
+            Connection.Open();
         }
 
         public void CloseConnection()
         {
-            try
+            if (Connection != null && Connection.State == System.Data.ConnectionState.Open)
             {
-                if (Connection != null && Connection.State == System.Data.ConnectionState.Open)
-                {
-                    Connection.Close();
-                    Connection.Dispose();
-                }
-            }
-
-            catch (SqlException e)
-            {
-                throw e;
+                Connection.Close();
+                Connection.Dispose();
             }
         }
     }

@@ -6,6 +6,7 @@ using FinalSkillsLabProject.DAL.Interfaces;
 using System.Web.Mvc;
 using Unity;
 using Unity.Mvc5;
+using FinalSkillsLabProject.Common.ErrorLogging;
 
 namespace FinalSkillsLabProject
 {
@@ -21,6 +22,8 @@ namespace FinalSkillsLabProject
             // it is NOT necessary to register your controllers
 
             // e.g. container.RegisterType<ITestService, TestService>();
+
+            UnityContainer.RegisterType<ILogger, Logger>();
 
             UnityContainer.RegisterType<IAccountDAL, AccountDAL>();
             UnityContainer.RegisterType<IAccountBL, AccountBL>();

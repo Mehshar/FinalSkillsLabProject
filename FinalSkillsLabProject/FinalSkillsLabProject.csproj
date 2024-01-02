@@ -391,6 +391,7 @@
     <Compile Include="Controllers\EnrollmentController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\TrainingController.cs" />
+    <Compile Include="ExceptionHandling\GlobalExceptionFilter.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -424,6 +425,7 @@
     <Content Include="Content\HomeStyle.css" />
     <Content Include="Content\Images\AccessDenied.jpg" />
     <Content Include="Content\Images\AccessDenied2.jpg" />
+    <Content Include="Content\Images\Error.png" />
     <Content Include="Content\Images\login-image.png" />
     <Content Include="Content\Images\error-404.png" />
     <Content Include="Content\Images\Home_1_Colored.png" />
@@ -486,7 +488,7 @@
     </Content>
     <Content Include="Views\Web.config" />
     <Content Include="Views\_ViewStart.cshtml" />
-    <Content Include="Views\Shared\Error.cshtml" />
+    <Content Include="Views\Common\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
@@ -499,12 +501,14 @@
     <Content Include="Views\Training\Details.cshtml" />
     <Content Include="Views\Common\DenyAccess.cshtml" />
     <Content Include="Views\Enrollment\Enroll.cshtml" />
-    <Content Include="Views\Shared\Error404.cshtml" />
+    <Content Include="Views\Common\Error404.cshtml" />
     <Content Include="Views\Enrollment\EmployeeEnrollments.cshtml" />
     <Content Include="Views\Enrollment\TrainingEnrollmentsMaterials.cshtml" />
+    <Content Include="Views\Shared\Error.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Logs\" />
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>

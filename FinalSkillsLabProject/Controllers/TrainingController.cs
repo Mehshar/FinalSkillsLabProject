@@ -45,20 +45,20 @@ namespace FinalSkillsLabProject.Controllers
             return Json(new { result = result, url = Url.Action("Index", "Training") });
         }
 
-        public async Task<ActionResult> Details(int? id)
+        public async Task<ActionResult> Details(int id)
         {
-            if (id == null) { return View("Error404"); }
+            //if (id == null) { return View("Error404"); }
             TrainingModel training = await _trainingBL.GetAsync((int)id);
-            if (training == null) { return View("Error404"); }
+            //if (training == null) { return View("Error404"); }
             ViewBag.Prerequisites = (await _prerequisiteBL.GetAllByTrainingAsync((int)id)).ToList();
             return View(training);
         }
 
         [HttpGet]
         [CustomAuthorization("Admin")]
-        public async Task<ActionResult> Edit(int? id)
+        public async Task<ActionResult> Edit(int id)
         {
-            if (id == null) { return View("Error404"); }
+            //if (id == null) { return View("Error404"); }
             TrainingModel training = await _trainingBL.GetAsync((int)id);
             if (training == null) { return View("Error404"); }
             ViewBag.Departments = (await _departmentBL.GetAllAsync()).Where(x => x.DepartmentId != training.PriorityDepartment).ToList();
