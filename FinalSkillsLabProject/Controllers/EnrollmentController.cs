@@ -174,7 +174,7 @@ namespace FinalSkillsLabProject.Controllers
         }
 
         [HttpGet]
-        [CustomAuthorization("Manager,Admin")]
+        //[CustomAuthorization("Manager,Admin")]
         public async Task<JsonResult> GetDeclineReasonByEnrollment(int enrollmentId)
         {
             string declineReason = await _enrollmentBL.GetDeclineReasonByEnrollmentAsync(enrollmentId);
