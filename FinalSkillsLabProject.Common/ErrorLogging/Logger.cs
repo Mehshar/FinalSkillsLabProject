@@ -17,10 +17,6 @@ namespace FinalSkillsLabProject.Common.ErrorLogging
         {
             string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
             logFilePath = Path.Combine(baseDirectory, filePath);
-
-            // Use Server.MapPath to get the physical path in an ASP.NET application
-            //string baseDirectory = System.Web.Hosting.HostingEnvironment.MapPath("~");
-            //logFilePath = Path.Combine(baseDirectory, filePath);
         }
 
         public void Log(string message)

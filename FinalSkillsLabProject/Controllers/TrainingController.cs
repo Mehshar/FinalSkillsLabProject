@@ -24,7 +24,7 @@ namespace FinalSkillsLabProject.Controllers
 
         public async Task<ActionResult> Index()
         {
-            List<TrainingModel> trainingsList = (await _trainingBL.GetNotEnrolledTrainingsAsync((int)Session["CurrentUserId"])).ToList();
+            List<TrainingModel> trainingsList = (await _trainingBL.GetNotEnrolledTrainingsAsync(((UserViewModel)Session["CurrentUser"]).UserId)).ToList();
             return View(trainingsList);
         }
 
@@ -47,9 +47,8 @@ namespace FinalSkillsLabProject.Controllers
 
         public async Task<ActionResult> Details(int id)
         {
-            //if (id == null) { return View("Error404"); }
             TrainingModel training = await _trainingBL.GetAsync((int)id);
-            //if (training == null) { return View("Error404"); }
+            if (training == null) { return View("Error404"); }
             ViewBag.Prerequisites = (await _prerequisiteBL.GetAllByTrainingAsync((int)id)).ToList();
             return View(training);
         }
@@ -58,7 +57,6 @@ namespace FinalSkillsLabProject.Controllers
         [CustomAuthorization("Admin")]
         public async Task<ActionResult> Edit(int id)
         {
-            //if (id == null) { return View("Error404"); }
             TrainingModel training = await _trainingBL.GetAsync((int)id);
             if (training == null) { return View("Error404"); }
             ViewBag.Departments = (await _departmentBL.GetAllAsync()).Where(x => x.DepartmentId != training.PriorityDepartment).ToList();

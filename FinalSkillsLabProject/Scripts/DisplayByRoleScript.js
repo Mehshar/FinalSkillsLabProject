@@ -3,7 +3,12 @@
     var btnEdit = $(".btnEdit");
     var btnEnroll = $(".btnEnroll");
     var enrollmentsNavLink = $("#enrollmentsNavLink");
+    var userTrainingsNavLink = $("#userTrainingsNavLink");
     var managerDetailsCard = $(".manager-details-card");
+    var hangfireBtn = $("#hangfireBtn");
+    var myenrollmentsBtn = $("#myenrollmentsBtn");
+    var btnReject = $(".btnReject");
+    var btnApprove = $(".btnApprove");
 
     $.ajax({
         type: "GET",
@@ -12,21 +17,26 @@
         success: function (response) {
             var currentRole = response.currentRole;
 
-            if ((btnCreateTraining.length || btnEdit.length) && currentRole === "Admin") {
+            if ((btnCreateTraining.length || btnEdit.length || managerDetailsCard.length || hangfireBtn.length) && currentRole === "Admin") {
                 btnCreateTraining.removeClass("d-none");
                 btnEdit.removeClass("d-none");
+                managerDetailsCard.removeClass("d-none");
+                hangfireBtn.removeClass("d-none");
             }
 
-            if (btnEnroll.length && currentRole === "Employee") {
+            if ((btnEnroll.length || userTrainingsNavLink.length || myenrollmentsBtn.length) && currentRole === "Employee") {
                 btnEnroll.removeClass("d-none");
+                userTrainingsNavLink.removeClass("d-none");
+                myenrollmentsBtn.removeClass("d-none");
             }
 
             if (enrollmentsNavLink.length && (currentRole === "Manager" || currentRole === "Admin")) {
                 enrollmentsNavLink.removeClass("d-none");
             }
 
-            if (managerDetailsCard.length && currentRole === "Admin") {
-                managerDetailsCard.removeClass("d-none");
+            if ((btnReject.length || btnApprove.length) && currentRole === "Employee") {
+                btnReject.addClass("d-none");
+                btnApprove.addClass("d-none");
             }
         }
     });

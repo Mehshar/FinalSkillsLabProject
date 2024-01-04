@@ -186,10 +186,11 @@ span {
     margin: 0 0.95rem;
 }
 
-.social-icon:hover {
-    color: rgba(148, 187, 233, 1);
-    border-color: white;
-}
+    #SignupForm .social-icon:hover,
+    #LoginForm .social-icon:hover {
+        color: rgba(148, 187, 233, 1);
+        border-color: white;
+    }
 
 input:-webkit-autofill,
 input:-webkit-autofill:hover,

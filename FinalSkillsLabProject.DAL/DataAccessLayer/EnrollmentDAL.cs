@@ -496,5 +496,46 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             }
             return enrollmentsList;
         }
+
+        public async Task<IEnumerable<EnrollmentViewModel>> GetAllByUser(int userId)
+        {
+            EnrollmentViewModel enrollment;
+            List<EnrollmentViewModel> enrollmentsList = new List<EnrollmentViewModel>();
+
+            const string GetEnrollmentsByUserQuery =
+                @"SELECT d.[DepartmentName] AS EmpDepartment, t.[TrainingName], t.[Capacity], pd.[DepartmentName] AS PriorityDepartment, e.[EnrollmentId], e.[EnrollmentDate], e.[EnrollmentStatus]
+                FROM [dbo].[EndUser] euser
+                INNER JOIN [dbo].[Department] d
+                ON euser.[DepartmentId] = d.[DepartmentId]
+                INNER JOIN [dbo].[Enrollment] e
+                ON euser.[UserId] = e.[UserId]
+                INNER JOIN [dbo].[Training] t
+                ON e.[TrainingId] = t.[TrainingId]
+                INNER JOIN [dbo].[Department] pd
+                ON t.[PriorityDepartment] = pd.[DepartmentId]
+                WHERE euser.[UserId] = @UserId;";
+
+            List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter("@UserId", userId) };
+
+            using (SqlDataReader reader = await DbCommand.GetDataWithConditionsAsync(GetEnrollmentsByUserQuery, parameters))
+            {
+                while (reader.Read())
+                {
+                    enrollment = new EnrollmentViewModel()
+                    {
+                        EmployeeId = userId,
+                        EnrollmentId = reader.GetInt16(reader.GetOrdinal("EnrollmentId")),
+                        EmployeeDepartment = reader.GetString(reader.GetOrdinal("EmpDepartment")),
+                        EnrollmentDate = reader.GetDateTime(reader.GetOrdinal("EnrollmentDate")),
+                        TrainingName = reader.GetString(reader.GetOrdinal("TrainingName")),
+                        PriorityDepartmentName = reader.GetString(reader.GetOrdinal("PriorityDepartment")),
+                        Capacity = reader.GetInt16(reader.GetOrdinal("Capacity")),
+                        EnrollmentStatus = reader.GetString(reader.GetOrdinal("EnrollmentStatus"))
+                    };
+                    enrollmentsList.Add(enrollment);
+                }
+            }
+            return enrollmentsList;
+        }
     }
 }

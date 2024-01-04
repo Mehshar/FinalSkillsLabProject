@@ -2,6 +2,7 @@
 
 namespace FinalSkillsLabProject.Controllers
 {
+    [AllowAnonymous]
     public class CommonController : Controller
     {
         public ActionResult DenyAccess()

@@ -17,6 +17,7 @@ namespace FinalSkillsLabProject.BL.Interfaces
         Task<UserEnrollmentViewModel> GetUserByEnrollmentAsync(int enrollmentId);
         Task<string> GetDeclineReasonByEnrollmentAsync(int enrollmentId);
         Task<IEnumerable<EnrollmentSelectionViewModel>> UpdateAfterDeadlineAsync(int trainingId, string declineReason);
+        Task<IEnumerable<EnrollmentViewModel>> GetAllByUser(int userId);
         Task EnrollmentAutomaticProcessing();
     }
 }

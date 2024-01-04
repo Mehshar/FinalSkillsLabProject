@@ -17,5 +17,6 @@ namespace FinalSkillsLabProject.DAL.Interfaces
         Task<string> GetDeclineReasonByEnrollmentAsync(int enrollmentId);
         Task<IEnumerable<EnrollmentSelectionViewModel>> UpdateAfterDeadlineAsync(int trainingId, string declineReason);
         Task<IEnumerable<EnrollmentSelectionViewModel>> GetSelectedEnrollmentsByTrainingAsync(int trainingId);
+        Task<IEnumerable<EnrollmentViewModel>> GetAllByUser(int userId);
     }
 }

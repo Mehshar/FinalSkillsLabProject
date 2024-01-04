@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@{
+    var currentUser = Session["CurrentUser"] as FinalSkillsLabProject.Common.Models.UserViewModel;
+}
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -47,17 +51,21 @@
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                     <li>
-                                        @Html.ActionLink("Profile", "Index", "Home", null, new { @class = "dropdown-item" })
+                                        @Html.ActionLink("Profile", "Index", "User", null, new { @class = "dropdown-item" })
                                     </li>
                                     <li>
-                                        @Html.ActionLink("My Trainings", "Index", "Home", null, new { @class = "dropdown-item" })
+                                        @Html.ActionLink("My Enrollments", "Enrollments", "User", null, new { @class = "dropdown-item d-none", id = "userTrainingsNavLink" })
                                     </li>
 
                                     <li><hr class="dropdown-divider" /></li>
-                                    @if (Session["CurrentRole"] != null)
+                                    @if (User.Identity.IsAuthenticated)
                                     {
-                                        <li><a class="dropdown-item disabled" href="#">@Session["CurrentRole"].ToString()</a></li>
-
+                                        <li>
+                                            <a class="dropdown-item disabled" href="#">
+                                                @*@Session["CurrentRole"].ToString()*@
+                                                @currentUser.Role.RoleName.ToString()
+                                            </a>
+                                        </li>
                                     }
                                 </ul>
                             </li>

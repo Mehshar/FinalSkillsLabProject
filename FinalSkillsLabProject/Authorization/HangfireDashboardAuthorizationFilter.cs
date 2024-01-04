@@ -1,4 +1,5 @@
 ﻿using FinalSkillsLabProject.Common.Enums;
+using FinalSkillsLabProject.Common.Models;
 using Hangfire.Dashboard;
 using System;
 using System.Collections.Generic;
@@ -11,9 +12,10 @@ namespace FinalSkillsLabProject.Authorization
     {
         public bool Authorize(DashboardContext context)
         {
-            if (HttpContext.Current.Session != null && HttpContext.Current.Session["CurrentRole"] != null)
+            if (HttpContext.Current.Session != null && HttpContext.Current.Session["CurrentUser"] != null)
             {
-                string userRole = HttpContext.Current.Session["CurrentRole"].ToString();
+                //string userRole = HttpContext.Current.Session["CurrentRole"].ToString();
+                string userRole = ((UserViewModel)HttpContext.Current.Session["CurrentUser"]).Role.RoleName.ToString();
                 bool isAuthorized = userRole.Equals(RoleEnum.Admin.ToString(), StringComparison.OrdinalIgnoreCase);
 
                 if (!isAuthorized)

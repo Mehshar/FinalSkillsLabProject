@@ -3,6 +3,7 @@
 @{
     ViewBag.Title = "Enrollment";
     var count = 0;
+    var CurrentUserId = ((FinalSkillsLabProject.Common.Models.UserViewModel)Session["CurrentUser"]).UserId;
 }
 
 <head>
@@ -24,7 +25,8 @@
             <div class="form-group py-3 visually-hidden">
                 <label for="userId" class="control-label col-md-2 pb-2">User Id</label>
                 <div class="col-md-10">
-                    <input type="number" name="userId" id="userId" class="form-control" value="@Session["CurrentUserId"]" readonly />
+                    @*<input type="number" name="userId" id="userId" class="form-control" value="@Session["CurrentUserId"]" readonly />*@
+                    <input type="number" name="userId" id="userId" class="form-control" value="@CurrentUserId" readonly />
                 </div>
             </div>
 

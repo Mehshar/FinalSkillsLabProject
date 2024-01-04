@@ -76,6 +76,11 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
             return await this._enrollmentDAL.GetSelectedEnrollmentsByTrainingAsync(trainingId);
         }
 
+        public async Task<IEnumerable<EnrollmentViewModel>> GetAllByUser(int userId)
+        {
+            return await this._enrollmentDAL.GetAllByUser(userId);
+        }
+
         public async Task EnrollmentAutomaticProcessing()
         {
             List<TrainingModel> trainingsList = (await _trainingDAL.GetByDeadlineAsync()).ToList();

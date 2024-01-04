@@ -41,10 +41,12 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
 
             const string GetUserByUsernameQuery =
                 @" 
-                SELECT euser.[UserId], euser.[RoleId], euser.[FirstName], euser.[LastName], [euser].[Email], acc.[Username]
+                SELECT euser.[UserId], euser.[RoleId], euser.[FirstName], euser.[LastName], acc.[Username], euser.[Email], euser.[MobileNum], dept.[DepartmentName], meuser.[FirstName] AS ManagerFirstName, meuser.[LastName] AS ManagerLastName
                 FROM [dbo].[EndUser] euser WITH(NOLOCK)
                 INNER JOIN [dbo].[Account] acc WITH(NOLOCK) ON euser.[UserId] = acc.[UserId]
                 INNER JOIN [dbo].[Role] r WITH(NOLOCK) ON euser.[RoleId] = r.[RoleId]
+                INNER JOIN [dbo].[Department] dept WITH(NOLOCK) ON euser.[DepartmentId] = dept.[DepartmentId]
+                LEFT JOIN [dbo].[EndUser] meuser WITH(NOLOCK) ON euser.[ManagerId] = meuser.[UserId]
                 WHERE acc.[Username] = @Username;";
 
             using (SqlDataReader reader = await DbCommand.GetDataWithConditionsAsync(GetUserByUsernameQuery, parameters))
@@ -62,7 +64,11 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                         },
                         FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
                         LastName = reader.GetString(reader.GetOrdinal("LastName")),
-                        Email = reader.GetString(reader.GetOrdinal("Email"))
+                        Email = reader.GetString(reader.GetOrdinal("Email")),
+                        MobileNum = reader.GetString(reader.GetOrdinal("MobileNum")),
+                        Department = reader.GetString(reader.GetOrdinal("DepartmentName")),
+                        ManagerFirstName = reader.IsDBNull(reader.GetOrdinal("ManagerFirstName")) ? null : reader.GetString(reader.GetOrdinal("ManagerFirstName")),
+                        ManagerLastName = reader.IsDBNull(reader.GetOrdinal("ManagerLastName")) ? null : reader.GetString(reader.GetOrdinal("ManagerLastName"))
                     };
                 }
             }

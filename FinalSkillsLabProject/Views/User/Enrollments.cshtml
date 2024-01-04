@@ -1,23 +1,34 @@
 ﻿@model List<FinalSkillsLabProject.Common.Models.EnrollmentViewModel>
 
 @{
-    ViewBag.Title = "Employee Enrollments";
+    ViewBag.Title = "Enrollments";
 }
 
-@section ExcludeBodyContent {
+@section ExcludeBodyContent{
     <head>
         <link rel="stylesheet" href="~/Content/AccordionStyle.css" />
         <script type="text/javascript" src="~/Scripts/GetPrerequisiteMaterialsScript.js"></script>
         <script type="text/javascript" src="~/Scripts/NewTabScript.js"></script>
+
+        <style>
+            .header-text {
+                padding: 1rem 3rem !important;
+                display: flex;
+                margin-right: 4rem;
+            }
+
+            .accordion-text {
+                padding: 1rem 2.50rem !important;
+                display: flex;
+                margin-right: 4rem;
+            }
+
+        </style>
     </head>
 
     <body>
         <div class="mx-5 mt-5 header">
             <div class="row">
-                <div class="col-2 header-text">
-                    Employee
-                </div>
-
                 <div class="col-2 header-text">
                     Department
                 </div>
@@ -42,6 +53,7 @@
             </div>
         </div>
 
+
         @if (Model == null || !Model.Any())
         {@Html.Partial("~/Views/Common/NoData.cshtml") }
 
@@ -55,10 +67,6 @@
                         <h2 class="accordion-header" id="heading_@enrollment.EnrollmentId">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_@enrollment.EnrollmentId" aria-expanded="false" aria-controls="collapse_@enrollment.EnrollmentId" data-enrollment-id="@enrollment.EnrollmentId">
                                 <div class="col-2 accordion-text">
-                                    @enrollment.FirstName @enrollment.LastName
-                                </div>
-
-                                <div class="col-2 accordion-text">
                                     @enrollment.EmployeeDepartment
                                 </div>
 
@@ -70,7 +78,7 @@
                                     @enrollment.TrainingName
                                 </div>
 
-                                <div class="col-2 accordion-text ms-3">
+                                <div class="col-2 accordion-text ms-2">
                                     @enrollment.EnrollmentDate.ToShortDateString()
                                 </div>
 
@@ -89,6 +97,10 @@
                                 else if (enrollment.EnrollmentStatus == "Declined")
                                 {
                                     <span id="badge_@enrollment.EnrollmentId" class="badge bg-danger">@enrollment.EnrollmentStatus</span>
+                                }
+                                else if (enrollment.EnrollmentStatus == "Selected")
+                                {
+                                    <span id="badge_@enrollment.EnrollmentId" class="badge bg-primary">@enrollment.EnrollmentStatus</span>
                                 }
                             </button>
                         </h2>

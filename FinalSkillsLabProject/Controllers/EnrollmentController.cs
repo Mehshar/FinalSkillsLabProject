@@ -43,7 +43,7 @@ namespace FinalSkillsLabProject.Controllers
             if (id == null) { return View("Error404"); }
             TrainingModel training = await _trainingBL.GetAsync((int)id);
             if (training == null) { return View("Error404"); }
-            ViewBag.Prerequisites = _prerequisiteBL.GetAllByTrainingAsync((int)id);
+            ViewBag.Prerequisites = await _prerequisiteBL.GetAllByTrainingAsync((int)id);
             return View(training);
         }
 
@@ -87,7 +87,8 @@ namespace FinalSkillsLabProject.Controllers
 
                 EnrollmentModel enrollment = new EnrollmentModel()
                 {
-                    UserId = (int)Session["CurrentUserId"],
+                    //UserId = (int)Session["CurrentUserId"],
+                    UserId = ((UserViewModel)Session["CurrentUser"]).UserId,
                     TrainingId = trainingId
                 };
 
@@ -116,7 +117,8 @@ namespace FinalSkillsLabProject.Controllers
                         AuthTokenAsyncFactory = () => Task.FromResult(a.FirebaseToken),
                         ThrowOnCancel = true
                     })
-                    .Child(Session["CurrentUsername"].ToString())
+                    //.Child(Session["CurrentUsername"].ToString())
+                    .Child(((UserViewModel)Session["CurrentUser"]).Username)
                     .Child(folder)
                     .Child(fileName)
                     .PutAsync(stream, cancellation.Token);
@@ -134,21 +136,23 @@ namespace FinalSkillsLabProject.Controllers
         public async Task<ActionResult> EmployeeEnrollments()
         {
             List<EnrollmentViewModel> employeeEnrollmentsList = null;
+            string currentRole = ((UserViewModel)Session["CurrentUser"]).Role.RoleName.ToString();
+            int currentUserId = ((UserViewModel)Session["CurrentUser"]).UserId;
             
-            if (Session["CurrentRole"].ToString().Equals("Admin"))
+            if (currentRole.ToString().Equals("Admin"))
             {
                 //employeeEnrollmentsList = _enrollmentBL.GetAll().Where(x => x.EnrollmentStatus != EnrollmentStatusEnum.Selected.ToString()).ToList();
                 employeeEnrollmentsList = (await _enrollmentBL.GetAllAsync()).ToList();
             }
 
-            else if (Session["CurrentRole"].ToString().Equals("Manager"))
+            else if (currentRole.ToString().Equals("Manager"))
             {
-                employeeEnrollmentsList = (await _enrollmentBL.GetAllByManagerAsync((int)Session["CurrentUserId"])).Where(x => x.EnrollmentStatus != EnrollmentStatusEnum.Selected.ToString()).ToList();
+                employeeEnrollmentsList = (await _enrollmentBL.GetAllByManagerAsync(currentUserId)).Where(x => x.EnrollmentStatus != EnrollmentStatusEnum.Selected.ToString()).ToList();
             }
             return View(employeeEnrollmentsList);
         }
 
-        [CustomAuthorization("Manager,Admin")]
+        //[CustomAuthorization("Manager,Admin")]
         public async Task<ActionResult> TrainingEnrollmentsMaterials(int id)
         {
             List<PrerequisiteMaterialViewModel> prerequisiteMaterialsList = (await _enrollmentBL.GetPrerequisiteMaterialsByEnrollmentAsync(id)).ToList();

@@ -1,0 +1,108 @@
+﻿@model FinalSkillsLabProject.Common.Models.UserViewModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/%40fortawesome/fontawesome-free@6.2.0/css/fontawesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="~/Content/ProfileStyle.css" />
+    <script type="text/javascript" src="~/Scripts/DisplayByRoleScript.js"></script>
+</head>
+<body>
+    <div class="title-bar">
+        <p>
+            <a href="/Home/Index" class="text-decoration-none" id="title-text">SkillsHub</a>
+        </p>
+    </div>
+    <div class="container">
+        <div>
+            <div class="card-group my-5">
+                <div class="card card-1 text-center rounded-start-5">
+                    <div class="card-body">
+                        <img src="~/Content/Images/male-avatar.svg" alt="profile-img" class="custom-mt" />
+                        <h2 class="card-title fw-bold mt-5 mb-3">@Model.FirstName @Model.LastName</h2>
+                        <h6 class="card-subtitle mb-2 text-muted fw-bold">@Model.Role.RoleName</h6>
+                        <div class="social-media d-flex justify-content-center">
+                            <a href="#" class="social-icon">
+                                <i class="fa fa-facebook-f"></i>
+                            </a>
+
+                            <a href="#" class="social-icon">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+
+                            <a href="#" class="social-icon">
+                                <i class="fa fa-google"></i>
+                            </a>
+
+                            <a href="#" class="social-icon">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                        </div>
+                        <div class="fixed-bottom mb-5">
+                            <a href="/User/Enrollments" class="btn profileBtn d-none" id="myenrollmentsBtn">View Enrollments</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card card-2 rounded-end-5">
+                    <div class="card-body rounded-end-5">
+                        <h2 class="card-title fw-bold mt-5 mb-5 text-center">Profile</h2>
+                        <table border="0">
+                            <tr>
+                                <td>Username</td>
+                                <td>@Model.Username</td>
+                            </tr>
+                            <tr>
+                                <td>Name</td>
+                                <td>@Model.FirstName @Model.LastName</td>
+                            </tr>
+                            <tr>
+                                <td>Email</td>
+                                <td>@Model.Email</td>
+                            </tr>
+                            <tr>
+                                <td>Mobile Number</td>
+                                <td>@Model.MobileNum</td>
+                            </tr>
+                            <tr>
+                                <td>Department</td>
+                                <td>@Model.Department</td>
+                            </tr>
+                            @if (Model.ManagerFirstName != null)
+                            {
+                                <tr>
+                                    <td>Manager</td>
+                                    <td>@Model.ManagerFirstName @Model.ManagerLastName</td>
+                                </tr>
+                            }
+                        </table>
+                        <div class="px-5 d-flex justify-content-center fixed-bottom mb-5">
+                            <button type="button" class="btn profileBtn d-inline-block me-5">Edit</button>
+                            <button type="button" class="btn profileBtn d-inline-block ms-5">Delete</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+        <hr>
+        <p class="copyright">Copyright &copy; @DateTime.Now.Year - SkillsHub</p>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+</body>
+</html>

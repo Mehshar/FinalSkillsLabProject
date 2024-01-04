@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using FinalSkillsLabProject.Common.Models;
+using System.Linq;
 using System.Web.Mvc;
 using System.Web.Routing;
 
@@ -19,10 +20,10 @@ namespace FinalSkillsLabProject.Authorization
         {
             var dfController = filterContext.Controller as Controller;
 
-            if(dfController != null && dfController.Session["CurrentRole"] != null)
+            if(dfController != null && dfController.Session["CurrentUser"] != null)
             {
-                var currentRole = dfController.Session["CurrentRole"];
-                if(!AuthorizedRoles.Contains(currentRole))
+                string currentRole = ((UserViewModel)dfController.Session["CurrentUser"]).Role.RoleName.ToString();
+                if (!AuthorizedRoles.Contains(currentRole))
                 {
                     filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Common", action = "DenyAccess" }));
                 }
