@@ -9,9 +9,115 @@
         <link rel="stylesheet" href="~/Content/AccordionStyle.css" />
         <script type="text/javascript" src="~/Scripts/GetPrerequisiteMaterialsScript.js"></script>
         <script type="text/javascript" src="~/Scripts/NewTabScript.js"></script>
+
+        <style>
+            #statusDropdownMenu, #trainingDropdownMenu {
+                border: 1px solid gray;
+            }
+        </style>
     </head>
 
     <body>
+        @*<div class="row justify-content-end w-100">
+                <div class="col-md-3 col-sm-4">
+                    <div class="card me-4 mt-3">
+                        <div class="card-header">
+                            Status Filter
+                        </div>
+                        <div class="card-body d-flex flex-column align-items-center">
+                            <div class="d-inline-flex flex-wrap" role="group" aria-label="Basic outlined example">
+                                <button type="button" class="btn btn-outline-secondary flex-grow-1 btn-sm me-1 rounded my-1">Pending</button>
+                                <button type="button" class="btn btn-outline-secondary flex-grow-1 btn-sm me-1 rounded my-1">Approved</button>
+                                <button type="button" class="btn btn-outline-secondary flex-grow-1 btn-sm me-1 rounded my-1">Selected</button>
+                                <button type="button" class="btn btn-outline-secondary flex-grow-1 btn-sm me-1 rounded my-1">Declined</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>*@
+
+        @*<div class="row justify-content-end w-100">
+                <div class="col-md-3 col-sm-4">
+                    <div class="card me-4 mt-3">
+                        <div class="card-header">
+                            Filters
+                        </div>
+                        <div class="card-body">
+                            <div class="dropdown me-2">
+                                <button class="btn bg-transparent dropdown-toggle w-100" type="button" id="statusDropdownMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Status
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="statusDropdownMenu">
+                                    <li><button class="dropdown-item" type="button">Action</button></li>
+                                    <li><button class="dropdown-item" type="button">Another action</button></li>
+                                    <li><button class="dropdown-item" type="button">Something else here</button></li>
+                                </ul>
+                            </div>
+                            <div class="dropdown">
+                                <button class="btn bg-transparent dropdown-toggle w-100" type="button" id="statusDropdownMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Status
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="statusDropdownMenu">
+                                    <li><button class="dropdown-item" type="button">Action</button></li>
+                                    <li><button class="dropdown-item" type="button">Another action</button></li>
+                                    <li><button class="dropdown-item" type="button">Something else here</button></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>*@
+
+        <div class="row w-100">
+            <div class="col-2 ps-5 mt-4">
+                <div class="card ms-2">
+                    <div class="card-header text-center">
+                        Hangfire Dashboard
+                    </div>
+                    <div class="card-body text-center">
+                        <a onclick="openInNewTab('/hangfire')" class="btn d-none w-100" id="hangfireBtn" style="text-decoration:none;" data-toggle="tooltip" title="Hangfire Dashboard">
+                            View Processing
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="offset-7 col-md-3 col-sm-4">
+                <div class="card me-4 mt-4">
+                    <div class="card-header">
+                        Filters
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 col-sm-12">
+                                <div class="dropdown">
+                                    <button class="btn bg-transparent dropdown-toggle w-100" type="button" id="statusDropdownMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Status
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="statusDropdownMenu">
+                                        <li><button class="dropdown-item" type="button">All</button></li>
+                                        <li><button class="dropdown-item" type="button">Another action</button></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-12">
+                                <div class="dropdown">
+                                    <button class="btn bg-transparent dropdown-toggle w-100" type="button" id="trainingDropdownMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Training
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="trainingDropdownMenu">
+                                        <li><button class="dropdown-item" type="button">All</button></li>
+                                        <li><button class="dropdown-item" type="button">Another action</button></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
         <div class="mx-5 mt-5 header">
             <div class="row">
                 <div class="col-2 header-text">
@@ -32,12 +138,6 @@
 
                 <div class="col-2 header-text">
                     Priority Department
-                </div>
-
-                <div class="col-2 mt-2">
-                    <a onclick="openInNewTab('/hangfire')" class="btn d-none" id="hangfireBtn" style="text-decoration:none;" data-toggle="tooltip" title="Hangfire Dashboard">
-                        View Processing
-                    </a>
                 </div>
             </div>
         </div>

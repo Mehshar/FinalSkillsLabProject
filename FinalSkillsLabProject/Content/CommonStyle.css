@@ -104,7 +104,7 @@ hr {
         color: white !important;
     }
 
-#btnCreateTraining, #btnSubmit, #hangfireBtn {
+#btnCreateTraining, #btnSubmit/*, #hangfireBtn*/ {
     background-image: linear-gradient(to left, rgba(238, 174, 202, 1) 6%, rgba(148, 187, 233, 1) 100%);
     border: none;
     outline: none;
@@ -112,6 +112,6 @@ hr {
     color: white;
 }
 
-    #btnCreateTraining:hover, #btnSubmit:hover, #hangfireBtn:hover {
+    #btnCreateTraining:hover, #btnSubmit:hover/*, #hangfireBtn:hover*/ {
         background-image: linear-gradient(to right, rgba(238, 174, 202, 1) 6%, rgba(148, 187, 233, 1) 100%);
     }

@@ -86,9 +86,6 @@ namespace FinalSkillsLabProject.Controllers
         private void SetSessionVariables(UserViewModel user)
         {
             this.Session["CurrentUser"] = user;
-            //this.Session["CurrentUsername"] = user.Username;
-            //this.Session["CurrentUserId"] = user.UserId;
-            //this.Session["CurrentRole"] = user.Role.RoleName.ToString();
         }
 
         private void RemoveSessionVariables()
