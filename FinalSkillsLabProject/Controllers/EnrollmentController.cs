@@ -40,7 +40,7 @@ namespace FinalSkillsLabProject.Controllers
         [HttpGet]
         public async Task<ActionResult> Enroll(int? id)
         {
-            if (id == null) { return View("Error404"); }
+            //if (id == null) { return View("Error404"); }
             TrainingModel training = await _trainingBL.GetAsync((int)id);
             if (training == null) { return View("Error404"); }
             ViewBag.Prerequisites = await _prerequisiteBL.GetAllByTrainingAsync((int)id);
@@ -93,6 +93,7 @@ namespace FinalSkillsLabProject.Controllers
                 };
 
                 bool isSuccess = await _enrollmentBL.AddAsync(enrollment, prerequisiteMaterialsList);
+                if (isSuccess) { await _emailNotificationBL.SendEnrollmentEmail((UserViewModel)Session["CurrentUser"], await _trainingBL.GetAsync(trainingId)); }
                 return Json(new { result = isSuccess, url = Url.Action("Index", "Training") });
             }
             catch (Exception)
@@ -168,7 +169,7 @@ namespace FinalSkillsLabProject.Controllers
             {
                 UserViewModel requestHandler = (UserViewModel)Session["CurrentUser"];
                 string requestHandlerName = $"{requestHandler.FirstName} {requestHandler.LastName}";
-                _emailNotificationBL.SendApprovalRejectionEmail(isApproved, user.Email, user.Username, user.TrainingName, requestHandlerName, requestHandler.Role.RoleName.ToString().ToLower(), requestHandler.Email, declineReason, user.ManagerEmail);
+               await _emailNotificationBL.SendApprovalRejectionEmailAsync(isApproved, user.Email, user.Username, user.TrainingName, requestHandlerName, requestHandler.Role.RoleName.ToString().ToLower(), requestHandler.Email, declineReason, user.ManagerEmail);
             }
             return Json(new { result = result });
         }

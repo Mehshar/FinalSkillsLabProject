@@ -10,7 +10,8 @@ namespace FinalSkillsLabProject.BL.Interfaces
 {
     public interface IEmailNotificationBL
     {
-        void SendApprovalRejectionEmail(bool isApproved, string recipient, string username, string training, string requestHandlerName, string requestHandlerRole, string requestHandlerEmail, string declineReason, string managerEmail);
+        Task SendApprovalRejectionEmailAsync(bool isApproved, string recipient, string username, string training, string requestHandlerName, string requestHandlerRole, string requestHandlerEmail, string declineReason, string managerEmail);
         void SendSelectionRejectionEmail(bool isSelected, EnrollmentSelectionViewModel enrollment);
+        Task SendEnrollmentEmail(UserViewModel user, TrainingModel training);
     }
 }

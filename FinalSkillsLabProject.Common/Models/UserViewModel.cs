@@ -18,5 +18,6 @@ namespace FinalSkillsLabProject.Common.Models
         public string Department { get; set; }
         public string ManagerFirstName { get; set; }
         public string ManagerLastName { get; set; }
+        public string ManagerEmail { get; set; }
     }
 }

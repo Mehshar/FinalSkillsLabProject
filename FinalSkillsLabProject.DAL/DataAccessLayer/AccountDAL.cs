@@ -41,7 +41,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
 
             const string GetUserByUsernameQuery =
                 @" 
-                SELECT euser.[UserId], euser.[RoleId], euser.[FirstName], euser.[LastName], acc.[Username], euser.[Email], euser.[MobileNum], dept.[DepartmentName], meuser.[FirstName] AS ManagerFirstName, meuser.[LastName] AS ManagerLastName
+                SELECT euser.[UserId], euser.[RoleId], euser.[FirstName], euser.[LastName], acc.[Username], euser.[Email], euser.[MobileNum], dept.[DepartmentName], meuser.[FirstName] AS ManagerFirstName, meuser.[LastName] AS ManagerLastName, meuser.[Email] AS ManagerEmail
                 FROM [dbo].[EndUser] euser WITH(NOLOCK)
                 INNER JOIN [dbo].[Account] acc WITH(NOLOCK) ON euser.[UserId] = acc.[UserId]
                 INNER JOIN [dbo].[Role] r WITH(NOLOCK) ON euser.[RoleId] = r.[RoleId]
@@ -68,7 +68,8 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                         MobileNum = reader.GetString(reader.GetOrdinal("MobileNum")),
                         Department = reader.GetString(reader.GetOrdinal("DepartmentName")),
                         ManagerFirstName = reader.IsDBNull(reader.GetOrdinal("ManagerFirstName")) ? null : reader.GetString(reader.GetOrdinal("ManagerFirstName")),
-                        ManagerLastName = reader.IsDBNull(reader.GetOrdinal("ManagerLastName")) ? null : reader.GetString(reader.GetOrdinal("ManagerLastName"))
+                        ManagerLastName = reader.IsDBNull(reader.GetOrdinal("ManagerLastName")) ? null : reader.GetString(reader.GetOrdinal("ManagerLastName")),
+                        ManagerEmail = reader.IsDBNull(reader.GetOrdinal("ManagerEmail")) ? null : reader.GetString(reader.GetOrdinal("ManagerEmail"))
                     };
                 }
             }

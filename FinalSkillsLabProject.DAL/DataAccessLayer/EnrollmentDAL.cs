@@ -140,7 +140,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                 FROM [dbo].[Enrollment] AS e
                 INNER JOIN [dbo].[Training] AS t
                 ON e.[TrainingId] = t.[TrainingId]
-                INNER JOIN [dbo].[Department] AS pd
+                LEFT JOIN [dbo].[Department] AS pd
                 ON t.[PriorityDepartment] = pd.[DepartmentId]
                 INNER JOIN [dbo].[EndUser] AS euser
                 ON e.[UserId] = euser.[UserId]
@@ -163,7 +163,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                         EmployeeDepartment = reader.GetString(reader.GetOrdinal("DepartmentName")),
                         EnrollmentDate = reader.GetDateTime(reader.GetOrdinal("EnrollmentDate")),
                         TrainingName = reader.GetString(reader.GetOrdinal("TrainingName")),
-                        PriorityDepartmentName = reader.GetString(reader.GetOrdinal("PriorityDeptName")),
+                        PriorityDepartmentName = reader.IsDBNull(reader.GetOrdinal("PriorityDeptName")) ? "N/A" : reader.GetString(reader.GetOrdinal("PriorityDeptName")),
                         EnrollmentStatus = reader.GetString(reader.GetOrdinal("EnrollmentStatus")),
                         ManagerFirstName = reader.GetString(reader.GetOrdinal("MFirstName")),
                         ManagerLastName = reader.GetString(reader.GetOrdinal("MLastName")),
@@ -230,7 +230,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                 FROM [dbo].[Enrollment] AS en
                 INNER JOIN [dbo].[Training] AS t
                 ON en.[TrainingId] = t.[TrainingId]
-                INNER JOIN [dbo].[Department] as dept
+                LEFT JOIN [dbo].[Department] as dept
                 ON t.[PriorityDepartment] = dept.[DepartmentId]
                 INNER JOIN [dbo].[EndUser] AS euser
                 ON en.[UserId] = euser.[UserId]
@@ -256,7 +256,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                         EnrollmentDate = reader.GetDateTime(reader.GetOrdinal("EnrollmentDate")),
                         TrainingName = reader.GetString(reader.GetOrdinal("TrainingName")),
                         TrainingId = reader.GetInt16(reader.GetOrdinal("TrainingId")),
-                        PriorityDepartmentName = reader.GetString(reader.GetOrdinal("PriorityDepartmentName")),
+                        PriorityDepartmentName = reader.IsDBNull(reader.GetOrdinal("PriorityDepartmentName")) ? "N/A" : reader.GetString(reader.GetOrdinal("PriorityDepartmentName")),
                         Capacity = reader.GetInt16(reader.GetOrdinal("Capacity"))
                     };
                     enrollmentsList.Add(enrollment);
@@ -511,7 +511,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                 ON euser.[UserId] = e.[UserId]
                 INNER JOIN [dbo].[Training] t
                 ON e.[TrainingId] = t.[TrainingId]
-                INNER JOIN [dbo].[Department] pd
+                LEFT JOIN [dbo].[Department] pd
                 ON t.[PriorityDepartment] = pd.[DepartmentId]
                 WHERE euser.[UserId] = @UserId;";
 
@@ -528,7 +528,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                         EmployeeDepartment = reader.GetString(reader.GetOrdinal("EmpDepartment")),
                         EnrollmentDate = reader.GetDateTime(reader.GetOrdinal("EnrollmentDate")),
                         TrainingName = reader.GetString(reader.GetOrdinal("TrainingName")),
-                        PriorityDepartmentName = reader.GetString(reader.GetOrdinal("PriorityDepartment")),
+                        PriorityDepartmentName = reader.IsDBNull(reader.GetOrdinal("PriorityDepartment")) ? "N/A" : reader.GetString(reader.GetOrdinal("PriorityDepartment")),
                         Capacity = reader.GetInt16(reader.GetOrdinal("Capacity")),
                         EnrollmentStatus = reader.GetString(reader.GetOrdinal("EnrollmentStatus"))
                     };

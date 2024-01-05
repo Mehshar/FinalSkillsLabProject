@@ -29,7 +29,7 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
             password = ConfigurationManager.AppSettings["password"];
         }
 
-        public void SendApprovalRejectionEmail(bool isApproved, string recipient, string username, string training, string requestHandlerName, string requestHandlerRole, string requestHandlerEmail, string declineReason, string managerEmail)
+        public async Task SendApprovalRejectionEmailAsync(bool isApproved, string recipient, string username, string training, string requestHandlerName, string requestHandlerRole, string requestHandlerEmail, string declineReason, string managerEmail)
         {
             string subject = GetApprovalRejectionSubject(isApproved);
             string body = GetApprovalRejectionEmailBody(username, training, isApproved, requestHandlerName, requestHandlerRole, declineReason);
@@ -37,7 +37,7 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
             mailMessage.CC.Add(requestHandlerEmail);
             if (requestHandlerRole.Equals(RoleEnum.Admin.ToString().ToLower())) { mailMessage.CC.Add(managerEmail); }
 
-            SendEmail(mailMessage);
+            await SendEmail(mailMessage);
         }
 
         public void SendSelectionRejectionEmail(bool isSelected, EnrollmentSelectionViewModel enrollment)
@@ -48,6 +48,16 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
             mailMessage.CC.Add(enrollment.ManagerEmail);
 
             SendMailInBackground(mailMessage);
+        }
+
+        public async Task SendEnrollmentEmail(UserViewModel user, TrainingModel training)
+        {
+            string subject = "New Enrollment";
+            string body = GetEnrollmentEmailBody(user, training);
+            MailMessage mailMessage = CreateMailMessage(sender, user.ManagerEmail, subject, body);
+            mailMessage.CC.Add(user.Email);
+
+            await SendEmail(mailMessage);
         }
 
         private MailMessage CreateMailMessage(string sender, string recipient, string subject, string body)
@@ -164,25 +174,65 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
             return htmlBody;
         }
 
-        private void SendEmail(MailMessage mailMessage)
+        private string GetEnrollmentEmailBody(UserViewModel user, TrainingModel training)
         {
-            using (SmtpClient smtpClient = new SmtpClient(smtpServer)
+            string htmlBody =
+                    $@"
+                    <html>
+                        <head>
+                            <title>New Enrollment</title>
+                        </head>
+
+                        <body>
+                            <p>Hello <strong>{user.ManagerFirstName} {user.ManagerLastName}</strong>,</p>
+                            <p>Your employee, <strong>{user.FirstName} {user.LastName}</strong>, has enrolled for the training, <strong>{training.TrainingName}</strong>.</p>
+                            <p>Check out their application for further information.</p>
+                            <p>Regards, </br>SkillsHub Team</p>
+                        </body>
+                    </html>";
+            return htmlBody;
+        }
+
+        //private void SendEmail(MailMessage mailMessage)
+        //{
+        //    using (SmtpClient smtpClient = new SmtpClient(smtpServer)
+        //    {
+        //        Port = port,
+        //        EnableSsl = true,
+        //        UseDefaultCredentials = false,
+        //        Credentials = new NetworkCredential(sender, password)
+        //    })
+        //    {
+        //        try
+        //        {
+        //            Task.Run(() => smtpClient.SendMailAsync(mailMessage)).ConfigureAwait(false);
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            throw ex;
+        //        }
+        //    }
+        //}
+
+        #pragma warning disable CS1998
+        private async Task SendEmail(MailMessage mailMessage)
+        #pragma warning restore CS1998
+        {    
+            #pragma warning disable CS4014
+            Task.Run(() =>
             {
-                Port = port,
-                EnableSsl = true,
-                UseDefaultCredentials = false,
-                Credentials = new NetworkCredential(sender, password)
-            })
-            {
-                try
+                using (SmtpClient smtpClient = new SmtpClient(smtpServer)
                 {
-                    Task.Run(() => smtpClient.SendMailAsync(mailMessage)).ConfigureAwait(false);
-                }
-                catch (Exception ex)
+                    Port = port,
+                    EnableSsl = true,
+                    UseDefaultCredentials = false,
+                    Credentials = new NetworkCredential(sender, password)
+                })
                 {
-                    throw ex;
+                    smtpClient.Send(mailMessage);
                 }
-            }
+            }).ConfigureAwait(false);
+            #pragma warning restore CS4014
         }
 
         private void SendMailInBackground(MailMessage mailMessage)
