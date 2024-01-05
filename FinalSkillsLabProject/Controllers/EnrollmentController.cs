@@ -140,15 +140,16 @@ namespace FinalSkillsLabProject.Controllers
             string currentRole = ((UserViewModel)Session["CurrentUser"]).Role.RoleName.ToString();
             int currentUserId = ((UserViewModel)Session["CurrentUser"]).UserId;
             
-            if (currentRole.ToString().Equals("Admin"))
+            if (currentRole.Equals("Admin"))
             {
                 //employeeEnrollmentsList = _enrollmentBL.GetAll().Where(x => x.EnrollmentStatus != EnrollmentStatusEnum.Selected.ToString()).ToList();
                 employeeEnrollmentsList = (await _enrollmentBL.GetAllAsync()).ToList();
             }
 
-            else if (currentRole.ToString().Equals("Manager"))
+            else if (currentRole.Equals("Manager"))
             {
-                employeeEnrollmentsList = (await _enrollmentBL.GetAllByManagerAsync(currentUserId)).Where(x => x.EnrollmentStatus != EnrollmentStatusEnum.Selected.ToString()).ToList();
+                //employeeEnrollmentsList = (await _enrollmentBL.GetAllByManagerAsync(currentUserId)).Where(x => x.EnrollmentStatus != EnrollmentStatusEnum.Selected.ToString()).ToList();
+                employeeEnrollmentsList = (await _enrollmentBL.GetAllByManagerAsync(currentUserId)).ToList();
             }
             return View(employeeEnrollmentsList);
         }

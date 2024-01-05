@@ -13,6 +13,10 @@
                     $('.btnApprove').prop('disabled', true).removeClass('btn-outline-success').addClass('btn-outline-secondary');
                 }
 
+                else if (enrollmentStatus == "Selected") {
+                    $('.responseBtnGroup').addClass('d-none');
+                }
+
                 else if (enrollmentStatus == "Declined") {
                     $('.btnReject').prop('disabled', true).removeClass('btn-outline-danger').addClass('btn-outline-secondary');
                     $('.declineReasontextarea').prop('readonly', true);
