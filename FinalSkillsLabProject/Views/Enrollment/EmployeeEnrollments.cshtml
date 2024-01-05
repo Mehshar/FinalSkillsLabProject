@@ -1,4 +1,5 @@
 ﻿@model List<FinalSkillsLabProject.Common.Models.EnrollmentViewModel>
+@using FinalSkillsLabProject.Common.Enums
 
 @{
     ViewBag.Title = "Employee Enrollments";
@@ -9,69 +10,19 @@
         <link rel="stylesheet" href="~/Content/AccordionStyle.css" />
         <script type="text/javascript" src="~/Scripts/GetPrerequisiteMaterialsScript.js"></script>
         <script type="text/javascript" src="~/Scripts/NewTabScript.js"></script>
-
+        <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
         <style>
-            #statusDropdownMenu, #trainingDropdownMenu {
+            #statusDropdownMenu, #trainingDropdownMenu, #hangfireBtn {
                 border: 1px solid gray;
             }
         </style>
     </head>
 
     <body>
-        @*<div class="row justify-content-end w-100">
-                <div class="col-md-3 col-sm-4">
-                    <div class="card me-4 mt-3">
-                        <div class="card-header">
-                            Status Filter
-                        </div>
-                        <div class="card-body d-flex flex-column align-items-center">
-                            <div class="d-inline-flex flex-wrap" role="group" aria-label="Basic outlined example">
-                                <button type="button" class="btn btn-outline-secondary flex-grow-1 btn-sm me-1 rounded my-1">Pending</button>
-                                <button type="button" class="btn btn-outline-secondary flex-grow-1 btn-sm me-1 rounded my-1">Approved</button>
-                                <button type="button" class="btn btn-outline-secondary flex-grow-1 btn-sm me-1 rounded my-1">Selected</button>
-                                <button type="button" class="btn btn-outline-secondary flex-grow-1 btn-sm me-1 rounded my-1">Declined</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>*@
-
-        @*<div class="row justify-content-end w-100">
-                <div class="col-md-3 col-sm-4">
-                    <div class="card me-4 mt-3">
-                        <div class="card-header">
-                            Filters
-                        </div>
-                        <div class="card-body">
-                            <div class="dropdown me-2">
-                                <button class="btn bg-transparent dropdown-toggle w-100" type="button" id="statusDropdownMenu" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Status
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="statusDropdownMenu">
-                                    <li><button class="dropdown-item" type="button">Action</button></li>
-                                    <li><button class="dropdown-item" type="button">Another action</button></li>
-                                    <li><button class="dropdown-item" type="button">Something else here</button></li>
-                                </ul>
-                            </div>
-                            <div class="dropdown">
-                                <button class="btn bg-transparent dropdown-toggle w-100" type="button" id="statusDropdownMenu" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Status
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="statusDropdownMenu">
-                                    <li><button class="dropdown-item" type="button">Action</button></li>
-                                    <li><button class="dropdown-item" type="button">Another action</button></li>
-                                    <li><button class="dropdown-item" type="button">Something else here</button></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>*@
-
         <div class="row w-100">
             <div class="col-2 ps-5 mt-4">
                 <div class="card ms-2">
-                    <div class="card-header text-center">
+                    <div class="card-header text-center fw-bold">
                         Hangfire Dashboard
                     </div>
                     <div class="card-body text-center">
@@ -84,32 +35,31 @@
 
             <div class="offset-7 col-md-3 col-sm-4">
                 <div class="card me-4 mt-4">
-                    <div class="card-header">
+                    <div class="card-header fw-bold">
                         Filters
                     </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-6 col-sm-12">
-                                <div class="dropdown">
-                                    <button class="btn bg-transparent dropdown-toggle w-100" type="button" id="statusDropdownMenu" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Status
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="statusDropdownMenu">
-                                        <li><button class="dropdown-item" type="button">All</button></li>
-                                        <li><button class="dropdown-item" type="button">Another action</button></li>
-                                    </ul>
-                                </div>
+                                <h6 class="card-subtitle mb-2 text-muted">Status</h6>
+                                <select class="form-select" aria-label="statusDropdownMenu" id="statusDropdownMenu">
+                                    <option value="All" selected>All</option>
+                                    @foreach (var status in Enum.GetValues(typeof(EnrollmentStatusEnum)))
+                                    {
+                                        @*<option value="@((int)status)">@status.ToString()</option>*@
+                                        <option value="@status.ToString()">@status.ToString()</option>
+                                    }
+                                </select>
                             </div>
                             <div class="col-md-6 col-sm-12">
-                                <div class="dropdown">
-                                    <button class="btn bg-transparent dropdown-toggle w-100" type="button" id="trainingDropdownMenu" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Training
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="trainingDropdownMenu">
-                                        <li><button class="dropdown-item" type="button">All</button></li>
-                                        <li><button class="dropdown-item" type="button">Another action</button></li>
-                                    </ul>
-                                </div>
+                                <h6 class="card-subtitle mb-2 text-muted">Training</h6>
+                                <select class="form-select" aria-label="trainingDropdownMenu" id="trainingDropdownMenu">
+                                    <option value="All" selected>All</option>
+                                    @foreach (var training in ViewBag.Trainings)
+                                    {
+                                        <option value="@training.TrainingName">@training.TrainingName</option>
+                                    }
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -117,8 +67,7 @@
             </div>
         </div>
 
-
-        <div class="mx-5 mt-5 header">
+        <div class="mx-5 mt-4 header">
             <div class="row">
                 <div class="col-2 header-text">
                     Employee
@@ -207,4 +156,79 @@
         </div>
     }
     </body>
+}
+
+@section Scripts {
+    <script>
+            $(document).ready(function () {
+                $("#statusDropdownMenu").change(function () {
+                    var selectedStatus = $(this).val();
+
+                    if (selectedStatus == "All") {
+                        renderEnrollments(@Html.Raw(Json.Encode(Model)));
+                    }
+
+                    else {
+                        var filteredEnrollments = _.filter(@Html.Raw(Json.Encode(Model)), function (enrollment) {
+                            return enrollment.EnrollmentStatus == selectedStatus;
+                        });
+                        renderEnrollments(filteredEnrollments);
+                    }
+                });
+
+                $("#trainingDropdownMenu").change(function () {
+                    var selectedTraining = $(this).val();
+
+                    if (selectedTraining == "All") {
+                        renderEnrollments(@Html.Raw(Json.Encode(Model)));
+                    }
+
+                    else {
+                        var filteredEnrollments = _.filter(@Html.Raw(Json.Encode(Model)), function (enrollment) {
+                            return enrollment.TrainingName == selectedTraining;
+                        });
+                        renderEnrollments(filteredEnrollments);
+                    }
+                });
+            });
+
+            function renderEnrollments(enrollments) {
+                $("#enrollmentAccordion").empty();
+
+                enrollments.forEach(function (enrollment) {
+                    var accordionItem = `
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading_${enrollment.EnrollmentId}">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_${enrollment.EnrollmentId}" aria-expanded="false" aria-controls="collapse_${enrollment.EnrollmentId}" data-enrollment-id="${enrollment.EnrollmentId}">
+                                <div class="col-2 accordion-text">${enrollment.FirstName} ${enrollment.LastName}</div>
+                                <div class="col-2 accordion-text">${enrollment.EmployeeDepartment}</div>
+                                <div class="col-2 accordion-text d-none" id="manager_${enrollment.EnrollmentId}">${enrollment.ManagerFirstName} ${enrollment.ManagerLastName}</div>
+                                <div class="col-2 accordion-text ms-1">${enrollment.TrainingName}</div>
+                                <div class="col-2 accordion-text ms-3">${new Date(parseInt(enrollment.EnrollmentDate.match(/\d+/)[0])).toLocaleDateString() }</div>
+                                <div class="col-2 accordion-text ms-1">${enrollment.PriorityDepartmentName}</div>
+                                `;
+
+                    if (enrollment.EnrollmentStatus == "Approved") {
+                        accordionItem += `<span id="badge_${enrollment.EnrollmentId}" class="badge bg-success">${enrollment.EnrollmentStatus}</span>`;
+                    } else if (enrollment.EnrollmentStatus == "Pending") {
+                        accordionItem += `<span id="badge_${enrollment.EnrollmentId}" class="badge bg-warning text-dark">${enrollment.EnrollmentStatus}</span>`;
+                    } else if (enrollment.EnrollmentStatus == "Declined") {
+                        accordionItem += `<span id="badge_${enrollment.EnrollmentId}" class="badge bg-danger">${enrollment.EnrollmentStatus}</span>`;
+                    } else if (enrollment.EnrollmentStatus == "Selected") {
+                        accordionItem += `<span id="badge_${enrollment.EnrollmentId}" class="badge bg-primary">${enrollment.EnrollmentStatus}</span>`;
+                    }
+
+                    accordionItem += `
+                            </button>
+                        </h2>
+                        <div id="collapse_${enrollment.EnrollmentId}" class="accordion-collapse collapse" aria-labelledby="heading_${enrollment.EnrollmentId}" data-bs-parent="#enrollmentAccordion">
+                            <div class="accordion-body" id="body_${enrollment.EnrollmentId}">
+                            </div>
+                        </div>
+                    </div>`;
+
+                    $('#enrollmentAccordion').append(accordionItem);
+                });
+            }
+    </script>
 }

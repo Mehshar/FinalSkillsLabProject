@@ -1,5 +1,7 @@
 ﻿$(document).ready(function () {
-    $('.accordion-button').on('click', function () {
+    //$('.accordion-button').on('click', function () {
+    // Use event delegation for dynamically added elements
+    $('#enrollmentAccordion').on('click', '.accordion-button', function () {
         if ($(this).attr('aria-expanded')) {
             var enrollmentId = $(this).data('enrollment-id');
             var url = '/Enrollment/TrainingEnrollmentsMaterials/' + enrollmentId;

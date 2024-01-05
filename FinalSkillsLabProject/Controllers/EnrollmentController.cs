@@ -139,6 +139,7 @@ namespace FinalSkillsLabProject.Controllers
             List<EnrollmentViewModel> employeeEnrollmentsList = null;
             string currentRole = ((UserViewModel)Session["CurrentUser"]).Role.RoleName.ToString();
             int currentUserId = ((UserViewModel)Session["CurrentUser"]).UserId;
+            ViewBag.Trainings = (await _trainingBL.GetAllAsync()).ToList();
             
             if (currentRole.Equals("Admin"))
             {
