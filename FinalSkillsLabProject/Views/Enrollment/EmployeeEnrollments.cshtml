@@ -90,6 +90,10 @@
                                 {
                                     <span id="badge_@enrollment.EnrollmentId" class="badge bg-danger">@enrollment.EnrollmentStatus</span>
                                 }
+                                else if (enrollment.EnrollmentStatus == "Selected")
+                                {
+                                    <span id="badge_@enrollment.EnrollmentId" class="badge bg-primary">@enrollment.EnrollmentStatus</span>
+                                }
                             </button>
                         </h2>
 

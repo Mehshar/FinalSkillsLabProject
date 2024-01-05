@@ -218,13 +218,15 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             const string GetNotEnrolledTrainings =
                 @"SELECT *
                 FROM Training t
-                LEFT JOIN [dbo].[Department] as d
+                LEFT JOIN [dbo].[Department] AS d 
                 ON t.[PriorityDepartment] = d.DepartmentId
                 WHERE NOT EXISTS (
                     SELECT 1
                     FROM Enrollment e
                     WHERE e.UserId = @UserId
-                        AND e.TrainingId = t.TrainingId);";
+                        AND e.TrainingId = t.TrainingId
+                )
+                ORDER BY t.TrainingName ASC;";
 
             using (SqlDataReader reader = await DbCommand.GetDataWithConditionsAsync(GetNotEnrolledTrainings, parameters))
             {

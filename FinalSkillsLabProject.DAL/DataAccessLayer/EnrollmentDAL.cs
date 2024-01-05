@@ -147,7 +147,16 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                 INNER JOIN [dbo].[Department] AS d
                 ON euser.[DepartmentId] = d.[DepartmentId]
                 LEFT JOIN [dbo].[EndUser] AS meuser
-                ON meuser.[UserId] = euser.[ManagerId];";
+                ON meuser.[UserId] = euser.[ManagerId]
+                ORDER BY
+                    CASE e.[EnrollmentStatus]
+                        WHEN 'Pending' THEN 1
+                        WHEN 'Approved' THEN 2
+		                WHEN 'Selected' THEN 3
+                        WHEN 'Declined' THEN 4
+                        ELSE 5
+                    END,
+                    e.[EnrollmentDate] ASC;";
 
             using (SqlDataReader reader = await DbCommand.GetDataAsync(GetAllEnrollmentsQuery))
             {
@@ -236,7 +245,16 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                 ON en.[UserId] = euser.[UserId]
                 INNER JOIN [dbo].[Department] AS d
                 ON euser.[DepartmentId] = d.[DepartmentId]
-                WHERE euser.ManagerId = @ManagerId;";
+                WHERE euser.ManagerId = @ManagerId
+                ORDER BY
+                    CASE en.[EnrollmentStatus]
+                        WHEN 'Pending' THEN 1
+                        WHEN 'Approved' THEN 2
+		                WHEN 'Selected' THEN 3
+                        WHEN 'Declined' THEN 4
+                        ELSE 5
+                    END,
+	                en.[EnrollmentDate] ASC;";
 
             List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter("@ManagerId", managerId) };
 
@@ -513,7 +531,16 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                 ON e.[TrainingId] = t.[TrainingId]
                 LEFT JOIN [dbo].[Department] pd
                 ON t.[PriorityDepartment] = pd.[DepartmentId]
-                WHERE euser.[UserId] = @UserId;";
+                WHERE euser.[UserId] = @UserId
+                ORDER BY
+	                CASE e.[EnrollmentStatus]
+		                WHEN 'Selected' THEN 1
+		                WHEN 'Approved' THEN 2
+		                WHEN 'Declined' THEN 3
+		                WHEN 'Pending' THEN 4
+		                ELSE 5
+	                END,
+	                e.[EnrollmentDate] ASC;";
 
             List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter("@UserId", userId) };
 
