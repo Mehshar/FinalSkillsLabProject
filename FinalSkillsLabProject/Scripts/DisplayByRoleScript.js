@@ -5,7 +5,7 @@
     var enrollmentsNavLink = $("#enrollmentsNavLink");
     var userTrainingsNavLink = $("#userTrainingsNavLink");
     var managerDetailsCard = $(".manager-details-card");
-    var hangfireBtn = $("#hangfireBtn");
+    var hangfireCard = $(".hangfireCard");
     var myenrollmentsBtn = $("#myenrollmentsBtn");
     var btnReject = $(".btnReject");
     var btnApprove = $(".btnApprove");
@@ -17,11 +17,11 @@
         success: function (response) {
             var currentRole = response.currentRole;
 
-            if ((btnCreateTraining.length || btnEdit.length || managerDetailsCard.length || hangfireBtn.length) && currentRole === "Admin") {
+            if ((btnCreateTraining.length || btnEdit.length || managerDetailsCard.length || hangfireCard.length) && currentRole === "Admin") {
                 btnCreateTraining.removeClass("d-none");
                 btnEdit.removeClass("d-none");
                 managerDetailsCard.removeClass("d-none");
-                hangfireBtn.removeClass("d-none");
+                hangfireCard.removeClass("d-none");
             }
 
             if ((btnEnroll.length || userTrainingsNavLink.length || myenrollmentsBtn.length) && currentRole === "Employee") {

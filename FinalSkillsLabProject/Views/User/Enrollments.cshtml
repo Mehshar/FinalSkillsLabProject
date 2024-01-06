@@ -1,4 +1,5 @@
 ﻿@model List<FinalSkillsLabProject.Common.Models.EnrollmentViewModel>
+@using FinalSkillsLabProject.Common.Enums
 
 @{
     ViewBag.Title = "Enrollments";
@@ -7,8 +8,10 @@
 @section ExcludeBodyContent{
     <head>
         <link rel="stylesheet" href="~/Content/AccordionStyle.css" />
+        <link rel="stylesheet" href="~/Content/EmployeeEnrollmentStyle.css" />
         <script type="text/javascript" src="~/Scripts/GetPrerequisiteMaterialsScript.js"></script>
         <script type="text/javascript" src="~/Scripts/NewTabScript.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
 
         <style>
             .header-text {
@@ -22,12 +25,45 @@
                 display: flex;
                 margin-right: 4rem;
             }
-
         </style>
     </head>
 
     <body>
-        <div class="mx-5 mt-5 header">
+        <div class="row w-100">
+            <div class="offset-9 col-md-3 col-sm-4">
+                <div class="card me-4 mt-4">
+                    <div class="card-header fw-bold">
+                        Filters
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 col-sm-12">
+                                <h6 class="card-subtitle mb-2 text-muted">Status</h6>
+                                <select class="form-select" aria-label="statusDropdownMenu" id="statusDropdownMenu">
+                                    <option value="All" selected>All</option>
+                                    @foreach (var status in Enum.GetValues(typeof(EnrollmentStatusEnum)))
+                                    {
+                                        <option value="@status.ToString()">@status.ToString()</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-6 col-sm-12">
+                                <h6 class="card-subtitle mb-2 text-muted">Training</h6>
+                                <select class="form-select" aria-label="trainingDropdownMenu" id="trainingDropdownMenu">
+                                    <option value="All" selected>All</option>
+                                    @foreach (var training in ViewBag.Trainings)
+                                    {
+                                        <option value="@training.TrainingName">@training.TrainingName</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mx-5 mt-4 header">
             <div class="row">
                 <div class="col-2 header-text">
                     Department
@@ -52,7 +88,6 @@
                 </div>
             </div>
         </div>
-
 
         @if (Model == null || !Model.Any())
         {@Html.Partial("~/Views/Common/NoData.cshtml") }
@@ -115,4 +150,79 @@
         </div>
     }
     </body>
+}
+
+@section Scripts {
+    <script>
+            $(document).ready(function () {
+                $("#statusDropdownMenu").change(function () {
+                    var selectedStatus = $(this).val();
+                    $("#trainingDropdownMenu").val("All");
+
+                    if (selectedStatus == "All") {
+                        renderEnrollments(@Html.Raw(Json.Encode(Model)));
+                    }
+
+                    else {
+                        var filteredEnrollments = _.filter(@Html.Raw(Json.Encode(Model)), function (enrollment) {
+                            return enrollment.EnrollmentStatus == selectedStatus;
+                        });
+                        renderEnrollments(filteredEnrollments);
+                    }
+                });
+
+                $("#trainingDropdownMenu").change(function () {
+                    var selectedTraining = $(this).val();
+                    $("#statusDropdownMenu").val("All");
+
+                    if (selectedTraining == "All") {
+                        renderEnrollments(@Html.Raw(Json.Encode(Model)));
+                    }
+
+                    else {
+                        var filteredEnrollments = _.filter(@Html.Raw(Json.Encode(Model)), function (enrollment) {
+                            return enrollment.TrainingName == selectedTraining;
+                        });
+                        renderEnrollments(filteredEnrollments);
+                    }
+                });
+            });
+
+            function renderEnrollments(enrollments) {
+                $("#enrollmentAccordion").empty();
+
+                enrollments.forEach(function (enrollment) {
+                    var accordionItem = `
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading_${enrollment.EnrollmentId}">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_${enrollment.EnrollmentId}" aria-expanded="false" aria-controls="collapse_${enrollment.EnrollmentId}" data-enrollment-id="${enrollment.EnrollmentId}">
+                                <div class="col-2 accordion-text">${enrollment.EmployeeDepartment}</div>
+                                <div class="col-2 accordion-text d-none" id="manager_${enrollment.EnrollmentId}">${enrollment.ManagerFirstName} ${enrollment.ManagerLastName}</div>
+                                <div class="col-2 accordion-text ms-1">${enrollment.TrainingName}</div>
+                                <div class="col-2 accordion-text ms-2">${new Date(parseInt(enrollment.EnrollmentDate.match(/\d+/)[0])).toLocaleDateString() }</div>
+                                <div class="col-2 accordion-text ms-1">${enrollment.PriorityDepartmentName}</div>`;
+
+                    if (enrollment.EnrollmentStatus == "Approved") {
+                        accordionItem += `<span id="badge_${enrollment.EnrollmentId}" class="badge bg-success">${enrollment.EnrollmentStatus}</span>`;
+                    } else if (enrollment.EnrollmentStatus == "Pending") {
+                        accordionItem += `<span id="badge_${enrollment.EnrollmentId}" class="badge bg-warning text-dark">${enrollment.EnrollmentStatus}</span>`;
+                    } else if (enrollment.EnrollmentStatus == "Declined") {
+                        accordionItem += `<span id="badge_${enrollment.EnrollmentId}" class="badge bg-danger">${enrollment.EnrollmentStatus}</span>`;
+                    } else if (enrollment.EnrollmentStatus == "Selected") {
+                        accordionItem += `<span id="badge_${enrollment.EnrollmentId}" class="badge bg-primary">${enrollment.EnrollmentStatus}</span>`;
+                    }
+
+                    accordionItem += `
+                            </button>
+                        </h2>
+                        <div id="collapse_${enrollment.EnrollmentId}" class="accordion-collapse collapse" aria-labelledby="heading_${enrollment.EnrollmentId}" data-bs-parent="#enrollmentAccordion">
+                            <div class="accordion-body" id="body_${enrollment.EnrollmentId}">
+                            </div>
+                        </div>
+                    </div>`;
+
+                    $('#enrollmentAccordion').append(accordionItem);
+                });
+            }
+    </script>
 }

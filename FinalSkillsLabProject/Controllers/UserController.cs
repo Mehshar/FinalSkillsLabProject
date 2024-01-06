@@ -1,4 +1,5 @@
 ﻿using FinalSkillsLabProject.Authorization;
+using FinalSkillsLabProject.BL.BusinessLogicLayer;
 using FinalSkillsLabProject.BL.Interfaces;
 using FinalSkillsLabProject.Common.Models;
 using System;
@@ -13,10 +14,12 @@ namespace FinalSkillsLabProject.Controllers
     public class UserController : Controller
     {
         private readonly IEnrollmentBL _enrollmentBL;
+        private readonly ITrainingBL _trainingBL;
 
-        public UserController(IEnrollmentBL enrollmentBL)
+        public UserController(IEnrollmentBL enrollmentBL, ITrainingBL trainingBL)
         {
             _enrollmentBL = enrollmentBL;
+            _trainingBL = trainingBL;
         }
 
         [HttpGet]
@@ -30,6 +33,7 @@ namespace FinalSkillsLabProject.Controllers
         //[CustomAuthorization("Employee")]
         public async Task<ActionResult> Enrollments()
         {
+            ViewBag.Trainings = (await _trainingBL.GetAllAsync()).ToList();
             List<EnrollmentViewModel> enrollmentsList = (await _enrollmentBL.GetAllByUser(((UserViewModel)Session["CurrentUser"]).UserId)).ToList();
             return View(enrollmentsList);
         }

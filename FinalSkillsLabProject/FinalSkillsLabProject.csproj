@@ -420,6 +420,7 @@
     <Content Include="Content\ClickableRowStyle.css" />
     <Content Include="Content\CommonStyle.css" />
     <Content Include="Content\ContactStyle.css" />
+    <Content Include="Content\EmployeeEnrollmentStyle.css" />
     <Content Include="Content\Error404Style.css" />
     <Content Include="Content\font-awesome.css" />
     <Content Include="Content\font-awesome.min.css" />

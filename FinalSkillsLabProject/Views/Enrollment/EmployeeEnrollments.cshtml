@@ -11,29 +11,30 @@
         <script type="text/javascript" src="~/Scripts/GetPrerequisiteMaterialsScript.js"></script>
         <script type="text/javascript" src="~/Scripts/NewTabScript.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
-        <style>
+        <link rel="stylesheet" href="~/Content/EmployeeEnrollmentStyle.css" />
+        @*<style>
             #statusDropdownMenu, #trainingDropdownMenu, #hangfireBtn {
                 border: 1px solid gray;
             }
-        </style>
+        </style>*@
     </head>
 
     <body>
         <div class="row w-100">
-            <div class="col-2 ps-5 mt-4">
-                <div class="card ms-2">
+            <div class="col-md-3 col-sm-3 ps-5 mt-4">
+                <div class="card ms-2 d-none hangfireCard">
                     <div class="card-header text-center fw-bold">
                         Hangfire Dashboard
                     </div>
                     <div class="card-body text-center">
-                        <a onclick="openInNewTab('/hangfire')" class="btn d-none w-100" id="hangfireBtn" style="text-decoration:none;" data-toggle="tooltip" title="Hangfire Dashboard">
+                        <a onclick="openInNewTab('/hangfire')" class="btn w-100" id="hangfireBtn" style="text-decoration:none;" data-toggle="tooltip" title="Hangfire Dashboard">
                             View Processing
                         </a>
                     </div>
                 </div>
             </div>
 
-            <div class="offset-7 col-md-3 col-sm-4">
+            <div class="offset-6 col-md-3 col-sm-4">
                 <div class="card me-4 mt-4">
                     <div class="card-header fw-bold">
                         Filters
@@ -163,6 +164,7 @@
             $(document).ready(function () {
                 $("#statusDropdownMenu").change(function () {
                     var selectedStatus = $(this).val();
+                    $("#trainingDropdownMenu").val("All");
 
                     if (selectedStatus == "All") {
                         renderEnrollments(@Html.Raw(Json.Encode(Model)));
@@ -178,6 +180,7 @@
 
                 $("#trainingDropdownMenu").change(function () {
                     var selectedTraining = $(this).val();
+                    $("#statusDropdownMenu").val("All");
 
                     if (selectedTraining == "All") {
                         renderEnrollments(@Html.Raw(Json.Encode(Model)));
