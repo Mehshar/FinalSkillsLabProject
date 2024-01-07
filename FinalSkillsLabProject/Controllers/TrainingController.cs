@@ -1,6 +1,7 @@
 ﻿using FinalSkillsLabProject.Authorization;
 using FinalSkillsLabProject.BL.Interfaces;
 using FinalSkillsLabProject.Common.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -22,9 +23,27 @@ namespace FinalSkillsLabProject.Controllers
             _prerequisiteBL = prerequisiteBL;
         }
 
-        public async Task<ActionResult> Index()
+        //public async Task<ActionResult> Index()
+        //{
+        //    List<TrainingModel> trainingsList = (await _trainingBL.GetNotEnrolledTrainingsAsync(((UserViewModel)Session["CurrentUser"]).UserId)).ToList();
+        //    return View(trainingsList);
+        //}
+
+        public async Task<ActionResult> Index(int page = 1, int pageSize = 5)
         {
-            List<TrainingModel> trainingsList = (await _trainingBL.GetNotEnrolledTrainingsAsync(((UserViewModel)Session["CurrentUser"]).UserId)).ToList();
+            int userId = ((UserViewModel)Session["CurrentUser"]).UserId;
+            int totalTrainings = await _trainingBL.GetNotEnrolledTrainingsCountAsync(userId);
+            int totalPages = (int)Math.Ceiling((double)totalTrainings / pageSize);
+
+            List<TrainingModel> trainingsList = (await _trainingBL.GetNotEnrolledTrainingsPagedAsync(userId, page, pageSize)).ToList();
+
+            ViewBag.Page = page;
+            ViewBag.PageSize = pageSize;
+            ViewBag.TotalPages = totalPages;
+            ViewBag.TotalTrainings = totalTrainings;
+
+            if (Request.IsAjaxRequest()) { return Json(new { result = trainingsList }); }
+
             return View(trainingsList);
         }
 

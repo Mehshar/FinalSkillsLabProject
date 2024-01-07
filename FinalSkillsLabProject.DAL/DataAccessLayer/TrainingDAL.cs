@@ -5,6 +5,7 @@ using FinalSkillsLabProject.Common.Models;
 using FinalSkillsLabProject.DAL.Interfaces;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
+using System.Drawing.Printing;
 
 namespace FinalSkillsLabProject.DAL.DataAccessLayer
 {
@@ -229,6 +230,81 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                 ORDER BY t.TrainingName ASC;";
 
             using (SqlDataReader reader = await DbCommand.GetDataWithConditionsAsync(GetNotEnrolledTrainings, parameters))
+            {
+                while (reader.Read())
+                {
+                    training = new TrainingModel()
+                    {
+                        TrainingId = reader.GetInt16(reader.GetOrdinal("TrainingId")),
+                        TrainingName = reader.GetString(reader.GetOrdinal("TrainingName")),
+                        Description = reader.GetString(reader.GetOrdinal("Description")),
+                        Deadline = reader.GetDateTime(reader.GetOrdinal("Deadline")),
+                        PriorityDepartment = reader.IsDBNull(reader.GetOrdinal("PriorityDepartment")) ? null : (int?)reader.GetInt16(reader.GetOrdinal("PriorityDepartment")),
+                        PriorityDepartmentName = reader.IsDBNull(reader.GetOrdinal("DepartmentName")) ? null : reader.GetString(reader.GetOrdinal("DepartmentName")),
+                        Capacity = reader.GetInt16(reader.GetOrdinal("Capacity"))
+                    };
+                    trainingsList.Add(training);
+                }
+            }
+            return trainingsList;
+        }
+
+        public async Task<int> GetNotEnrolledTrainingsCountAsync(int userId)
+        {
+            const string GetNotEnrolledTrainingsCountQuery =
+                @"SELECT COUNT(*) AS Count
+                FROM Training t
+                LEFT JOIN [dbo].[Department] AS d 
+                ON t.[PriorityDepartment] = d.DepartmentId
+                WHERE NOT EXISTS (
+                    SELECT 1
+                    FROM Enrollment e
+                    WHERE e.UserId = @UserId
+                        AND e.TrainingId = t.TrainingId);";
+
+            List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter("@UserId", userId) };
+
+            using (SqlDataReader reader = await DbCommand.GetDataWithConditionsAsync(GetNotEnrolledTrainingsCountQuery, parameters))
+            {
+                if (reader.Read())
+                {
+                    return reader.GetInt32(reader.GetOrdinal("Count"));
+                }
+            }
+            return 0;
+        }
+
+        public async Task<IEnumerable<TrainingModel>> GetNotEnrolledTrainingsPagedAsync(int userId, int page, int pageSize)
+        {
+            int startRow = (page - 1) * pageSize + 1;
+            int endRow = startRow + pageSize - 1;
+
+            const string GetNotEnrolledTrainingsPagedQuery =
+                @"WITH NotEnrolledTrainings AS (
+                    SELECT *, ROW_NUMBER() OVER (ORDER BY t.TrainingName ASC) AS RowNum
+                    FROM Training t
+                    LEFT JOIN [dbo].[Department] AS d 
+                    ON t.[PriorityDepartment] = d.DepartmentId
+                    WHERE NOT EXISTS (
+                        SELECT 1
+                        FROM Enrollment e
+                        WHERE e.UserId = @UserId
+                            AND e.TrainingId = t.TrainingId
+                    )
+                )
+                SELECT * FROM NotEnrolledTrainings
+                WHERE RowNum BETWEEN @StartRow AND @EndRow";
+
+            TrainingModel training;
+            List<TrainingModel> trainingsList = new List<TrainingModel>();
+            List<SqlParameter> parameters = new List<SqlParameter>()
+            {
+                new SqlParameter("@UserId", userId),
+                new SqlParameter("@StartRow", startRow),
+                new SqlParameter("@EndRow", endRow)
+            };
+
+            using (SqlDataReader reader = await DbCommand.GetDataWithConditionsAsync(GetNotEnrolledTrainingsPagedQuery, parameters))
             {
                 while (reader.Read())
                 {

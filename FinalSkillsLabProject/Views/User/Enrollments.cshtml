@@ -199,7 +199,7 @@
                                 <div class="col-2 accordion-text">${enrollment.EmployeeDepartment}</div>
                                 <div class="col-2 accordion-text d-none" id="manager_${enrollment.EnrollmentId}">${enrollment.ManagerFirstName} ${enrollment.ManagerLastName}</div>
                                 <div class="col-2 accordion-text ms-1">${enrollment.TrainingName}</div>
-                                <div class="col-2 accordion-text ms-2">${new Date(parseInt(enrollment.EnrollmentDate.match(/\d+/)[0])).toLocaleDateString() }</div>
+                                <div class="col-2 accordion-text ms-2">${new Date(parseInt(enrollment.EnrollmentDate.match(/\d+/)[0])).toLocaleDateString()}</div>
                                 <div class="col-2 accordion-text ms-1">${enrollment.PriorityDepartmentName}</div>`;
 
                     if (enrollment.EnrollmentStatus == "Approved") {

@@ -82,6 +82,16 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
             return await this._trainingDAL.GetByDeadlineAsync();
         }
 
+        public async Task<int> GetNotEnrolledTrainingsCountAsync(int userId)
+        {
+            return await this._trainingDAL.GetNotEnrolledTrainingsCountAsync(userId);
+        }
+
+        public async Task<IEnumerable<TrainingModel>> GetNotEnrolledTrainingsPagedAsync(int userId, int page, int pageSize)
+        {
+            return await this._trainingDAL.GetNotEnrolledTrainingsPagedAsync(userId, page, pageSize);
+        }
+
         private void CheckInsertUpdateDuplicate(TrainingModel training)
         {
             if (training != null)
