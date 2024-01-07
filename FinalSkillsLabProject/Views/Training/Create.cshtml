@@ -12,85 +12,77 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
     <script type="text/javascript" src="~/Scripts/CreateTrainingScript.js"></script>
+
+    <style>
+        input, textarea, select {
+            max-width: 100% !important;
+        }
+    </style>
 </head>
 
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
-
-    <div class="form-horizontal">
-        <h4>Create Training</h4>
+<div class="container">
+    <div class="row justify-content-center">
+        <h5 class="text-center mt-3 mb-2">Add Training</h5>
         <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group py-3">
-            <label for="trainingName" class="control-label col-md-2 pb-2">Training Name</label>
-            <div class="col-md-10">
-                <input type="text" name="trainingName" id="trainingName" class="form-control" required />
-            </div>
-        </div>
-
-        <div class="form-group py-3">
-            <div class="col-md-10">
-                <label for="description" class="form-label pb-2">Description</label>
-                <textarea class="form-control" id="description" rows="7" required></textarea>
-            </div>
-        </div>
-
-        @*<div class="form-group py-3">
-                <label for="deadline" class="control-label col-md-2 pb-2">Deadline</label>
-                <div class="col-md-10">
-                    @{
-                        string minDate = DateTime.Now.ToString("yyyy-MM-ddTHH:mm");
-                    }
-                    <input type="datetime-local" name="deadline" id="deadline" class="form-control" min="@minDate" required />
+        <div class="col-md-7">
+            <form>
+                <div class="input-group mb-3">
+                    <label for="trainingName" id="trainingNameLabel" class="input-group-text">Training Name</label>
+                    <input type="text" name="trainingName" id="trainingName" class="form-control" aria-label="Training Name" aria-describedby="trainingNameLabel" required />
                 </div>
-            </div>*@
 
-        <div class="form-group py-3">
-            <label for="deadline" class="control-label col-md-2 pb-2">Deadline</label>
-            <div class="col-md-10">
-                @{
-                    string minDate = DateTime.Now.ToString("yyyy-MM-dd");
-                }
-                <input type="date" name="deadline" id="deadline" class="form-control" min="@minDate" required />
-            </div>
-        </div>
+                <div class="input-group mb-3">
+                    <label for="description" class="input-group-text">Description</label>
+                    <textarea id="description" class="form-control" aria-label="Description Textarea" rows="7" required></textarea>
+                </div>
 
+                <div class="input-group mb-3">
+                    <label for="deadline" id="deadlineLabel" class="input-group-text">Deadline</label>
+                    @{
+                        string minDate = DateTime.Now.ToString("yyyy-MM-dd");
+                    }
+                    <input type="date" name="deadline" id="deadline" class="form-control" min="@minDate" aria-label="Deadline" aria-describedby="deadlineLabel" required />
+                </div>
 
-        <div class="form-group py-3">
-            <label for="capacity" class="control-label col-md-2 pb-2">Capacity</label>
-            <div class="col-md-10">
-                <input type="number" name="capacity" id="capacity" class="form-control" min="1" max="100" required />
-            </div>
-        </div>
+                <div class="input-group mb-3">
+                    <label for="capacity" class="control-label col-md-2 d-none">Capacity</label>
+                    <input type="number" name="capacity" id="capacity" class="form-control rounded-start" placeholder="Capacity" min="1" max="100" aria-label="Capacity" aria-describedby="capacityLabel" required />
+                    <span id="capacityLabel" class="input-group-text">
+                        <i class="fa-solid fa-chair"></i>
+                    </span>
+                </div>
 
-        <div class="form-group pt-3">
-            <label for="departmentDropdown" class="control-label col-md-2 pb-2">Priority Department</label>
-        </div>
-        <select class="form-select mb-3" id="departmentDropdown" required>
-            <option value="-1">None</option>
-            @foreach (var department in ViewBag.Departments)
-            {
-                <option value="@department.DepartmentId">@department.DepartmentName</option>
-            }
-        </select>
+                <div class="input-group mb-3">
+                    <label for="departmentDropdown" class="input-group-text">Priority Department</label>
 
-        <div class="form-group pt-3">
-            <label for="prerequisite" class="control-label col-md-2 pb-2 fw-bold">Prerequisites</label>
-        </div>
-        @foreach (var prerequisite in ViewBag.Prerequisites)
-        {
-            <div class="form-check">
-                <input class="form-check-input prerequisite-checkbox" type="checkbox" value="@prerequisite.PrerequisiteId" id="@prerequisite.PrerequisiteId" name="@prerequisite.PrerequisiteId">
-                <label class="form-check-label" for="flexCheckChecked">@prerequisite.Description</label>
-            </div>
-        }
+                    <select class="form-select" id="departmentDropdown" required>
+                        <option value="-1">None</option>
+                        @foreach (var department in ViewBag.Departments)
+                        {
+                            <option value="@department.DepartmentId">@department.DepartmentName</option>
+                        }
+                    </select>
+                </div>
+                <hr />
+                <div class="mb-4">
+                    <div class="form-group mt-4 mb-3">
+                        <label for="prerequisite" class="control-label col-md-2 fw-bold">Prerequisites</label>
+                    </div>
+                    @foreach (var prerequisite in ViewBag.Prerequisites)
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input prerequisite-checkbox" type="checkbox" value="@prerequisite.PrerequisiteId" id="@prerequisite.PrerequisiteId" name="@prerequisite.PrerequisiteId">
+                            <label class="form-check-label" for="flexCheckChecked">@prerequisite.Description</label>
+                        </div>
+                    }
+                </div>
+                <hr />
 
-        <div class="form-group py-2">
-            <div class="col-md-offset-2 col-md-10 py-3">
-                <input type="submit" value="Create" id="btnSubmit" class="btn btn-primary" />
-                @Html.ActionLink("Back to List", "Index", "Training", null, new { @class = "btn btn-primary ms-3 border-0" })
-            </div>
+                <div class="form-group text-center mt-4 mb-4">
+                    <input type="submit" value="Create" id="btnSubmit" class="btn btn-primary" />
+                    @Html.ActionLink("Back to List", "Index", "Training", null, new { @class = "btn btn-primary ms-3 border-0" })
+                </div>
+            </form>
         </div>
     </div>
-}
+</div>
