@@ -31,17 +31,23 @@
     </style>
 </head>
 <body>
-    <a href="@Url.Action("Create")" class="btn d-none" id="btnCreateTraining" style="text-decoration: none;" data-toggle="tooltip" title="Create Training">
-        <i class="fa-solid fa-plus me-2"></i>Training
-    </a>
 
-    <form id="pageSizeForm" class="d-flex flex-row my-3">
-        <div class="input-group flex-nowrap">
-            <label for="pageSize" class="input-group-text" id="pageSizeLabel">Items per page</label>
-            <input type="number" class="form-control" id="pageSizeInput" name="pageSize" value="@ViewBag.PageSize" min="5" max="20" aria-label="Page Size" aria-describedby="pageSizeLabel">
+    <div class="row">
+        <div class="col my-4">
+            <a href="@Url.Action("Create")" class="btn d-none" id="btnCreateTraining" style="text-decoration: none;" data-toggle="tooltip" title="Create Training">
+                <i class="fa-solid fa-plus me-2"></i>Training
+            </a>
         </div>
-        <button type="submit" id="pageSizeBtn" class="btn btn-outline-primary d-none">Apply</button>
-    </form>
+        <div class="col my-4">
+            <form id="pageSizeForm" class="d-flex flex-row">
+                <div class="input-group flex-nowrap justify-content-end">
+                    <label for="pageSize" class="input-group-text" id="pageSizeLabel">Items per page</label>
+                    <input type="number" class="form-control" id="pageSizeInput" name="pageSize" value="@ViewBag.PageSize" min="5" max="20" aria-label="Page Size" aria-describedby="pageSizeLabel">
+                </div>
+                <button type="submit" id="pageSizeBtn" class="btn btn-outline-primary d-none">Apply</button>
+            </form>
+        </div>
+    </div>
 
     <table class="table table-hover user-select-none">
         <thead>
@@ -100,8 +106,7 @@
             <nav aria-label="Page Navigation Previous" class="my-3">
                 <ul class="pagination">
                     <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Previous">
-                            @*<span aria-hidden="true">&laquo;</span>*@
+                        <a id="previousPageLink" class="page-link" aria-label="Previous">
                             <i class="fa-solid fa-chevron-left"></i>
                         </a>
                     </li>
@@ -116,37 +121,13 @@
                 <label for="pageCount">of <span id="pageCountSpan">@ViewBag.TotalPages</span></label>
                 <button type="submit" id="pageNumBtn" class="btn btn-outline-primary d-none">Apply</button>
             </form>
-
-
-            @*<nav aria-label="Page Navigation" class="ms-auto mt-4 mb-3">
-                <ul class="pagination">
-                    <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-                    @for (int i = 1; i <= ViewBag.TotalPages; i++)
-                    {
-                        <li class="page-item">
-                            <a href="@Url.Action("Index", new { page = i, pageSize = ViewBag.PageSize })" class="@(ViewBag.Page == i ? "active" : "") page-link">
-                                @i
-                            </a>
-                        </li>
-                    }
-                    <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>*@
         </div>
 
         <div class="col-md-3">
             <nav aria-label="Page Navigation Next" class="my-3">
                 <ul class="pagination justify-content-end">
                     <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Next">
+                        <a id="nextPageLink" class="page-link" aria-label="Next">
                             <i class="fa-solid fa-chevron-right"></i>
                         </a>
                     </li>
@@ -196,7 +177,6 @@
                     dataType: "json",
 
                     success: function (response) {
-                        //toastr.success("Success");
                         updateTable(response.result);
                     },
                     error: function (error) {
@@ -222,13 +202,41 @@
                     dataType: "json",
 
                     success: function (response) {
-                        //toastr.success("Success");
                         updateTable(response.result);
                     },
                     error: function (error) {
                         console.error('Error:', error);
                     }
                 });
+            });
+
+            $("#previousPageLink").click(function () {
+                var currentPage = parseInt($("#pageNumInput").val());
+
+                if (currentPage > 1) {
+                    var newPageNumber = currentPage - 1;
+                    $("#pageNumInput").val(newPageNumber);
+                    $("#pageNumBtn").click();
+                }
+
+                else {
+                    toastr.warning("First page reached!");
+                }
+            });
+
+            $("#nextPageLink").click(function () {
+                var currentPage = parseInt($("#pageNumInput").val());
+                var maxPage = parseInt($("#pageCountSpan").text());
+
+                if (currentPage < maxPage) {
+                    var newPageNumber = currentPage + 1;
+                    $("#pageNumInput").val(newPageNumber);
+                    $("#pageNumBtn").click();
+                }
+
+                else {
+                    toastr.warning("Last page reached!");
+                }
             });
 
             function updateTable(trainings) {
@@ -239,7 +247,6 @@
                     var trainingId = training.TrainingId;
                     var detailsUrl = detailsBaseUrl.replace("__placeholder__", trainingId);
                     var editUrl = editBaseUrl.replace("__placeholder__", trainingId);
-                    var enrollUrl = `<a href="${enrollBaseUrl.replace("__placeholder__", trainingId)}" class="btn btnCustomSquare d-none btnEnroll">Enroll</a>`;
                     var priorityDepartment = training.PriorityDepartmentName == null ? "N/A" : training.PriorityDepartmentName;
 
                     var row =

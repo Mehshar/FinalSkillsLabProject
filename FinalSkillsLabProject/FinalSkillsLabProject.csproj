@@ -478,7 +478,6 @@
     <Content Include="Scripts\ManagerDropdownScript.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\NewTabScript.js" />
-    <Content Include="Scripts\PaginationScript.js" />
     <Content Include="Scripts\PasswordVisibility.js" />
     <Content Include="Scripts\SignupScript.js" />
     <Content Include="Scripts\toastr.js" />
