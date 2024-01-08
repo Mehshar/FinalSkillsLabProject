@@ -41,10 +41,10 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
 
             const string GetUserByUsernameQuery =
                 @" 
-                SELECT euser.[UserId], euser.[RoleId], euser.[FirstName], euser.[LastName], acc.[Username], euser.[Email], euser.[MobileNum], dept.[DepartmentName], meuser.[FirstName] AS ManagerFirstName, meuser.[LastName] AS ManagerLastName, meuser.[Email] AS ManagerEmail
+                SELECT euser.[UserId], ra.[RoleId], euser.[FirstName], euser.[LastName], acc.[Username], euser.[Email], euser.[MobileNum], dept.[DepartmentName], meuser.[FirstName] AS ManagerFirstName, meuser.[LastName] AS ManagerLastName, meuser.[Email] AS ManagerEmail
                 FROM [dbo].[EndUser] euser WITH(NOLOCK)
                 INNER JOIN [dbo].[Account] acc WITH(NOLOCK) ON euser.[UserId] = acc.[UserId]
-                INNER JOIN [dbo].[Role] r WITH(NOLOCK) ON euser.[RoleId] = r.[RoleId]
+                INNER JOIN [dbo].[RoleAssignment] ra WITH(NOLOCK) ON euser.[UserId] = ra.[UserId]
                 INNER JOIN [dbo].[Department] dept WITH(NOLOCK) ON euser.[DepartmentId] = dept.[DepartmentId]
                 LEFT JOIN [dbo].[EndUser] meuser WITH(NOLOCK) ON euser.[ManagerId] = meuser.[UserId]
                 WHERE acc.[Username] = @Username;";
@@ -90,7 +90,6 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
               @"SELECT euser.[UserId], acc.[Username], acc.[Password]
                 FROM [dbo].[EndUser] euser WITH(NOLOCK)
                 INNER JOIN [dbo].[Account] acc WITH(NOLOCK) ON euser.[UserId] = acc.[UserId]
-                INNER JOIN [dbo].[Role] r WITH(NOLOCK) ON euser.[RoleId] = r.[RoleId]
                 WHERE acc.[Username] = @Username AND euser.[UserId] != @UserId;";
 
             using (SqlDataReader reader = await DbCommand.GetDataWithConditionsAsync(GetUserByUsernameAndUserId, parameters))

@@ -94,8 +94,10 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
         public async Task<IEnumerable<UserModel>> GetManagerByDepartmentAsync(int departmentId)
         {
             const string GetManagerByDepartmentQuery =
-              @"SELECT [UserId], [FirstName], [LastName]
-                FROM [dbo].[EndUser]
+              @"SELECT eu.[UserId], eu.[FirstName], eu.[LastName]
+                FROM [dbo].[EndUser] eu
+                INNER JOIN [dbo].[RoleAssignment] ra
+                ON eu.[UserId] = ra.[UserId]
                 WHERE [DepartmentId] = @DepartmentId AND [RoleId] = @RoleId";
 
             List<SqlParameter> parameters = new List<SqlParameter>()

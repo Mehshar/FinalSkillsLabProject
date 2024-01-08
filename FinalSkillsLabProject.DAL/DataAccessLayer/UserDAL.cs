@@ -33,10 +33,13 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                 DECLARE @key int
                 DECLARE @salt UNIQUEIDENTIFIER=NEWID()
 
-                INSERT INTO [dbo].[EndUser] ([NIC], [FirstName], [LastName], [Email], [MobileNum], [ManagerId], [DepartmentId], [RoleId])
-                SELECT @NIC, @FirstName, @LastName, @Email, @MobileNum, @ManagerId, @DepartmentId, @RoleId;
+                INSERT INTO [dbo].[EndUser] ([NIC], [FirstName], [LastName], [Email], [MobileNum], [ManagerId], [DepartmentId])
+                SELECT @NIC, @FirstName, @LastName, @Email, @MobileNum, @ManagerId, @DepartmentId;
 
                 SELECT @key = @@IDENTITY
+
+                INSERT INTO [dbo].[RoleAssignment] ([UserId], [RoleId])
+                SELECT @key, @RoleId;
 
                 INSERT INTO [dbo].[Account] ([Username], [UserId], [Password], [Salt])
                 SELECT @Username, @key, HASHBYTES('SHA2_512', @Password+CAST(@salt AS NVARCHAR(36))), @salt;
@@ -57,7 +60,6 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                 new SqlParameter("@MobileNum", user.MobileNum),
                 new SqlParameter("@DepartmentId", user.DepartmentId),
                 new SqlParameter("@ManagerId", user.ManagerId),
-                new SqlParameter("@RoleId", user.RoleId),
                 new SqlParameter("@UserId", user.UserId)
             };
 
@@ -69,8 +71,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
 	                [Email] = @Email,
 	                [MobileNum] = @MobileNum,
 	                [DepartmentId] = @DepartmentId,
-	                [ManagerId] = @ManagerId,
-	                [RoleId] = @RoleId
+	                [ManagerId] = @ManagerId
                 WHERE [UserId] = @UserId;";
 
             return await DbCommand.InsertUpdateDataAsync(UpdateUserQuery, parameters) > 0;
@@ -96,9 +97,11 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             };
 
             const string GetUserQuery =
-              @"SELECT *
-                FROM [dbo].[EndUser]
-                WHERE [UserId] = @UserId;";
+              @"SELECT eu.*, ra.[RoleId]
+                FROM [dbo].[EndUser] eu
+                INNER JOIN [dbo].[RoleAssignment] ra
+                ON eu.[UserId] = ra.[UserId]
+                WHERE eu.[UserId] = @UserId;";
 
             using (SqlDataReader reader = await DbCommand.GetDataWithConditionsAsync(GetUserQuery, parameters))
             {
@@ -127,8 +130,10 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             List<UserModel> usersList = new List<UserModel>();
 
             const string GetAllUsersQuery =
-              @"SELECT *
-                FROM [dbo].[EndUser];";
+              @"SELECT eu.*, ra.[RoleId]
+                FROM [dbo].[EndUser] eu
+                INNER JOIN [dbo].[RoleAssignment] ra
+                ON eu.[UserId] = ra.[UserId];";
 
             using (SqlDataReader reader = await DbCommand.GetDataAsync(GetAllUsersQuery))
             {
