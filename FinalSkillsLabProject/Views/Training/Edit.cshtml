@@ -1,4 +1,4 @@
-﻿@model FinalSkillsLabProject.Common.Models.TrainingModel
+﻿@model FinalSkillsLabProject.Common.Models.TrainingPrerequisiteViewModel
 
 @{
     ViewBag.Title = "Edit Training";
@@ -17,88 +17,91 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
 
     <script type="text/javascript" src="~/Scripts/UpdateTrainingScript.js"></script>
+
+    <style>
+        input, textarea, select {
+            max-width: 100% !important;
+        }
+    </style>
 </head>
 <body>
-    <form name="editTrainingForm" id="editTrainingForm">
-        @Html.AntiForgeryToken()
-
-        <div class="form-horizontal">
-            <h4>Training</h4>
+    <div class="container">
+        <div class="row justify-content-center">
+            <h5 class="text-center mt-3 mb-2">Edit Training</h5>
             <hr />
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-            <div class="form-group py-3 visually-hidden">
-                <label for="trainingId" class="control-label col-md-2 pb-2">Training Id</label>
-                <div class="col-md-10">
-                    <input type="number" name="trainingId" id="trainingId" class="form-control" value="@Model.TrainingId" readonly />
-                </div>
-            </div>
+            <div class="col-md-7">
+                <form name="editTrainingForm" id="editTrainingForm">
+                    <div class="input-group mb-3 visually-hidden">
+                        <label for="trainingId" id="trainingIdLabel" class="input-group-text">Training Id</label>
+                        <input type="number" name="trainingId" id="trainingId" class="form-control" value="@Model.TrainingId" aria-label="Training Id" aria-describedby="trainingIdLabel" disabled readonly />
+                    </div>
 
-            <div class="form-group py-3">
-                <label for="trainingName" class="control-label col-md-2 pb-2">Training Name</label>
-                <div class="col-md-10">
-                    <input type="text" name="trainingName" id="trainingName" class="form-control" value="@Model.TrainingName" required />
-                </div>
-            </div>
+                    <div class="input-group mb-3">
+                        <label for="trainingName" id="trainingNameLabel" class="input-group-text">Training Name</label>
+                        <input type="text" name="trainingName" id="trainingName" class="form-control" value="@Model.TrainingName" aria-label="Training Name" aria-describedby="trainingName" required />
+                    </div>
 
-            <div class="form-group py-3">
-                <div class="col-md-10">
-                    <label for="description" class="form-label pb-2">Description</label>
-                    <textarea class="form-control" id="description" rows="7" required>@Model.Description</textarea>
-                </div>
-            </div>
+                    <div class="input-group mb-3">
+                        <label for="description" class="input-group-text">Description</label>
+                        <textarea id="description" class="form-control" aria-label="Description Textarea" rows="7" required>@Model.Description</textarea>
+                    </div>
 
-            <div class="form-group py-3">
-                <label for="deadline" class="control-label col-md-2 pb-2">Deadline</label>
-                @*<div class="col-md-10">
+                    <div class="input-group mb-3">
+                        <label for="deadline" class="input-group-text" id="deadlineLabel">Deadline</label>
                         @{
                             DateTime deadlineValue = Model.Deadline;
-                            string formattedDeadline = deadlineValue.ToString("yyyy-MM-ddTHH:mm");
-                            string minDate = DateTime.Now.ToString("yyyy-MM-ddTHH:mm");
+                            string formattedDeadline = deadlineValue.ToString("yyyy-MM-dd");
+                            string minDate = DateTime.Now.ToString("yyyy-MM-dd");
                         }
-                        <input type="datetime-local" name="deadline" id="deadline" class="form-control" value="@formattedDeadline" min="@minDate" required />
-                    </div>*@
+                        <input type="date" name="deadline" id="deadline" class="form-control" value="@formattedDeadline" min="@minDate" aria-label="Deadline" aria-describedby="deadlineLabel" required />
+                    </div>
 
-                <div class="col-md-10">
-                    @{
-                        DateTime deadlineValue = Model.Deadline;
-                        string formattedDeadline = deadlineValue.ToString("yyyy-MM-dd");
-                        string minDate = DateTime.Now.ToString("yyyy-MM-dd");
-                    }
-                    <input type="date" name="deadline" id="deadline" class="form-control" value="@formattedDeadline" min="@minDate" required />
-                </div>
-            </div>
+                    <div class="input-group mb-3">
+                        <label for="capacity" class="input-group-text">Capacity</label>
+                        <input type="number" name="capacity" id="capacity" class="form-control" value="@Model.Capacity" min="1" max="100" aria-label="Capacity" aria-describedby="capacityLabel" required />
+                        <span id="capacityLabel" class="input-group-text">
+                            <i class="fa-solid fa-chair"></i>
+                        </span>
+                    </div>
 
-            <div class="form-group py-3">
-                <label for="capacity" class="control-label col-md-2 pb-2">Capacity</label>
-                <div class="col-md-10">
-                    <input type="number" name="capacity" id="capacity" class="form-control" value="@Model.Capacity" min="1" required />
-                </div>
-            </div>
+                    <div class="input-group mb-3">
+                        <label for="priorityDepartmentName" class="input-group-text">Priority Department</label>
+                        <select class="form-select" id="departmentDropdown" required>
+                            <option value="-1">None</option>
+                            @if (Model.PriorityDepartment != null)
+                            {
+                                <option value="@Model.PriorityDepartment" selected>@Model.PriorityDepartmentName</option>
+                            }
+                            @foreach (var department in ViewBag.Departments)
+                            {
+                                <option value="@department.DepartmentId">@department.DepartmentName</option>
+                            }
+                        </select>
+                    </div>
+                    <hr />
+                    <div class="mb-4">
+                        <div class="form-group mt-4 mb-3">
+                            <label for="prerequisite" class="control-label col-md-2 fw-bold">Prerequisites</label>
+                        </div>
+                        @foreach (var prerequisite in ViewBag.AllPrerequisites)
+                        {
+                            var isChecked = Model.PrerequisiteIds != null && Model.PrerequisiteIds.Contains(prerequisite.PrerequisiteId);
 
-            <div class="form-group pt-3">
-                <label for="priorityDepartmentName" class="control-label col-md-2 pb-2">Priority Department</label>
-            </div>
-
-            <select class="form-select mb-3" id="departmentDropdown" required>
-                <option value="-1">None</option>
-                @if (Model.PriorityDepartment != null)
-                {
-                    <option value="@Model.PriorityDepartment" selected>@Model.PriorityDepartmentName</option>
-                }
-                @foreach (var department in ViewBag.Departments)
-                {
-                    <option value="@department.DepartmentId">@department.DepartmentName</option>
-                }
-            </select>
-
-            <div class="form-group pt-3 pb-4">
-                <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="Save" id="btnSubmit" class="btn btn-primary" />
-                    @Html.ActionLink("Back to List", "Index", "Training", null, new { @class = "btn btn-primary ms-3 border-0" })
-                </div>
+                            <div class="form-check">
+                                <input class="form-check-input prerequisite-checkbox" type="checkbox" value="@prerequisite.PrerequisiteId" id="@prerequisite.PrerequisiteId" name="@prerequisite.PrerequisiteId" @(isChecked ? "checked" : "")>
+                                <label class="form-check-label" for="flexCheckChecked">@prerequisite.Description</label>
+                            </div>
+                        }
+                    </div>
+                    <hr />
+                    <div class="form-group text-center my-4">
+                        <input type="submit" value="Save" id="btnSubmit" class="btn btn-primary" />
+                        @Html.ActionLink("Back to List", "Index", "Training", null, new { @class = "btn btn-primary ms-3 border-0" })
+                    </div>
+                </form>
             </div>
         </div>
-    </form>
+    </div>
 </body>
 </html>
 

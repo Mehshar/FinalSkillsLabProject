@@ -76,15 +76,16 @@ namespace FinalSkillsLabProject.Controllers
         [CustomAuthorization("Admin")]
         public async Task<ActionResult> Edit(int id)
         {
-            TrainingModel training = await _trainingBL.GetAsync((int)id);
+            TrainingPrerequisiteViewModel training = await _trainingBL.GetWithPrerequisitesAsync(id);
             if (training == null) { return View("Error404"); }
             ViewBag.Departments = (await _departmentBL.GetAllAsync()).Where(x => x.DepartmentId != training.PriorityDepartment).ToList();
+            ViewBag.AllPrerequisites = (await _prerequisiteBL.GetAllAsync()).ToList();
             return View(training);
         }
 
         [HttpPost]
         [CustomAuthorization("Admin")]
-        public async Task<JsonResult> SaveEdit(TrainingModel training)
+        public async Task<JsonResult> SaveEdit(TrainingPrerequisiteViewModel training)
         {
             string result = await _trainingBL.UpdateAsync(training);
             return Json(new { result = result, url = Url.Action("Index", "Training") });

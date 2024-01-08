@@ -13,30 +13,19 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
     {
         public async Task AddAsync(TrainingModel training, List<int> prerequisitesList)
         {
-            List<SqlParameter> parameters = new List<SqlParameter>();
+            List<SqlParameter> parameters = new List<SqlParameter>()
+            {
+                new SqlParameter("@TrainingName", training.TrainingName),
+                new SqlParameter("@Description", training.Description),
+                new SqlParameter("@Deadline", training.Deadline),
+                new SqlParameter("@Capacity", training.Capacity)
+            };
 
-            parameters.Add(new SqlParameter("@TrainingName", training.TrainingName));
-            parameters.Add(new SqlParameter("@Description", training.Description));
-            parameters.Add(new SqlParameter("@Deadline", training.Deadline));
-            if (training.PriorityDepartment == -1)
-            {
-                parameters.Add(new SqlParameter("@PriorityDepartment", DBNull.Value));
-            }
-            else
-            {
-                parameters.Add(new SqlParameter("@PriorityDepartment", training.PriorityDepartment));
-            }
+            if (training.PriorityDepartment == -1) { parameters.Add(new SqlParameter("@PriorityDepartment", DBNull.Value)); }
+            else { parameters.Add(new SqlParameter("@PriorityDepartment", training.PriorityDepartment)); }
 
-            parameters.Add(new SqlParameter("@Capacity", training.Capacity));
-
-            if (prerequisitesList == null)
-            {
-                parameters.Add(new SqlParameter("@PrerequisiteIds", ""));
-            }
-            else
-            {
-                parameters.Add(new SqlParameter("@PrerequisiteIds", string.Join(",", prerequisitesList)));
-            }
+            if (prerequisitesList == null) { parameters.Add(new SqlParameter("@PrerequisiteIds", "")); }
+            else { parameters.Add(new SqlParameter("@PrerequisiteIds", string.Join(",", prerequisitesList))); }
 
             const string InsertTrainingQuery =
                 @"BEGIN TRANSACTION;
@@ -71,32 +60,54 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             await DbCommand.InsertUpdateDataAsync(InsertTrainingQuery, parameters);
         }
 
-        public async Task UpdateAsync(TrainingModel training)
+        public async Task UpdateAsync(TrainingPrerequisiteViewModel training)
         {
-            List<SqlParameter> parameters = new List<SqlParameter>();
-
-            parameters.Add(new SqlParameter("@TrainingName", training.TrainingName));
-            parameters.Add(new SqlParameter("@Description", training.Description));
-            parameters.Add(new SqlParameter("@Deadline", training.Deadline));
-            if (training.PriorityDepartment == -1)
-            {
-                parameters.Add(new SqlParameter("@PriorityDepartment", DBNull.Value));
-            }
-            else
-            {
-                parameters.Add(new SqlParameter("@PriorityDepartment", Convert.ToInt16(training.PriorityDepartment)));
-            }
-            parameters.Add(new SqlParameter("@Capacity", Convert.ToInt16(training.Capacity)));
-            parameters.Add(new SqlParameter("@TrainingId", Convert.ToInt16(training.TrainingId)));
-
             const string UpdateTrainingQuery =
-              @"UPDATE [dbo].[Training]
+              @"BEGIN TRANSACTION;
+
+                UPDATE [dbo].[Training]
                 SET [TrainingName] = @TrainingName,
 	                [Description] = @Description,
 	                [Deadline] = @Deadline,
 	                [PriorityDepartment] = @PriorityDepartment,
 	                [Capacity] = @Capacity
-                WHERE [TrainingId] = @TrainingId;";
+                WHERE [TrainingId] = @TrainingId;
+
+                DELETE FROM [dbo].[Training_Prerequisite]
+                WHERE [TrainingId] = @TrainingId;
+
+                IF LEN(@PrerequisiteIds) > 0
+                BEGIN
+	                DECLARE @index INT = 1;
+
+	                WHILE @index <= LEN(@PrerequisiteIds)
+	                BEGIN
+		                DECLARE @PrerequisiteId INT;
+		                SELECT @PrerequisiteId = CAST(SUBSTRING(@PrerequisiteIds, @index, CHARINDEX(',', @PrerequisiteIds + ',', @index) - @index) AS INT);
+
+		                INSERT INTO [dbo].[Training_Prerequisite] ([TrainingId], [PrerequisiteId])
+		                SELECT @TrainingId, @PrerequisiteId;
+
+		                SET @index = CHARINDEX(',', @PrerequisiteIds + ',', @index) + 1;
+	                END
+                END
+
+                COMMIT;";
+
+            List<SqlParameter> parameters = new List<SqlParameter>()
+            {
+                new SqlParameter("@TrainingName", training.TrainingName),
+                new SqlParameter("@Description", training.Description),
+                new SqlParameter("@Deadline", training.Deadline),
+                new SqlParameter("@Capacity", Convert.ToInt16(training.Capacity)),
+                new SqlParameter("@TrainingId", Convert.ToInt16(training.TrainingId))
+            };
+
+            if (training.PriorityDepartment == -1) { parameters.Add(new SqlParameter("@PriorityDepartment", DBNull.Value)); }
+            else { parameters.Add(new SqlParameter("@PriorityDepartment", Convert.ToInt16(training.PriorityDepartment))); }
+
+            if (training.PrerequisiteIds == null) { parameters.Add(new SqlParameter("@PrerequisiteIds", "")); }
+            else { parameters.Add(new SqlParameter("@PrerequisiteIds", string.Join(",", training.PrerequisiteIds))); }
 
             await DbCommand.InsertUpdateDataAsync(UpdateTrainingQuery, parameters);
         }
@@ -140,6 +151,46 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                         PriorityDepartmentName = reader.IsDBNull(reader.GetOrdinal("DepartmentName")) ? null : reader.GetString(reader.GetOrdinal("DepartmentName")),
                         Capacity = reader.GetInt16(reader.GetOrdinal("Capacity"))
                     };
+                }
+            }
+            return training;
+        }
+
+        public async Task<TrainingPrerequisiteViewModel> GetWithPrerequisitesAsync(int trainingId)
+        {
+            const string GetTrainingWithPrerequisitesQuery =
+                @"SELECT t.[TrainingId], t.[TrainingName], t.[Description], t.[Deadline], t.[Capacity], t.[PriorityDepartment] AS PriorityDepartment, d.[DepartmentName] AS PriorityDepartmentName, tp.[PrerequisiteId]
+                FROM [dbo].[Training] t
+                LEFT JOIN [dbo].[Training_Prerequisite] tp
+                ON t.[TrainingId] = tp.[TrainingId]
+                LEFT JOIN [dbo].[Department] d
+                ON t.[PriorityDepartment] = d.[DepartmentId]
+                WHERE t.[TrainingId] = @TrainingId";
+
+            List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter("@TrainingId", trainingId) };
+            TrainingPrerequisiteViewModel training = null;
+
+            using (SqlDataReader reader = await DbCommand.GetDataWithConditionsAsync(GetTrainingWithPrerequisitesQuery, parameters))
+            {
+                if (reader.Read())
+                {
+                    training = new TrainingPrerequisiteViewModel()
+                    {
+                        TrainingId = reader.GetInt16(reader.GetOrdinal("TrainingId")),
+                        TrainingName = reader.GetString(reader.GetOrdinal("TrainingName")),
+                        Description = reader.GetString(reader.GetOrdinal("Description")),
+                        Deadline = reader.GetDateTime(reader.GetOrdinal("Deadline")),
+                        Capacity = reader.GetInt16(reader.GetOrdinal("Capacity")),
+                        PriorityDepartment = reader.IsDBNull(reader.GetOrdinal("PriorityDepartment")) ? null : (int?)reader.GetInt16(reader.GetOrdinal("PriorityDepartment")),
+                        PriorityDepartmentName = reader.IsDBNull(reader.GetOrdinal("PriorityDepartmentName")) ? null : reader.GetString(reader.GetOrdinal("PriorityDepartmentName")),
+                        PrerequisiteIds = new List<int>()
+                    };
+
+                    do
+                    {
+                        int? prerequisiteId = reader.IsDBNull(reader.GetOrdinal("PrerequisiteId")) ? null : (int?)reader.GetInt16(reader.GetOrdinal("PrerequisiteId"));
+                        if (prerequisiteId.HasValue) { training.PrerequisiteIds.Add(prerequisiteId.Value); }
+                    } while (reader.Read());
                 }
             }
             return training;

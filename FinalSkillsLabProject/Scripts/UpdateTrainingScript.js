@@ -13,19 +13,48 @@
 
     function validateFieldValues() {
         var fields = ["trainingName", "description", "deadline", "capacity", "departmentDropdown"];
+        var isValid = true;
 
         fields.forEach(function (field) {
             var value = $("#" + field).val();
             if (value == '' || value == null || value.trim() == '') {
                 var label = extractLabelValues(field);
                 toastr.error(label + " cannot be empty");
-                return false;
+                isValid = false;
             }
         });
+        return isValid;
+    }
+
+    function validateDeadline(parsedDeadline) {
+        var currentDate = new Date();
+        var isValid = true;
+
+        if (isNaN(parsedDeadline.getTime())) {
+            toastr.error("Invalid date format");
+            isValid = false;
+        }
+
+        if (parsedDeadline < currentDate) {
+            toastr.error("Deadline cannot be in the past");
+            isValid = false;
+        }
+        return isValid;
+    }
+
+    function validateCapacity(capacity) {
+        var isValid = true;
+        if (capacity < 1) {
+            toastr.error("Capacity must be greater than 1");
+            isValid = false;
+        }
+        return isValid;
     }
 
     $("#btnSubmit").click(function () {
-        validateFieldValues();
+        if (!validateFieldValues()) {
+            return false;
+        }
 
         var trainingId = parseInt($("#trainingId").val());
         var trainingName = $("#trainingName").val().trim();
@@ -33,11 +62,17 @@
         var deadlineInput = $("#deadline").val().trim();
         var capacity = parseInt($("#capacity").val().trim());
         var priorityDepartment = parseInt($("#departmentDropdown").val().trim());
+        var selectedPrerequisites = [];
+
+        $(".prerequisite-checkbox:checked").each(function () {
+            selectedPrerequisites.push($(this).val());
+        });
+
+        if (!validateCapacity(capacity)) { return false; }
 
         var parsedDeadline = new Date(deadlineInput);
-        if (!isNaN(parsedDeadline.getTime())) {
-            var formattedDeadline = parsedDeadline.toISOString();
-        }
+        if (!validateDeadline(parsedDeadline)) { return false; }
+        var formattedDeadline = parsedDeadline.toISOString();
 
         var trainingObj = {
             TrainingId: trainingId,
@@ -45,7 +80,8 @@
             Description: description,
             Deadline: formattedDeadline,
             Capacity: capacity,
-            PriorityDepartment: priorityDepartment
+            PriorityDepartment: priorityDepartment,
+            PrerequisiteIds: selectedPrerequisites
         };
 
         $.ajax({

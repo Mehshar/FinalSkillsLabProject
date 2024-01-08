@@ -34,7 +34,7 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
             }
         }
 
-        public async Task<string> UpdateAsync(TrainingModel training)
+        public async Task<string> UpdateAsync(TrainingPrerequisiteViewModel training)
         {
             try
             {
@@ -90,6 +90,11 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
         public async Task<IEnumerable<TrainingModel>> GetNotEnrolledTrainingsPagedAsync(int userId, int page, int pageSize)
         {
             return await this._trainingDAL.GetNotEnrolledTrainingsPagedAsync(userId, page, pageSize);
+        }
+
+        public async Task<TrainingPrerequisiteViewModel> GetWithPrerequisitesAsync(int trainingId)
+        {
+            return await this._trainingDAL.GetWithPrerequisitesAsync(trainingId);
         }
 
         private void CheckInsertUpdateDuplicate(TrainingModel training)
