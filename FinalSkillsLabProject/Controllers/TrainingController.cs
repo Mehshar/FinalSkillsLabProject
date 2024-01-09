@@ -90,5 +90,13 @@ namespace FinalSkillsLabProject.Controllers
             string result = await _trainingBL.UpdateAsync(training);
             return Json(new { result = result, url = Url.Action("Index", "Training") });
         }
+
+        [HttpPost]
+        [CustomAuthorization("Admin")]
+        public async Task<JsonResult> Delete(int id)
+        {
+            bool result = await _trainingBL.DeleteAsync(id);
+            return Json(new { result = result });
+        }
     }
 }

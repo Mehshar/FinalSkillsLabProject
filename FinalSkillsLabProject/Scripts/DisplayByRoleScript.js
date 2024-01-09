@@ -9,6 +9,7 @@
     var myenrollmentsBtn = $("#myenrollmentsBtn");
     var btnReject = $(".btnReject");
     var btnApprove = $(".btnApprove");
+    var btnDeleteTraining = $(".btnDeleteTraining");
 
     $.ajax({
         type: "GET",
@@ -22,6 +23,10 @@
                 btnEdit.removeClass("d-none");
                 managerDetailsCard.removeClass("d-none");
                 hangfireCard.removeClass("d-none");
+            }
+
+            if (btnDeleteTraining.length && currentRole === "Admin") {
+                btnDeleteTraining.removeClass("d-none");
             }
 
             if ((btnEnroll.length || userTrainingsNavLink.length || myenrollmentsBtn.length) && currentRole === "Employee") {

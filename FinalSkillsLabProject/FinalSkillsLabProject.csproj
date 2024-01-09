@@ -397,6 +397,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Content Include="Scripts\ShowDeleteModalScript.js" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\AboutStyle.css" />
@@ -514,6 +515,7 @@
     <Content Include="Views\User\Index.cshtml" />
     <Content Include="Views\User\Enrollments.cshtml" />
     <Content Include="Views\Common\NoData.cshtml" />
+    <Content Include="Views\Training\DeleteConfirmationModal.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

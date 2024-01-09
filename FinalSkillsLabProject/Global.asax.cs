@@ -25,24 +25,5 @@ namespace FinalSkillsLabProject
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
         }
-
-        //protected void Application_Error(object sender, EventArgs e)
-        //{
-        //    Exception exception = Server.GetLastError();
-
-        //    ILogger logger = UnityConfig.UnityContainer.Resolve<ILogger>();
-        //    logger.LogError(exception);
-
-        //    // Clear the error to prevent ASP.NET from handling it
-        //    Server.ClearError();
-
-        //    CustomErrorsSection customErrors = (CustomErrorsSection)ConfigurationManager.GetSection("system.web/customErrors");
-
-        //    int statusCode = (exception is HttpException) ? ((HttpException)exception).GetHttpCode() : 500;
-        //    string redirectPath = customErrors.Errors.OfType<CustomError>()
-        //        .FirstOrDefault(error => error.StatusCode == statusCode)
-        //        ?.Redirect;
-        //    Response.Redirect(redirectPath ?? customErrors.DefaultRedirect);
-        //}
     }
 }

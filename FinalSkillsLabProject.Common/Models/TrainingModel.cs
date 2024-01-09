@@ -21,5 +21,6 @@ namespace FinalSkillsLabProject.Common.Models
         public int Capacity { get; set; }
         public int? PriorityDepartment { get; set; }
         public string PriorityDepartmentName { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

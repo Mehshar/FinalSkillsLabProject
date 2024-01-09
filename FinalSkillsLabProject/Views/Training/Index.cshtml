@@ -19,6 +19,7 @@
 
     <script type="text/javascript" src="~/Scripts/DisplayByRoleScript.js"></script>
     <script type="text/javascript" src="~/Scripts/ClickableRowScript.js"></script>
+    <script type="text/javascript" src="~/Scripts/ShowDeleteModalScript.js"></script>
     <link rel="stylesheet" href="~/Content/ClickableRowStyle.css" />
 
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
@@ -27,6 +28,15 @@
     <style>
         #pageSizeInput, #pageNumInput {
             max-width: 3.75rem;
+        }
+
+        .custom-font{
+            font-size: 0.95rem;
+        }
+
+        td {
+            padding-top: 20px !important;
+            padding-bottom: 20px !important;
         }
     </style>
 </head>
@@ -74,7 +84,7 @@
         <tbody>
             @foreach (var training in Model)
             {
-                <tr class="clickable-row font-1" data-href="@Url.Action("Details", "Training", new { id = training.TrainingId })">
+                <tr class="clickable-row custom-font" data-href="@Url.Action("Details", "Training", new { id = training.TrainingId })">
                     <td>
                         @training.TrainingName
                     </td>
@@ -94,6 +104,14 @@
                         <a href="@Url.Action("Edit", "Training", new { id = training.TrainingId })" class="btn btnCustomSquare d-none btnEdit" data-toggle="tooltip" title="Edit Training">
                             <i class="fa-solid fa-edit"></i>
                         </a>
+
+                        @if (training.IsDeleted == false)
+                        {
+                            <a class="btn btn-outline-danger btnDeleteTraining mt-2 d-none" data-name="@training.TrainingName" data-id="@training.TrainingId">
+                                <i class="fa-regular fa-trash-can"></i>
+                            </a>
+                        }
+
                         @Html.ActionLink("Enroll", "Enroll", "Enrollment", new { id = training.TrainingId }, new { @class = "btn btnCustomSquare d-none btnEnroll" })
                     </td>
                 </tr>
@@ -133,6 +151,24 @@
                     </li>
                 </ul>
             </nav>
+        </div>
+    </div>
+
+    <div class="modal fade" id="deleteTrainingModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="deleteTrainingModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteTrainingModalLabel">Delete Training</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete the training <strong id="trainingName"></strong>?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-danger" id="modalDeleteBtn">Delete</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="modalCancelBtn">Cancel</button>
+                </div>
+            </div>
         </div>
     </div>
 </body>
@@ -263,6 +299,10 @@
                                     {
                                         <a href="${editUrl}" class="btn btnCustomSquare btnEdit" data-toggle="tooltip" title="Edit Training">
                                             <i class="fa-solid fa-edit"></i>
+                                        </a>
+
+                                        <a class="btn btn-outline-danger btnDeleteTraining mt-2" data-name="${training.TrainingName}" data-id="${training.trainingId}">
+                                            <i class="fa-regular fa-trash-can"></i>
                                         </a>
                                     }
 

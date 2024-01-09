@@ -114,13 +114,14 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
 
         public async Task<bool> DeleteAsync(int trainingId)
         {
-            SqlParameter parameter = new SqlParameter("@TrainingId", trainingId);
+            List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter("@TrainingId", trainingId) };
 
             const string DeleteTrainingQuery =
-              @"DELETE FROM [dbo].[Training]
+              @"UPDATE [dbo].[Training]
+                SET [IsDeleted] = 1
                 WHERE [TrainingId] = @TrainingId;";
 
-            return await DbCommand.DeleteDataAsync(DeleteTrainingQuery, parameter) > 0;
+            return await DbCommand.InsertUpdateDataAsync(DeleteTrainingQuery, parameters) > 0;
         }
 
         public async Task<TrainingModel> GetAsync(int trainingId)
@@ -149,7 +150,8 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                         Deadline = reader.GetDateTime(reader.GetOrdinal("Deadline")),
                         PriorityDepartment = reader.IsDBNull(reader.GetOrdinal("PriorityDepartment")) ? null : (int?)reader.GetInt16(reader.GetOrdinal("PriorityDepartment")),
                         PriorityDepartmentName = reader.IsDBNull(reader.GetOrdinal("DepartmentName")) ? null : reader.GetString(reader.GetOrdinal("DepartmentName")),
-                        Capacity = reader.GetInt16(reader.GetOrdinal("Capacity"))
+                        Capacity = reader.GetInt16(reader.GetOrdinal("Capacity")),
+                        IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"))
                     };
                 }
             }
@@ -211,16 +213,17 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             {
                 while (reader.Read())
                 {
-                    training = new TrainingModel();
-
-                    training.TrainingId = reader.GetInt16(reader.GetOrdinal("TrainingId"));
-                    training.TrainingName = reader.GetString(reader.GetOrdinal("TrainingName"));
-                    training.Description = reader.GetString(reader.GetOrdinal("Description"));
-                    training.Deadline = reader.GetDateTime(reader.GetOrdinal("Deadline"));
-                    training.PriorityDepartment = reader.IsDBNull(reader.GetOrdinal("PriorityDepartment")) ? null : (int?)reader.GetInt16(reader.GetOrdinal("PriorityDepartment"));
-                    training.PriorityDepartmentName = reader.IsDBNull(reader.GetOrdinal("DepartmentName")) ? null : reader.GetString(reader.GetOrdinal("DepartmentName"));
-                    training.Capacity = reader.GetInt16(reader.GetOrdinal("Capacity"));
-
+                    training = new TrainingModel()
+                    {
+                        TrainingId = reader.GetInt16(reader.GetOrdinal("TrainingId")),
+                        TrainingName = reader.GetString(reader.GetOrdinal("TrainingName")),
+                        Description = reader.GetString(reader.GetOrdinal("Description")),
+                        Deadline = reader.GetDateTime(reader.GetOrdinal("Deadline")),
+                        PriorityDepartment = reader.IsDBNull(reader.GetOrdinal("PriorityDepartment")) ? null : (int?)reader.GetInt16(reader.GetOrdinal("PriorityDepartment")),
+                        PriorityDepartmentName = reader.IsDBNull(reader.GetOrdinal("DepartmentName")) ? null : reader.GetString(reader.GetOrdinal("DepartmentName")),
+                        Capacity = reader.GetInt16(reader.GetOrdinal("Capacity")),
+                        IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"))
+                };
                     trainingList.Add(training);
                 }
             }
@@ -292,7 +295,8 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                         Deadline = reader.GetDateTime(reader.GetOrdinal("Deadline")),
                         PriorityDepartment = reader.IsDBNull(reader.GetOrdinal("PriorityDepartment")) ? null : (int?)reader.GetInt16(reader.GetOrdinal("PriorityDepartment")),
                         PriorityDepartmentName = reader.IsDBNull(reader.GetOrdinal("DepartmentName")) ? null : reader.GetString(reader.GetOrdinal("DepartmentName")),
-                        Capacity = reader.GetInt16(reader.GetOrdinal("Capacity"))
+                        Capacity = reader.GetInt16(reader.GetOrdinal("Capacity")),
+                        IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"))
                     };
                     trainingsList.Add(training);
                 }
@@ -367,7 +371,8 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                         Deadline = reader.GetDateTime(reader.GetOrdinal("Deadline")),
                         PriorityDepartment = reader.IsDBNull(reader.GetOrdinal("PriorityDepartment")) ? null : (int?)reader.GetInt16(reader.GetOrdinal("PriorityDepartment")),
                         PriorityDepartmentName = reader.IsDBNull(reader.GetOrdinal("DepartmentName")) ? null : reader.GetString(reader.GetOrdinal("DepartmentName")),
-                        Capacity = reader.GetInt16(reader.GetOrdinal("Capacity"))
+                        Capacity = reader.GetInt16(reader.GetOrdinal("Capacity")),
+                        IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"))
                     };
                     trainingsList.Add(training);
                 }
