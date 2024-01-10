@@ -43,6 +43,7 @@ namespace FinalSkillsLabProject.Controllers
             //if (id == null) { return View("Error404"); }
             TrainingModel training = await _trainingBL.GetAsync((int)id);
             if (training == null) { return View("Error404"); }
+            if (training.IsDeleted || training.Deadline < DateTime.Now) { return View("Error"); }
             ViewBag.Prerequisites = await _prerequisiteBL.GetAllByTrainingAsync((int)id);
             return View(training);
         }

@@ -91,7 +91,7 @@ namespace FinalSkillsLabProject.Controllers
         {
             TrainingPrerequisiteViewModel training = await _trainingBL.GetWithPrerequisitesAsync(id);
             if (training == null) { return View("Error404"); }
-            if (training.IsDeleted || training.Deadline < DateTime.Now) { return View("Error404"); }
+            if (training.IsDeleted || training.Deadline < DateTime.Now) { return View("Error"); }
                 ViewBag.Departments = (await _departmentBL.GetAllAsync()).Where(x => x.DepartmentId != training.PriorityDepartment).ToList();
             ViewBag.AllPrerequisites = (await _prerequisiteBL.GetAllAsync()).ToList();
             return View(training);
