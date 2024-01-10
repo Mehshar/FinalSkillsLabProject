@@ -6,173 +6,219 @@
     var currentRole = ((UserViewModel)Session["CurrentUser"]).Role.RoleName.ToString();
 }
 
-<!DOCTYPE html>
+@section FluidBodyContent {
+    <!DOCTYPE html>
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
+    <html>
+    <head>
+        <meta name="viewport" content="width=device-width" />
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/%40fortawesome/fontawesome-free@6.2.0/css/fontawesome.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/%40fortawesome/fontawesome-free@6.2.0/css/fontawesome.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 
-    <script type="text/javascript" src="~/Scripts/DisplayByRoleScript.js"></script>
-    <script type="text/javascript" src="~/Scripts/ClickableRowScript.js"></script>
-    <script type="text/javascript" src="~/Scripts/ShowDeleteModalScript.js"></script>
-    <link rel="stylesheet" href="~/Content/ClickableRowStyle.css" />
+        <script type="text/javascript" src="~/Scripts/DisplayByRoleScript.js"></script>
+        <script type="text/javascript" src="~/Scripts/ClickableRowScript.js"></script>
+        <script type="text/javascript" src="~/Scripts/ShowDeleteModalScript.js"></script>
+        <script type="text/javascript" src="~/Scripts/CheckUpdateTrainingScript.js"></script>
+        <link rel="stylesheet" href="~/Content/ClickableRowStyle.css" />
 
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
 
-    <style>
-        #pageSizeInput, #pageNumInput {
-            max-width: 3.75rem;
-        }
-
-        .custom-font{
-            font-size: 0.95rem;
-        }
-
-        td {
-            padding-top: 20px !important;
-            padding-bottom: 20px !important;
-        }
-    </style>
-</head>
-<body>
-
-    <div class="row">
-        <div class="col my-4">
-            <a href="@Url.Action("Create")" class="btn d-none" id="btnCreateTraining" style="text-decoration: none;" data-toggle="tooltip" title="Create Training">
-                <i class="fa-solid fa-plus me-2"></i>Training
-            </a>
-        </div>
-        <div class="col my-4">
-            <form id="pageSizeForm" class="d-flex flex-row">
-                <div class="input-group flex-nowrap justify-content-end">
-                    <label for="pageSize" class="input-group-text" id="pageSizeLabel">Items per page</label>
-                    <input type="number" class="form-control" id="pageSizeInput" name="pageSize" value="@ViewBag.PageSize" min="5" max="20" aria-label="Page Size" aria-describedby="pageSizeLabel">
-                </div>
-                <button type="submit" id="pageSizeBtn" class="btn btn-outline-primary d-none">Apply</button>
-            </form>
-        </div>
-    </div>
-
-    <table class="table table-hover user-select-none">
-        <thead>
-            <tr>
-                <th>
-                    Training
-                </th>
-                <th>
-                    Description
-                </th>
-                <th>
-                    Deadline
-                </th>
-                <th>
-                    Capacity
-                </th>
-                <th>
-                    Priority Department
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-
-        <tbody>
-            @foreach (var training in Model)
-            {
-                <tr class="clickable-row custom-font" data-href="@Url.Action("Details", "Training", new { id = training.TrainingId })">
-                    <td>
-                        @training.TrainingName
-                    </td>
-                    <td>
-                        @training.Description
-                    </td>
-                    <td>
-                        @training.Deadline.ToShortDateString()
-                    </td>
-                    <td>
-                        @training.Capacity
-                    </td>
-                    <td>
-                        @(training.PriorityDepartmentName == null ? "N/A" : training.PriorityDepartmentName)
-                    </td>
-                    <td>
-                        <a href="@Url.Action("Edit", "Training", new { id = training.TrainingId })" class="btn btnCustomSquare d-none btnEdit" data-toggle="tooltip" title="Edit Training">
-                            <i class="fa-solid fa-edit"></i>
-                        </a>
-
-                        @if (training.IsDeleted == false)
-                        {
-                            <a class="btn btn-outline-danger btnDeleteTraining mt-2 d-none" data-name="@training.TrainingName" data-id="@training.TrainingId">
-                                <i class="fa-regular fa-trash-can"></i>
-                            </a>
-                        }
-
-                        @Html.ActionLink("Enroll", "Enroll", "Enrollment", new { id = training.TrainingId }, new { @class = "btn btnCustomSquare d-none btnEnroll" })
-                    </td>
-                </tr>
+        <style>
+            #pageSizeInput, #pageNumInput {
+                max-width: 3.75rem;
             }
-        </tbody>
-    </table>
 
-    <div class="row">
-        <div class="col-md-3">
-            <nav aria-label="Page Navigation Previous" class="my-3">
-                <ul class="pagination">
-                    <li class="page-item">
-                        <a id="previousPageLink" class="page-link" aria-label="Previous">
-                            <i class="fa-solid fa-chevron-left"></i>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
+            .custom-font {
+                font-size: 0.95rem;
+            }
 
-        <div class="col-md-6 d-flex align-items-center justify-content-center">
-            <form id="pageNumForm" class="d-flex flex-row align-items-center my-3">
-                <label for="page" class="me-2" id="pageNumLabel">Page</label>
-                <input type="number" name="page" class="form-control me-2" id="pageNumInput" value="@ViewBag.Page" min="1" max="@ViewBag.TotalPages" aria-label="Page Number" aria-describedby="pageNumLabel">
-                <label for="pageCount">of <span id="pageCountSpan">@ViewBag.TotalPages</span></label>
-                <button type="submit" id="pageNumBtn" class="btn btn-outline-primary d-none">Apply</button>
-            </form>
-        </div>
+            td {
+                padding-top: 20px !important;
+                padding-bottom: 20px !important;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="mx-5">
 
-        <div class="col-md-3">
-            <nav aria-label="Page Navigation Next" class="my-3">
-                <ul class="pagination justify-content-end">
-                    <li class="page-item">
-                        <a id="nextPageLink" class="page-link" aria-label="Next">
-                            <i class="fa-solid fa-chevron-right"></i>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-    </div>
-
-    <div class="modal fade" id="deleteTrainingModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="deleteTrainingModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="deleteTrainingModalLabel">Delete Training</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="row">
+                <div class="col my-4">
+                    <a href="@Url.Action("Create")" class="btn d-none" id="btnCreateTraining" style="text-decoration: none;" data-toggle="tooltip" title="Create Training">
+                        <i class="fa-solid fa-plus me-2"></i>Training
+                    </a>
                 </div>
-                <div class="modal-body">
-                    Are you sure you want to delete the training <strong id="trainingName"></strong>?
+                <div class="col my-4">
+                    <form id="pageSizeForm" class="d-flex flex-row">
+                        <div class="input-group flex-nowrap justify-content-end">
+                            <label for="pageSize" class="input-group-text" id="pageSizeLabel">Items per page</label>
+                            <input type="number" class="form-control" id="pageSizeInput" name="pageSize" value="@ViewBag.PageSize" min="5" max="20" aria-label="Page Size" aria-describedby="pageSizeLabel">
+                        </div>
+                        <button type="submit" id="pageSizeBtn" class="btn btn-outline-primary d-none">Apply</button>
+                    </form>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-danger" id="modalDeleteBtn">Delete</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="modalCancelBtn">Cancel</button>
+            </div>
+
+            <div>
+                <table class="table table-hover user-select-none">
+                    <thead>
+                        <tr>
+                            <th>
+                                Training
+                            </th>
+                            <th>
+                                Description
+                            </th>
+                            <th>
+                                Deadline
+                            </th>
+                            <th>
+                                Capacity
+                            </th>
+                            <th>
+                                Priority Department
+                            </th>
+                            <th class="ps-1 pe-4">Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var training in Model)
+                        {
+                            <tr class="clickable-row custom-font" data-href="@Url.Action("Details", "Training", new { id = training.TrainingId })">
+                                <td>
+                                    @training.TrainingName
+                                </td>
+                                <td>
+                                    @training.Description
+                                </td>
+                                <td>
+                                    @training.Deadline.ToShortDateString()
+                                </td>
+                                <td>
+                                    @training.Capacity
+                                </td>
+                                <td>
+                                    @(training.PriorityDepartmentName == null ? "N/A" : training.PriorityDepartmentName)
+                                </td>
+                                <td class="ps-1 pe-4">
+                                    @if (training.Deadline <= DateTime.Now)
+                                    {
+                                        <span id="deadlineBadge_@training.TrainingId" class="badge bg-danger">Expired</span>
+                                    }
+
+                                    @if (training.IsDeleted)
+                                    {
+                                        <span id="deleteBadge_@training.TrainingId" class="badge bg-danger">Deleted</span>
+                                    }
+
+                                    @if (training.Deadline > DateTime.Now && !training.IsDeleted)
+                                    {
+                                        <span id="activeBadge_@training.TrainingId" class="badge bg-success">Active</span>
+                                    }
+                                </td>
+                                <td class="tablePadding">
+                                    <div class="row">
+                                        @if (training.Deadline > DateTime.Now && !training.IsDeleted)
+                                        {
+                                            if (currentRole.Equals("Admin"))
+                                            {
+                                                <div class="col-4">
+                                                    <a class="btn btnCustomSquare btnEdit d-none m-0" data-toggle="tooltip" title="Edit Training" data-id="@training.TrainingId">
+                                                        <i class="fa-solid fa-edit"></i>
+                                                    </a>
+                                                </div>
+
+                                                <div class="col-4">
+                                                    <a class="btn btn-outline-danger btnDeleteTraining d-none ms-3" data-name="@training.TrainingName" data-id="@training.TrainingId">
+                                                        <i class="fa-regular fa-trash-can"></i>
+                                                    </a>
+                                                </div>
+                                            }
+
+                                            else if (currentRole.Equals("Employee"))
+                                            {
+
+                                                <div class="col-4">
+                                                    @Html.ActionLink("Enroll", "Enroll", "Enrollment", new { id = training.TrainingId }, new { @class = "btn btnCustomSquare d-none btnEnroll" })
+                                                </div>
+                                            }
+
+                                        }
+                                        <div class="col">
+                                            @if (currentRole.Equals("Admin") && training.Deadline < DateTime.Now)
+                                            {
+                                                @Html.ActionLink("Export", "Index", "Home", new { id = training.TrainingId }, new { @class = "btn btnCustomSquare d-none btnExport w-100" })
+                                            }
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="row">
+                <div class="col-md-3">
+                    <nav aria-label="Page Navigation Previous" class="my-3">
+                        <ul class="pagination">
+                            <li class="page-item">
+                                <a id="previousPageLink" class="page-link" aria-label="Previous">
+                                    <i class="fa-solid fa-chevron-left"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+
+                <div class="col-md-6 d-flex align-items-center justify-content-center">
+                    <form id="pageNumForm" class="d-flex flex-row align-items-center my-3">
+                        <label for="page" class="me-2" id="pageNumLabel">Page</label>
+                        <input type="number" name="page" class="form-control me-2" id="pageNumInput" value="@ViewBag.Page" min="1" max="@ViewBag.TotalPages" aria-label="Page Number" aria-describedby="pageNumLabel">
+                        <label for="pageCount">of <span id="pageCountSpan">@ViewBag.TotalPages</span></label>
+                        <button type="submit" id="pageNumBtn" class="btn btn-outline-primary d-none">Apply</button>
+                    </form>
+                </div>
+
+                <div class="col-md-3">
+                    <nav aria-label="Page Navigation Next" class="my-3">
+                        <ul class="pagination justify-content-end">
+                            <li class="page-item">
+                                <a id="nextPageLink" class="page-link" aria-label="Next">
+                                    <i class="fa-solid fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+
+            <div class="modal fade" id="deleteTrainingModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="deleteTrainingModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="deleteTrainingModalLabel">Delete Training</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to delete the training <strong id="trainingName"></strong>?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-danger" id="modalDeleteBtn">Delete</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="modalCancelBtn">Cancel</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</body>
+    </body>
 </html>
+}
 
 @section Scripts {
     <script>
@@ -180,6 +226,7 @@
             var detailsBaseUrl = "@Url.Action("Details", "Training", new { id = "__placeholder__" })";
             var editBaseUrl = "@Url.Action("Edit", "Training", new { id = "__placeholder__" })";
             var enrollBaseUrl = "@Url.Action("Enroll", "Enrollment", new { id = "__placeholder__" })";
+            var exportBaseUrl = "@Url.Action("Index", "Home", new { id = "__placeholder__" })";
 
             $("#pageSizeForm").submit(function (e) {
                 e.preventDefault();
@@ -284,36 +331,80 @@
                     var detailsUrl = detailsBaseUrl.replace("__placeholder__", trainingId);
                     var editUrl = editBaseUrl.replace("__placeholder__", trainingId);
                     var priorityDepartment = training.PriorityDepartmentName == null ? "N/A" : training.PriorityDepartmentName;
+                    var IsDeleted = training.IsDeleted;
+                    var currentRole = "@currentRole";
+                    var currentDate = new Date();
+                    var trainingDeadline = new Date(parseInt(training.Deadline.match(/\d+/)[0])).toLocaleDateString();
 
                     var row =
-                        `<tr class="clickable-row font-1" data-href="${detailsUrl}">
+                        `<tr class="clickable-row custom-font" data-href="${detailsUrl}">
                             <td>${training.TrainingName}</td>
                             <td>${training.Description}</td>
-                            <td>${new Date(parseInt(training.Deadline.match(/\d+/)[0])).toLocaleDateString()}</td>
+                            <td>${trainingDeadline}</td>
                             <td>${training.Capacity}</td>
                             <td>${priorityDepartment}</td>
-                            <td>
-                                @if (User.Identity.IsAuthenticated)
+                            <td class="ps-1 pe-4">`;
+                                if (new Date(trainingDeadline) <= currentDate)
                                 {
-                                    if (currentRole.Equals("Admin"))
-                                    {
-                                        <a href="${editUrl}" class="btn btnCustomSquare btnEdit" data-toggle="tooltip" title="Edit Training">
-                                            <i class="fa-solid fa-edit"></i>
-                                        </a>
+                                    row += `<span id="deadlineBadge_${training.TrainingId}" class="badge bg-danger">Expired</span>`;
+                                }
 
-                                        <a class="btn btn-outline-danger btnDeleteTraining mt-2" data-name="${training.TrainingName}" data-id="${training.trainingId}">
-                                            <i class="fa-regular fa-trash-can"></i>
-                                        </a>
+                                if (training.IsDeleted)
+                                {
+                                    row += `<span id="deleteBadge_${training.TrainingId}" class="badge bg-danger">Deleted</span>`;
+                                }
+
+                                if (new Date(trainingDeadline) > currentDate && !training.IsDeleted)
+                                {
+                                    row += `<span id="activeBadge_${training.TrainingId}" class="badge bg-success">Active</span>`;
+                                }
+                    row += `</td>
+                        <td class="tablePadding">
+                            <div class="row">`;
+                                if (new Date(trainingDeadline) > currentDate && !training.IsDeleted)
+                                {
+                                    if (currentRole == "Admin")
+                                    {
+                                        row += `<div class="col-4">
+                                            <a class="btn btnCustomSquare btnEdit m-0" data-toggle="tooltip" title="Edit Training" data-id="${training.TrainingId}">
+                                                <i class="fa-solid fa-edit"></i>
+                                            </a>
+                                        </div>
+                                        <div class="col-4">
+                                            <a class="btn btn-outline-danger btnDeleteTraining ms-3" data-name="${training.TrainingName}" data-id="${training.TrainingId}">
+                                                <i class="fa-regular fa-trash-can"></i>
+                                            </a>
+                                        </div>`;
                                     }
 
-                                    else if (currentRole.Equals("Employee"))
+                                    else if (currentRole == "Employee")
                                     {
-                                        <a href="${enrollBaseUrl.replace("__placeholder__", trainingId)}" class="btn btnCustomSquare btnEnroll">Enroll</a>
+                                        row += `<div class="col-4">
+                                                    <a href="${enrollBaseUrl.replace("__placeholder__", trainingId)}" class="btn btnCustomSquare btnEnroll">Enroll</a>
+                                                </div>`;
                                     }
                                 }
-                                </td>
+
+                                if (currentRole == "Admin" && new Date(trainingDeadline) < currentDate)
+                                {
+                                    row += `<div class="col">
+                                    <a href="${exportBaseUrl.replace("__placeholder__", trainingId)}" class = "btn btnCustomSquare btnExport w-100">Export</a>
+                                    </div>`;
+                                }
+
+                                row += `</div>
+                            </div>
+                          </td>
                         </tr>`;
                     tableBody.append(row);
+
+                    if (IsDeleted) {
+                        $("#deleteTrainingBtn").addClass("d-none");
+                    }
+
+                    if (currentRole === "Admin" || currentRole === "Employee") {
+                        $(".tablePadding").addClass("pe-4");
+                    }
                 });
             }
         });

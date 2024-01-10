@@ -91,6 +91,12 @@
     {
         @RenderSection("ExcludeBodyContent")
     }
+    else if (IsSectionDefined("FluidBodyContent"))
+    {
+        <div class="container-fluid body-content">
+            @RenderSection("FluidBodyContent")
+        </div>
+    }
     else
     {
         <div class="container body-content">

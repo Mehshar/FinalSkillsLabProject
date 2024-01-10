@@ -397,6 +397,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Content Include="Scripts\CheckUpdateTrainingScript.js" />
     <Content Include="Scripts\ShowDeleteModalScript.js" />
   </ItemGroup>
   <ItemGroup>

@@ -10,6 +10,10 @@
     var btnReject = $(".btnReject");
     var btnApprove = $(".btnApprove");
     var btnDeleteTraining = $(".btnDeleteTraining");
+    var btnExport = $(".btnExport");
+    var btnExportDiv = $(".btnExportDiv");
+    var btnEnrollDiv = $(".btnEnrollDiv");
+    var tablePadding = $(".tablePadding");
 
     $.ajax({
         type: "GET",
@@ -25,14 +29,17 @@
                 hangfireCard.removeClass("d-none");
             }
 
-            if (btnDeleteTraining.length && currentRole === "Admin") {
+            if ((btnDeleteTraining.length || btnExport.length || btnExportDiv.length) && currentRole === "Admin") {
                 btnDeleteTraining.removeClass("d-none");
+                btnExport.removeClass("d-none");
+                btnExportDiv.removeClass("d-none");
             }
 
-            if ((btnEnroll.length || userTrainingsNavLink.length || myenrollmentsBtn.length) && currentRole === "Employee") {
+            if ((btnEnroll.length || userTrainingsNavLink.length || myenrollmentsBtn.length || btnEnrollDiv.length) && currentRole === "Employee") {
                 btnEnroll.removeClass("d-none");
                 userTrainingsNavLink.removeClass("d-none");
                 myenrollmentsBtn.removeClass("d-none");
+                btnEnrollDiv.removeClass("d-none");
             }
 
             if (enrollmentsNavLink.length && (currentRole === "Manager" || currentRole === "Admin")) {
@@ -42,6 +49,10 @@
             if ((btnReject.length || btnApprove.length) && currentRole === "Employee") {
                 btnReject.addClass("d-none");
                 btnApprove.addClass("d-none");
+            }
+
+            if (tablePadding.length && (currentRole === "Admin" || currentRole === "Employee")) {
+                tablePadding.addClass("pe-4");
             }
         }
     });

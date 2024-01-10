@@ -161,7 +161,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
         public async Task<TrainingPrerequisiteViewModel> GetWithPrerequisitesAsync(int trainingId)
         {
             const string GetTrainingWithPrerequisitesQuery =
-                @"SELECT t.[TrainingId], t.[TrainingName], t.[Description], t.[Deadline], t.[Capacity], t.[PriorityDepartment] AS PriorityDepartment, d.[DepartmentName] AS PriorityDepartmentName, tp.[PrerequisiteId]
+                @"SELECT t.[TrainingId], t.[TrainingName], t.[Description], t.[Deadline], t.[Capacity], t.[PriorityDepartment] AS PriorityDepartment, t.[IsDeleted], d.[DepartmentName] AS PriorityDepartmentName, tp.[PrerequisiteId]
                 FROM [dbo].[Training] t
                 LEFT JOIN [dbo].[Training_Prerequisite] tp
                 ON t.[TrainingId] = tp.[TrainingId]
@@ -185,6 +185,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                         Capacity = reader.GetInt16(reader.GetOrdinal("Capacity")),
                         PriorityDepartment = reader.IsDBNull(reader.GetOrdinal("PriorityDepartment")) ? null : (int?)reader.GetInt16(reader.GetOrdinal("PriorityDepartment")),
                         PriorityDepartmentName = reader.IsDBNull(reader.GetOrdinal("PriorityDepartmentName")) ? null : reader.GetString(reader.GetOrdinal("PriorityDepartmentName")),
+                        IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted")),
                         PrerequisiteIds = new List<int>()
                     };
 

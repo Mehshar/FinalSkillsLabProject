@@ -13,95 +13,99 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
     <link rel="stylesheet" href="~/Content/LoadingElementStyle.css" />
     <script type="text/javascript" src="~/Scripts/CreateEnrollmentScript.js"></script>
+
+    <style>
+        input, textarea, select {
+            max-width: 100% !important;
+        }
+
+        .required-asterisk {
+            color: red;
+            margin-left: 4px;
+        }
+    </style>
 </head>
 <body>
-    @using (Html.BeginForm("Enroll", "Enrollment", FormMethod.Post, new { id = "enrollmentForm", enctype = "multipart/form-data" }))
-    {
-        @Html.AntiForgeryToken()
-        <div class="form-horizontal">
-            <h4>Enrollment</h4>
+    <div class="container">
+        <div class="row justify-content-center">
+            <h5 class="text-center mt-3 mb-2">Enrollment</h5>
             <hr />
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-            <div class="form-group py-3 visually-hidden">
-                <label for="userId" class="control-label col-md-2 pb-2">User Id</label>
-                <div class="col-md-10">
-                    @*<input type="number" name="userId" id="userId" class="form-control" value="@Session["CurrentUserId"]" readonly />*@
-                    <input type="number" name="userId" id="userId" class="form-control" value="@CurrentUserId" readonly />
-                </div>
-            </div>
-
-            <div class="form-group py-3 visually-hidden">
-                <label for="trainingId" class="control-label col-md-2 pb-2">Training Id</label>
-                <div class="col-md-10">
-                    <input type="number" name="trainingId" id="trainingId" class="form-control" value="@Model.TrainingId" readonly />
-                </div>
-            </div>
-
-            <div class="form-group py-3">
-                <label for="trainingName" class="control-label col-md-2 pb-2">Training Name</label>
-                <div class="col-md-10">
-                    <input type="text" name="trainingName" id="trainingName" class="form-control" value="@Model.TrainingName" readonly />
-                </div>
-            </div>
-
-            <div class="form-group py-3">
-                <div class="col-md-10">
-                    <label for="description" class="form-label pb-2">Description</label>
-                    <textarea class="form-control" id="description" rows="7" readonly>@Model.Description</textarea>
-                </div>
-            </div>
-
-            <div class="form-group py-3">
-                <label for="deadline" class="control-label col-md-2 pb-2">Deadline</label>
-                <div class="col-md-10">
-                    <input type="datetime" name="deadline" id="deadline" class="form-control" value="@Model.Deadline.ToShortDateString()" readonly />
-                </div>
-            </div>
-
-            @if (Model.PriorityDepartmentName != null)
-            {
-                <div class="form-group py-3">
-                    <label for="priorityDepartment" class="control-label col-md-2 pb-2">Priority Department</label>
-                    <div class="col-md-10">
-                        <input type="text" name="priorityDepartment" id="priorityDepartment" class="form-control" value="@Model.PriorityDepartmentName" readonly />
+            <div class="col-md-7">
+                @using (Html.BeginForm("Enroll", "Enrollment", FormMethod.Post, new { id = "enrollmentForm", enctype = "multipart/form-data" }))
+                {
+                    <div class="input-group mb-3 d-none">
+                        <label for="userId" class="input-group-text" id="userIdLabel">User Id</label>
+                        <input type="hidden" name="userId" id="userId" class="form-control" value="@CurrentUserId" aria-label="User Id" aria-describedby="userIdLabel" disabled readonly />
                     </div>
-                </div>
-            }
 
-            <div class="form-group py-3">
-                <label for="capacity" class="control-label col-md-2 pb-2">Capacity</label>
-                <div class="col-md-10">
-                    <input type="number" name="capacity" id="capacity" class="form-control" value="@Model.Capacity" readonly />
-                </div>
-            </div>
+                    <div class="input-group mb-3 d-none">
+                        <label for="trainingId" class="input-group-text" id="trainingIdLabel">Training Id</label>
+                        <input type="hidden" name="trainingId" id="trainingId" class="form-control" value="@Model.TrainingId" aria-label="Training Id" aria-describedby="trainingIdLabel" disabled readonly />
+                    </div>
 
-            @if (ViewBag.Prerequisites.Count > 0)
-            {
-                <div class="form-group pt-3">
-                    <label for="prerequisites" class="control-label col-md-2 pb-2">Prerequisites</label>
-                </div>
-                <ul class="list-group mb-4">
-                    @foreach (var prerequisite in ViewBag.Prerequisites)
+                    <div class="input-group mt-2 mb-3">
+                        <label for="trainingName" class="input-group-text" id="trainingNameLabel">Training Name</label>
+                        <input type="text" name="trainingName" id="trainingName" class="form-control" value="@Model.TrainingName" aria-label="Training Name" aria-describedby="trainingNameLabel" readonly />
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <label for="description" class="input-group-text">Description</label>
+                        <textarea id="description" class="form-control" aria-label="Description Textarea" rows="5" readonly>@Model.Description</textarea>
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <label for="deadline" class="input-group-text">Deadline</label>
+                        <input type="datetime" name="deadline" id="deadline" class="form-control" value="@Model.Deadline.ToShortDateString()" aria-label="Deadline" aria-describedby="deadlineLabel" readonly />
+                        <span id="deadlineLabel" class="input-group-text">
+                            <i class="fa-regular fa-calendar"></i>
+                        </span>
+                    </div>
+
+                    if (Model.PriorityDepartmentName != null)
                     {
-                        <li class="list-group-item" id="@prerequisite.PrerequisiteId">
-                            <label for="@prerequisite.PrerequisiteId" class="form-label">@prerequisite.Description</label>
-                            <input class="form-control" type="file" id="@prerequisite.PrerequisiteId" name="files[@count]" required>
-                            <input type="hidden" name="prerequisiteIds[@count]" value="@prerequisite.PrerequisiteId" />
-                        </li>
-                        count++;
+                        <div class="input-group mb-3">
+                            <label for="priorityDepartment" class="input-group-text" id="priorityDepartmentLabel">Priority Department</label>
+                            <input type="text" name="priorityDepartment" id="priorityDepartment" class="form-control" value="@Model.PriorityDepartmentName" aria-label="Priority Department" aria-describedby="priorityDepartmentLabel" readonly />
+                        </div>
                     }
-                </ul>
-            }
 
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-10 pt-3 pb-4">
-                    <input type="submit" value="Enroll" id="btnSubmit" class="btn btn-primary" />
-                    @Html.ActionLink("Back to List", "Index", "Training", null, new { @class = "btn btn-primary ms-3 border-0" })
-                </div>
+                    <div class="input-group mb-3">
+                        <label for="capacity" class="input-group-text" id="capacityLabel">Capacity</label>
+                        <input type="number" name="capacity" id="capacity" class="form-control" value="@Model.Capacity" aria-label="Capacity" aria-describedby="capacityLabel" readonly />
+                        <span id="capacityLabel" class="input-group-text">
+                            <i class="fa-solid fa-chair"></i>
+                        </span>
+                    </div>
+
+                    if (ViewBag.Prerequisites.Count > 0)
+                    {
+                        <div class="form-group required">
+                            <label for="prerequisites" class="control-label pb-2 fw-bold" data-bs-toggle="tooltip" title="Required">
+                                Prerequisites
+                                <span class="required-asterisk">*</span>
+                            </label>
+                        </div>
+                        <ul class="list-group mb-4">
+                            @foreach (var prerequisite in ViewBag.Prerequisites)
+                            {
+                                <li class="list-group-item" id="@prerequisite.PrerequisiteId">
+                                    <label for="@prerequisite.PrerequisiteId" class="form-label mb-2">@prerequisite.Description</label>
+                                    <input class="form-control mb-1" type="file" id="@prerequisite.PrerequisiteId" name="files[@count]" required>
+                                    <input type="hidden" name="prerequisiteIds[@count]" value="@prerequisite.PrerequisiteId" />
+                                </li>
+                                count++;
+                            }
+                        </ul>
+                    }
+                    <hr />
+                    <div class="form-group text-center my-4">
+                        <input type="submit" value="Enroll" id="btnSubmit" class="btn btn-primary" />
+                        @Html.ActionLink("Back to List", "Index", "Training", null, new { @class = "btn btn-primary ms-3 border-0" })
+                    </div>
+                }
             </div>
         </div>
-
-    }
+    </div>
 
     <div class="sk-chase d-none" id="loadingSpinner">
         <div class="sk-chase-dot"></div>

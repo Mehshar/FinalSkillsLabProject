@@ -1,4 +1,5 @@
 ﻿using FinalSkillsLabProject.Authorization;
+using FinalSkillsLabProject.BL.BusinessLogicLayer;
 using FinalSkillsLabProject.BL.Interfaces;
 using FinalSkillsLabProject.Common.Models;
 using System;
@@ -51,7 +52,7 @@ namespace FinalSkillsLabProject.Controllers
         [CustomAuthorization("Admin")]
         public async Task<ActionResult> Create()
         {
-            ViewBag.Departments =  (await _departmentBL.GetAllAsync()).ToList();
+            ViewBag.Departments = (await _departmentBL.GetAllAsync()).ToList();
             ViewBag.Prerequisites = (await _prerequisiteBL.GetAllAsync()).ToList();
             return View();
         }
@@ -60,7 +61,7 @@ namespace FinalSkillsLabProject.Controllers
         [CustomAuthorization("Admin")]
         public async Task<JsonResult> Create(TrainingModel training, List<int> prerequisitesList)
         {
-            string result =await _trainingBL.AddAsync(training, prerequisitesList);
+            string result = await _trainingBL.AddAsync(training, prerequisitesList);
             return Json(new { result = result, url = Url.Action("Index", "Training") });
         }
 
@@ -72,13 +73,26 @@ namespace FinalSkillsLabProject.Controllers
             return View(training);
         }
 
+        [HttpPost]
+        public async Task<ActionResult> ValidateEdit(int id)
+        {
+            TrainingPrerequisiteViewModel training = await _trainingBL.GetWithPrerequisitesAsync(id);
+            if (training == null) { return View("Error404"); }
+            string message = "";
+            bool isValid = true;
+            if (training.IsDeleted) { message = "Training already deleted"; isValid = false; }
+            if (training.Deadline < DateTime.Now) { message = "Training deadline has passed"; isValid = false; }
+            return Json(new { result = isValid, message = message, url = Url.Action("Edit", "Training", new { id = training.TrainingId }) });
+        }
+
         [HttpGet]
         [CustomAuthorization("Admin")]
         public async Task<ActionResult> Edit(int id)
         {
             TrainingPrerequisiteViewModel training = await _trainingBL.GetWithPrerequisitesAsync(id);
             if (training == null) { return View("Error404"); }
-            ViewBag.Departments = (await _departmentBL.GetAllAsync()).Where(x => x.DepartmentId != training.PriorityDepartment).ToList();
+            if (training.IsDeleted || training.Deadline < DateTime.Now) { return View("Error404"); }
+                ViewBag.Departments = (await _departmentBL.GetAllAsync()).Where(x => x.DepartmentId != training.PriorityDepartment).ToList();
             ViewBag.AllPrerequisites = (await _prerequisiteBL.GetAllAsync()).ToList();
             return View(training);
         }
