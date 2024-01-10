@@ -97,6 +97,11 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
             return await this._trainingDAL.GetWithPrerequisitesAsync(trainingId);
         }
 
+        public async Task<bool> IsEnrollmentAsync(int trainingId)
+        {
+            return await this._trainingDAL.IsEnrollmentAsync(trainingId);
+        }
+
         private void CheckInsertUpdateDuplicate(TrainingModel training)
         {
             if (training != null)

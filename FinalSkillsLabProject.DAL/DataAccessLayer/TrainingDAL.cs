@@ -6,6 +6,7 @@ using FinalSkillsLabProject.DAL.Interfaces;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 using System.Drawing.Printing;
+using System.Data;
 
 namespace FinalSkillsLabProject.DAL.DataAccessLayer
 {
@@ -403,6 +404,21 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                 }
             }
             return trainingsList;
+        }
+
+        public async Task<bool> IsEnrollmentAsync(int trainingId)
+        {
+            const string GetTrainingEnrollmentsQuery =
+                @"SELECT TOP 1 [EnrollmentId]
+                FROM [dbo].[Enrollment] 
+                WHERE [TrainingId] = @TrainingId";
+
+            List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter("@TrainingId", SqlDbType.SmallInt) { Value = trainingId } };
+
+            using (SqlDataReader reader = await DbCommand.GetDataWithConditionsAsync(GetTrainingEnrollmentsQuery, parameters))
+            {
+                return reader.HasRows;
+            }
         }
     }
 }

@@ -17,5 +17,6 @@ namespace FinalSkillsLabProject.DAL.Interfaces
         Task<int> GetNotEnrolledTrainingsCountAsync(int userId);
         Task<IEnumerable<TrainingModel>> GetNotEnrolledTrainingsPagedAsync(int userId, int page, int pageSize);
         Task<TrainingPrerequisiteViewModel> GetWithPrerequisitesAsync(int trainingId);
+        Task<bool> IsEnrollmentAsync(int trainingId);
     }
 }

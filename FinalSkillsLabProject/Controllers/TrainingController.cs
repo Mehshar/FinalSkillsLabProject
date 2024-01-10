@@ -92,7 +92,7 @@ namespace FinalSkillsLabProject.Controllers
             TrainingPrerequisiteViewModel training = await _trainingBL.GetWithPrerequisitesAsync(id);
             if (training == null) { return View("Error404"); }
             if (training.IsDeleted || training.Deadline < DateTime.Now) { return View("Error"); }
-                ViewBag.Departments = (await _departmentBL.GetAllAsync()).Where(x => x.DepartmentId != training.PriorityDepartment).ToList();
+            ViewBag.Departments = (await _departmentBL.GetAllAsync()).Where(x => x.DepartmentId != training.PriorityDepartment).ToList();
             ViewBag.AllPrerequisites = (await _prerequisiteBL.GetAllAsync()).ToList();
             return View(training);
         }
@@ -103,6 +103,13 @@ namespace FinalSkillsLabProject.Controllers
         {
             string result = await _trainingBL.UpdateAsync(training);
             return Json(new { result = result, url = Url.Action("Index", "Training") });
+        }
+
+        [CustomAuthorization("Admin")]
+        public async Task<JsonResult> ValidateDelete(int trainingId)
+        {
+            bool isEnrollment = await _trainingBL.IsEnrollmentAsync(trainingId);
+            return Json(new { isEnrollment = isEnrollment });
         }
 
         [HttpPost]

@@ -398,7 +398,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Content Include="Scripts\CheckUpdateTrainingScript.js" />
-    <Content Include="Scripts\ShowDeleteModalScript.js" />
+    <Content Include="Scripts\DeleteTrainingScript.js" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\AboutStyle.css" />
