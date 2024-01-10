@@ -190,11 +190,14 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                         PrerequisiteIds = new List<int>()
                     };
 
-                    do
+                    if (!(await IsEnrollmentAsync(trainingId)))
                     {
-                        int? prerequisiteId = reader.IsDBNull(reader.GetOrdinal("PrerequisiteId")) ? null : (int?)reader.GetInt16(reader.GetOrdinal("PrerequisiteId"));
-                        if (prerequisiteId.HasValue) { training.PrerequisiteIds.Add(prerequisiteId.Value); }
-                    } while (reader.Read());
+                        do
+                        {
+                            int? prerequisiteId = reader.IsDBNull(reader.GetOrdinal("PrerequisiteId")) ? null : (int?)reader.GetInt16(reader.GetOrdinal("PrerequisiteId"));
+                            if (prerequisiteId.HasValue) { training.PrerequisiteIds.Add(prerequisiteId.Value); }
+                        } while (reader.Read());
+                    }
                 }
             }
             return training;

@@ -83,13 +83,23 @@
                         <div class="form-group mt-4 mb-3">
                             <label for="prerequisite" class="control-label col-md-2 fw-bold">Prerequisites</label>
                         </div>
-                        @foreach (var prerequisite in ViewBag.AllPrerequisites)
+                        @if (Model.PrerequisiteIds.Any())
                         {
-                            var isChecked = Model.PrerequisiteIds != null && Model.PrerequisiteIds.Contains(prerequisite.PrerequisiteId);
+                            foreach (var prerequisite in ViewBag.AllPrerequisites)
+                            {
+                                var isChecked = Model.PrerequisiteIds != null && Model.PrerequisiteIds.Contains(prerequisite.PrerequisiteId);
 
-                            <div class="form-check">
-                                <input class="form-check-input prerequisite-checkbox" type="checkbox" value="@prerequisite.PrerequisiteId" id="@prerequisite.PrerequisiteId" name="@prerequisite.PrerequisiteId" @(isChecked ? "checked" : "")>
-                                <label class="form-check-label" for="flexCheckChecked">@prerequisite.Description</label>
+                                <div class="form-check">
+                                    <input class="form-check-input prerequisite-checkbox" type="checkbox" value="@prerequisite.PrerequisiteId" id="@prerequisite.PrerequisiteId" name="@prerequisite.PrerequisiteId" @(isChecked ? "checked" : "")>
+                                    <label class="form-check-label" for="flexCheckChecked">@prerequisite.Description</label>
+                                </div>
+                            }
+                        }
+
+                        else
+                        {
+                            <div class="alert alert-danger" role="alert">
+                                Prerequisites cannot be edited due to existing enrollments!
                             </div>
                         }
                     </div>
