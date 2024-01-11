@@ -37,9 +37,6 @@ namespace FinalSkillsLabProject.Controllers
             {
                 UserViewModel user = await _accountBL.GetByUsernameAsync(loginModel.Username);
                 SetSessionVariables(user);
-
-                // for authentication to work using FormsAuthentication class
-                // Not creating persistent cookie --> setting it to false
                 FormsAuthentication.SetAuthCookie(loginModel.Username, false);
             }
             return Json(new { result = isUserValid, url = Url.Action("Index", "Home") });
@@ -68,11 +65,7 @@ namespace FinalSkillsLabProject.Controllers
         public JsonResult GetCurrentRole()
         {
             string currentRole = null;
-            if (Session["CurrentUser"] != null)
-            {
-                currentRole = ((UserViewModel)Session["CurrentUser"]).Role.RoleName.ToString();
-            }
-            //string currentRole = Session["CurrentRole"]?.ToString() ?? "";
+            if (Session["CurrentUser"] != null) { currentRole = ((UserViewModel)Session["CurrentUser"]).Role.RoleName.ToString(); }
             return Json(new { currentRole }, JsonRequestBehavior.AllowGet);
         }
 
@@ -91,10 +84,6 @@ namespace FinalSkillsLabProject.Controllers
         private void RemoveSessionVariables()
         {
             Session.Clear();
-            //Session.Remove("CurrentUser");
-            //Session.Remove("CurrentUsername");
-            //Session.Remove("CurrentUserId");
-            //Session.Remove("CurrentRole");
         }
     }
 }

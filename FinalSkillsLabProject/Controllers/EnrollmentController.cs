@@ -40,7 +40,6 @@ namespace FinalSkillsLabProject.Controllers
         [HttpGet]
         public async Task<ActionResult> Enroll(int? id)
         {
-            //if (id == null) { return View("Error404"); }
             TrainingModel training = await _trainingBL.GetAsync((int)id);
             if (training == null) { return View("Error404"); }
             if (training.IsDeleted || training.Deadline < DateTime.Now) { return View("Error"); }
@@ -70,7 +69,7 @@ namespace FinalSkillsLabProject.Controllers
 
                         string fileName = Path.GetFileName(file.FileName);
                         string folder = "Prerequisite_" + prerequisiteIds[i];
-                        string link = await UploadAsync(file.InputStream, fileName, folder);
+                        string link = await UploadAsync(file.InputStream, fileName, folder, ((UserViewModel)Session["CurrentUser"]).Username);
 
                         prerequisiteMaterial = new PrerequisiteMaterialModel()
                         {
@@ -88,7 +87,6 @@ namespace FinalSkillsLabProject.Controllers
 
                 EnrollmentModel enrollment = new EnrollmentModel()
                 {
-                    //UserId = (int)Session["CurrentUserId"],
                     UserId = ((UserViewModel)Session["CurrentUser"]).UserId,
                     TrainingId = trainingId
                 };
@@ -103,7 +101,7 @@ namespace FinalSkillsLabProject.Controllers
             }
         }
 
-        public async Task<string> UploadAsync(Stream stream, string fileName, string folder)
+        public async Task<string> UploadAsync(Stream stream, string fileName, string folder, string username)
         {
             try
             {
@@ -120,7 +118,7 @@ namespace FinalSkillsLabProject.Controllers
                         ThrowOnCancel = true
                     })
                     //.Child(Session["CurrentUsername"].ToString())
-                    .Child(((UserViewModel)Session["CurrentUser"]).Username)
+                    .Child(username)
                     .Child(folder)
                     .Child(fileName)
                     .PutAsync(stream, cancellation.Token);

@@ -35,12 +35,12 @@
                 {
                     <div class="input-group mb-3 d-none">
                         <label for="userId" class="input-group-text" id="userIdLabel">User Id</label>
-                        <input type="hidden" name="userId" id="userId" class="form-control" value="@CurrentUserId" aria-label="User Id" aria-describedby="userIdLabel" disabled readonly />
+                        <input type="hidden" name="userId" id="userId" class="form-control" value="@CurrentUserId" aria-label="User Id" aria-describedby="userIdLabel" readonly />
                     </div>
 
                     <div class="input-group mb-3 d-none">
                         <label for="trainingId" class="input-group-text" id="trainingIdLabel">Training Id</label>
-                        <input type="hidden" name="trainingId" id="trainingId" class="form-control" value="@Model.TrainingId" aria-label="Training Id" aria-describedby="trainingIdLabel" disabled readonly />
+                        <input type="hidden" name="trainingId" id="trainingId" class="form-control" value="@Model.TrainingId" aria-label="Training Id" aria-describedby="trainingIdLabel" readonly />
                     </div>
 
                     <div class="input-group mt-2 mb-3">
@@ -70,7 +70,7 @@
                     }
 
                     <div class="input-group mb-3">
-                        <label for="capacity" class="input-group-text" id="capacityLabel">Capacity</label>
+                        <label for="capacity" class="input-group-text">Capacity</label>
                         <input type="number" name="capacity" id="capacity" class="form-control" value="@Model.Capacity" aria-label="Capacity" aria-describedby="capacityLabel" readonly />
                         <span id="capacityLabel" class="input-group-text">
                             <i class="fa-solid fa-chair"></i>

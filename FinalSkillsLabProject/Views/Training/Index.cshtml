@@ -390,7 +390,7 @@
                                 if (currentRole == "Admin" && new Date(trainingDeadline) < currentDate)
                                 {
                                     row += `<div class="col">
-                                    <a href="${exportBaseUrl.replace("__placeholder__", trainingId)}" class = "btn btnCustomSquare btnExport w-100">Export</a>
+                                    <a class = "btn btnCustomSquare btnExport w-100" data-name="${training.TrainingName}" data-id="${training.TrainingId}">Export</a>
                                     </div>`;
                                 }
 
