@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using FinalSkillsLabProject.Common.Enums;
 using FinalSkillsLabProject.Common.Models;
 
 namespace FinalSkillsLabProject.DAL.Interfaces
@@ -18,5 +19,6 @@ namespace FinalSkillsLabProject.DAL.Interfaces
         Task<IEnumerable<TrainingModel>> GetNotEnrolledTrainingsPagedAsync(int userId, int page, int pageSize);
         Task<TrainingPrerequisiteViewModel> GetWithPrerequisitesAsync(int trainingId);
         Task<bool> IsEnrollmentAsync(int trainingId);
+        Task<IEnumerable<UserViewModel>> GetByStatus(int trainingId, EnrollmentStatusEnum status);
     }
 }

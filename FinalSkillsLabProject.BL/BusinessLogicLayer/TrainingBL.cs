@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using FinalSkillsLabProject.Common.Models;
 using System.Threading.Tasks;
+using FinalSkillsLabProject.Common.Enums;
 
 namespace FinalSkillsLabProject.BL.BusinessLogicLayer
 {
@@ -100,6 +101,11 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
         public async Task<bool> IsEnrollmentAsync(int trainingId)
         {
             return await this._trainingDAL.IsEnrollmentAsync(trainingId);
+        }
+
+        public async Task<IEnumerable<UserViewModel>> GetByStatus(int trainingId, EnrollmentStatusEnum status)
+        {
+            return await this._trainingDAL.GetByStatus(trainingId, status);
         }
 
         private void CheckInsertUpdateDuplicate(TrainingModel training)

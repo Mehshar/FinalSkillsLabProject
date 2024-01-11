@@ -7,6 +7,7 @@ using System.Data.SqlClient;
 using System.Threading.Tasks;
 using System.Drawing.Printing;
 using System.Data;
+using FinalSkillsLabProject.Common.Enums;
 
 namespace FinalSkillsLabProject.DAL.DataAccessLayer
 {
@@ -414,7 +415,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             const string GetTrainingEnrollmentsQuery =
                 @"SELECT TOP 1 [EnrollmentId]
                 FROM [dbo].[Enrollment] 
-                WHERE [TrainingId] = @TrainingId";
+                WHERE [TrainingId] = @TrainingId;";
 
             List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter("@TrainingId", SqlDbType.SmallInt) { Value = trainingId } };
 
@@ -422,6 +423,45 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             {
                 return reader.HasRows;
             }
+        }
+
+        public async Task<IEnumerable<UserViewModel>> GetByStatus(int trainingId, EnrollmentStatusEnum status)
+        {
+            UserViewModel user;
+            List<UserViewModel> selectedUsersList = new List<UserViewModel>();
+
+            const string GetEmployeesByStatusTrainingQuery =
+                @"SELECT euser.[FirstName], euser.[LastName], euser.[Email], euser.[MobileNum], meuser.[FirstName] AS ManagerFirstName, meuser.[LastName] AS ManagerLastName
+                FROM Enrollment e
+                INNER JOIN [dbo].[EndUser] euser
+                ON e.[UserId] = euser.[UserId]
+                INNER JOIN [dbo].[EndUser] meuser
+                ON euser.[ManagerId] = meuser.[UserId]
+                WHERE e.[TrainingId] = @TrainingId AND e.[EnrollmentStatus] = @EnrollmentStatus;";
+
+            List<SqlParameter> parameters = new List<SqlParameter>() 
+            {
+                new SqlParameter("@TrainingId", trainingId),
+                new SqlParameter("@EnrollmentStatus", status.ToString())
+            };
+
+            using (SqlDataReader reader = await DbCommand.GetDataWithConditionsAsync(GetEmployeesByStatusTrainingQuery, parameters))
+            {
+                while (reader.Read())
+                {
+                    user = new UserViewModel()
+                    {
+                        FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                        LastName = reader.GetString(reader.GetOrdinal("LastName")),
+                        Email = reader.GetString(reader.GetOrdinal("Email")),
+                        MobileNum = reader.GetString(reader.GetOrdinal("MobileNum")),
+                        ManagerFirstName = reader.GetString(reader.GetOrdinal("ManagerFirstName")),
+                        ManagerLastName = reader.GetString(reader.GetOrdinal("ManagerLastName"))
+                    };
+                    selectedUsersList.Add(user);
+                }
+            }
+            return selectedUsersList;
         }
     }
 }

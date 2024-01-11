@@ -1,6 +1,7 @@
 ﻿using FinalSkillsLabProject.Authorization;
 using FinalSkillsLabProject.BL.BusinessLogicLayer;
 using FinalSkillsLabProject.BL.Interfaces;
+using FinalSkillsLabProject.Common.Enums;
 using FinalSkillsLabProject.Common.Models;
 using System;
 using System.Collections.Generic;
@@ -16,12 +17,14 @@ namespace FinalSkillsLabProject.Controllers
         private readonly ITrainingBL _trainingBL;
         private readonly IDepartmentBL _departmentBL;
         private readonly IPrerequisiteBL _prerequisiteBL;
+        private readonly IExportBL _exportBL;
 
-        public TrainingController(ITrainingBL trainingBL, IDepartmentBL departmentBL, IPrerequisiteBL prerequisiteBL)
+        public TrainingController(ITrainingBL trainingBL, IDepartmentBL departmentBL, IPrerequisiteBL prerequisiteBL, IExportBL exportBL)
         {
             _trainingBL = trainingBL;
             _departmentBL = departmentBL;
             _prerequisiteBL = prerequisiteBL;
+            _exportBL = exportBL;
         }
 
         //public async Task<ActionResult> Index()
@@ -118,6 +121,14 @@ namespace FinalSkillsLabProject.Controllers
         {
             bool result = await _trainingBL.DeleteAsync(id);
             return Json(new { result = result });
+        }
+
+        [CustomAuthorization("Admin")]
+        public async Task<JsonResult> ExportSelected(int trainingId, string trainingName)
+        {
+            List<UserViewModel> selectedList = (await _trainingBL.GetByStatus(trainingId, EnrollmentStatusEnum.Selected)).ToList();
+            bool isSuccess = _exportBL.ExportToExcel(selectedList, trainingName);
+            return Json(new { result = isSuccess });
         }
     }
 }

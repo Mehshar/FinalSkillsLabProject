@@ -22,6 +22,7 @@
         <script type="text/javascript" src="~/Scripts/ClickableRowScript.js"></script>
         <script type="text/javascript" src="~/Scripts/DeleteTrainingScript.js"></script>
         <script type="text/javascript" src="~/Scripts/CheckUpdateTrainingScript.js"></script>
+        <script type="text/javascript" src="~/Scripts/ExportSelectedScript.js"></script>
         <link rel="stylesheet" href="~/Content/ClickableRowStyle.css" />
 
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
@@ -152,7 +153,8 @@
                                         <div class="col">
                                             @if (currentRole.Equals("Admin") && training.Deadline < DateTime.Now)
                                             {
-                                                @Html.ActionLink("Export", "Index", "Home", new { id = training.TrainingId }, new { @class = "btn btnCustomSquare d-none btnExport w-100" })
+                                                @*@Html.ActionLink("Export", "Index", "Home", new { id = training.TrainingId }, new { @class = "btn btnCustomSquare btnExport w-100" })*@
+                                                <a class="btn btnCustomSquare btnExport w-100" data-name="@training.TrainingName" data-id="@training.TrainingId">Export</a>
                                             }
                                         </div>
                                     </div>
