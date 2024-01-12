@@ -19,8 +19,8 @@ namespace FinalSkillsLabProject.Common.Models
         public string LastName { get; set; }
 
         [Required]
-        [DataType(DataType.EmailAddress)]
-        [RegularExpression(@"^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$", ErrorMessage = "Invalid Email.")]
+        //[DataType(DataType.EmailAddress)]
+        //[RegularExpression(@"^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$", ErrorMessage = "Invalid Email.")]
         public string Email { get; set; }
 
         [Required]

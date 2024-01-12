@@ -5,6 +5,15 @@ using FinalSkillsLabProject.Common.Models;
 using System.Threading.Tasks;
 using FinalSkillsLabProject.DAL.DataAccessLayer;
 using System.Linq;
+using Firebase.Auth;
+using Firebase.Storage;
+using System.IO;
+using System.Threading;
+using System.Configuration;
+using Azure.Core;
+using System.Security.Policy;
+using System.Web;
+using System;
 
 namespace FinalSkillsLabProject.BL.BusinessLogicLayer
 {
@@ -13,12 +22,19 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
         private readonly IEnrollmentDAL _enrollmentDAL;
         private readonly ITrainingDAL _trainingDAL;
         private readonly IEmailNotificationBL _emailNotificationBL;
+        private readonly ITrainingBL _trainingBL;
 
-        public EnrollmentBL(IEnrollmentDAL enrollmentDAL, ITrainingDAL trainingDAL, IEmailNotificationBL emailNotificationBL)
+        private static string _apiKey = ConfigurationManager.AppSettings["ApiKey"];
+        private static string _bucket = ConfigurationManager.AppSettings["Bucket"];
+        private static string _authEmail = ConfigurationManager.AppSettings["AuthEmail"];
+        private static string _authPassword = ConfigurationManager.AppSettings["AuthPassword"];
+
+        public EnrollmentBL(IEnrollmentDAL enrollmentDAL, ITrainingDAL trainingDAL, IEmailNotificationBL emailNotificationBL, ITrainingBL trainingBL)
         {
             this._enrollmentDAL = enrollmentDAL;
             _trainingDAL = trainingDAL;
             _emailNotificationBL = emailNotificationBL;
+            _trainingBL = trainingBL;
         }
 
         public async Task<bool> AddAsync(EnrollmentModel enrollment, List<PrerequisiteMaterialModel> prerequisiteMaterialsList)
@@ -79,6 +95,81 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
         public async Task<IEnumerable<EnrollmentViewModel>> GetAllByUser(int userId)
         {
             return await this._enrollmentDAL.GetAllByUser(userId);
+        }
+
+        public async Task<EnrollmentResult> Enroll(int trainingId, List<int> prerequisiteIds, HttpFileCollectionBase files, UserViewModel user)
+        {
+            try
+            {
+                PrerequisiteMaterialModel prerequisiteMaterial;
+                List<PrerequisiteMaterialModel> prerequisiteMaterialsList = new List<PrerequisiteMaterialModel>();
+
+                for (int i = 0; i < files.Count; i++)
+                {
+                    HttpPostedFileBase file = files[i];
+
+                    if (file != null && file.ContentLength > 0)
+                    {
+                        var allowedTypes = new[] { "application/pdf", "image/jpeg", "image/png" };
+                        if (!allowedTypes.Contains(file.ContentType))
+                        {
+                            return new EnrollmentResult { IsSuccess = false, ErrorMessage = "Please select a JPEG, PNG or PDF file" };
+                        }
+
+                        string fileName = Path.GetFileName(file.FileName);
+                        string folder = "Prerequisite_" + prerequisiteIds[i];
+                        string link = await UploadAsync(file.InputStream, fileName, folder, user.Username);
+
+                        prerequisiteMaterial = new PrerequisiteMaterialModel()
+                        {
+                            PrerequisiteId = prerequisiteIds[i],
+                            PrerequisiteMaterialURL = link
+                        };
+                        prerequisiteMaterialsList.Add(prerequisiteMaterial);
+                    }
+
+                    else
+                    {
+                        return new EnrollmentResult { IsSuccess = false, ErrorMessage = "Please select a file" };
+                    }
+                }
+
+                EnrollmentModel enrollment = new EnrollmentModel()
+                {
+                    UserId = user.UserId,
+                    TrainingId = trainingId
+                };
+
+                bool isSuccess = await AddAsync(enrollment, prerequisiteMaterialsList);
+                if (isSuccess) { await _emailNotificationBL.SendEnrollmentEmail(user, await _trainingBL.GetAsync(trainingId)); }
+                return new EnrollmentResult { IsSuccess = isSuccess };
+            }
+            catch (Exception)
+            {
+                return new EnrollmentResult { IsSuccess = false };
+            }
+        }
+
+        private async Task<string> UploadAsync(Stream stream, string fileName, string folder, string username)
+        {
+            var auth = new FirebaseAuthProvider(new FirebaseConfig(_apiKey));
+            var a = await auth.SignInWithEmailAndPasswordAsync(_authEmail, _authPassword);
+
+            var cancellation = new CancellationTokenSource();
+
+            var task = new FirebaseStorage(
+                _bucket,
+                new FirebaseStorageOptions
+                {
+                    AuthTokenAsyncFactory = () => Task.FromResult(a.FirebaseToken),
+                    ThrowOnCancel = true
+                })
+                .Child(username)
+                .Child(folder)
+                .Child(fileName)
+                .PutAsync(stream, cancellation.Token);
+            string link = await task;
+            return link;
         }
 
         public async Task EnrollmentAutomaticProcessing()

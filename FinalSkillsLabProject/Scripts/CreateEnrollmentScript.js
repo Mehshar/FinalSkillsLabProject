@@ -54,7 +54,13 @@
                 }
 
                 else {
-                    toastr.error("Enrollment failed!");
+                    if (response.message == null) {
+                        toastr.error("Enrollment failed!");
+                    }
+
+                    else {
+                        toastr.error(response.message);
+                    }
                     return false;
                 }
             },

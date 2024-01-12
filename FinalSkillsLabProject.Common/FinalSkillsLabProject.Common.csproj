@@ -307,6 +307,7 @@
     <Compile Include="Models\AccountModel.cs" />
     <Compile Include="Models\DepartmentModel.cs" />
     <Compile Include="Models\EnrollmentModel.cs" />
+    <Compile Include="Models\EnrollmentResult.cs" />
     <Compile Include="Models\EnrollmentSelectionViewModel.cs" />
     <Compile Include="Models\EnrollmentViewModel.cs" />
     <Compile Include="Models\LoginModel.cs" />

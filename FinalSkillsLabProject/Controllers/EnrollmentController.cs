@@ -19,10 +19,10 @@ namespace FinalSkillsLabProject.Controllers
 {
     public class EnrollmentController : Controller
     {
-        private static string _apiKey = ConfigurationManager.AppSettings["ApiKey"];
-        private static string _bucket = ConfigurationManager.AppSettings["Bucket"];
-        private static string _authEmail = ConfigurationManager.AppSettings["AuthEmail"];
-        private static string _authPassword = ConfigurationManager.AppSettings["AuthPassword"];
+        //private static string _apiKey = ConfigurationManager.AppSettings["ApiKey"];
+        //private static string _bucket = ConfigurationManager.AppSettings["Bucket"];
+        //private static string _authEmail = ConfigurationManager.AppSettings["AuthEmail"];
+        //private static string _authPassword = ConfigurationManager.AppSettings["AuthPassword"];
 
         private readonly ITrainingBL _trainingBL;
         private readonly IPrerequisiteBL _prerequisiteBL;
@@ -50,85 +50,11 @@ namespace FinalSkillsLabProject.Controllers
         [HttpPost]
         public async Task<ActionResult> Enroll(int trainingId, List<int> prerequisiteIds)
         {
-            try
-            {
-                PrerequisiteMaterialModel prerequisiteMaterial;
-                List<PrerequisiteMaterialModel> prerequisiteMaterialsList = new List<PrerequisiteMaterialModel>();
+            UserViewModel user = (UserViewModel)Session["CurrentUser"];
+            EnrollmentResult enrollmentResult = await _enrollmentBL.Enroll(trainingId, prerequisiteIds, Request.Files, user);
 
-                for (int i = 0; i < Request.Files.Count; i++)
-                {
-                    HttpPostedFileBase file = Request.Files[i];
-
-                    if (file != null && file.ContentLength > 0)
-                    {
-                        var allowedTypes = new[] { "application/pdf", "image/jpeg", "image/png" };
-                        if (!allowedTypes.Contains(file.ContentType))
-                        {
-                            return Json(new { result = false, error = "Please select a JPEG, PNG or PDF file" });
-                        }
-
-                        string fileName = Path.GetFileName(file.FileName);
-                        string folder = "Prerequisite_" + prerequisiteIds[i];
-                        string link = await UploadAsync(file.InputStream, fileName, folder, ((UserViewModel)Session["CurrentUser"]).Username);
-
-                        prerequisiteMaterial = new PrerequisiteMaterialModel()
-                        {
-                            PrerequisiteId = prerequisiteIds[i],
-                            PrerequisiteMaterialURL = link
-                        };
-                        prerequisiteMaterialsList.Add(prerequisiteMaterial);
-                    }
-
-                    else
-                    {
-                        return Json(new { result = false, error = "Please select a file" });
-                    }
-                }
-
-                EnrollmentModel enrollment = new EnrollmentModel()
-                {
-                    UserId = ((UserViewModel)Session["CurrentUser"]).UserId,
-                    TrainingId = trainingId
-                };
-
-                bool isSuccess = await _enrollmentBL.AddAsync(enrollment, prerequisiteMaterialsList);
-                if (isSuccess) { await _emailNotificationBL.SendEnrollmentEmail((UserViewModel)Session["CurrentUser"], await _trainingBL.GetAsync(trainingId)); }
-                return Json(new { result = isSuccess, url = Url.Action("Index", "Training") });
-            }
-            catch (Exception)
-            {
-                return Json(new { result = false });
-            }
-        }
-
-        public async Task<string> UploadAsync(Stream stream, string fileName, string folder, string username)
-        {
-            try
-            {
-                var auth = new FirebaseAuthProvider(new FirebaseConfig(_apiKey));
-                var a = await auth.SignInWithEmailAndPasswordAsync(_authEmail, _authPassword);
-
-                var cancellation = new CancellationTokenSource();
-
-                var task = new FirebaseStorage(
-                    _bucket,
-                    new FirebaseStorageOptions
-                    {
-                        AuthTokenAsyncFactory = () => Task.FromResult(a.FirebaseToken),
-                        ThrowOnCancel = true
-                    })
-                    //.Child(Session["CurrentUsername"].ToString())
-                    .Child(username)
-                    .Child(folder)
-                    .Child(fileName)
-                    .PutAsync(stream, cancellation.Token);
-                string link = await task;
-                return link;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            return enrollmentResult.IsSuccess ? Json(new { result = true, url = Url.Action("Index", "Training") })
+                : Json(new { result = false, message = enrollmentResult.ErrorMessage });
         }
 
         [HttpGet]

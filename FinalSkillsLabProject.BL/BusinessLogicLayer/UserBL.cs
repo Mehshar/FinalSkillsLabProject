@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using FinalSkillsLabProject.Common.Models;
 using System.Threading.Tasks;
+using System.Net.Mail;
 
 namespace FinalSkillsLabProject.BL.BusinessLogicLayer
 {
@@ -25,6 +26,7 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
             try
             {
                 await CheckInsertDuplicate(model.NIC, model.Email, model.MobileNum, model.Username);
+                if (!IsValidEmail(model.Email)) { return "Invalid email!"; }
                 await this._userDAL.AddAsync(model);
                 return "Account created successfully!";
             }
@@ -126,6 +128,17 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
             {
                 throw new DuplicationException(message);
             }
+        }
+
+        private bool IsValidEmail(string email)
+        {
+            try
+            {
+                MailAddress mailAddress = new MailAddress(email);
+                return true;
+            }
+
+            catch { return false; }
         }
     }
 }

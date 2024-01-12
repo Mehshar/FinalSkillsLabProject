@@ -41,15 +41,25 @@
         return isValid;
     }
 
+    function isValidEmail(email) {
+        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+
     $("#btnSignup").click(function () {
         if (!validateFieldValues()) {
+            return false;
+        }
+        var email = $("#email").val().trim();
+
+        if (!isValidEmail(email)) {
+            toastr.error("Invalid email!");
             return false;
         }
 
         var nic = $("#nic").val().trim();
         var firstName = $("#firstName").val().trim();
         var lastName = $("#lastName").val().trim();
-        var email = $("#email").val().trim();
         var mobileNum = $("#mobileNum").val().trim();
         var departmentId = parseInt($("#departmentDropdown").val());
         var managerId = parseInt($("#managerDropdown").val());

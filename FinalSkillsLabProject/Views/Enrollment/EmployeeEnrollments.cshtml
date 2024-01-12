@@ -12,11 +12,11 @@
         <script type="text/javascript" src="~/Scripts/NewTabScript.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
         <link rel="stylesheet" href="~/Content/EmployeeEnrollmentStyle.css" />
-        @*<style>
-            #statusDropdownMenu, #trainingDropdownMenu, #hangfireBtn {
-                border: 1px solid gray;
+        <style>
+            .custom-fontsize{
+                font-size: 0.9rem !important;
             }
-        </style>*@
+        </style>
     </head>
 
     <body>
@@ -27,7 +27,7 @@
                         Hangfire Dashboard
                     </div>
                     <div class="card-body text-center">
-                        <a onclick="openInNewTab('/hangfire')" class="btn w-100" id="hangfireBtn" style="text-decoration:none;" data-toggle="tooltip" title="Hangfire Dashboard">
+                        <a onclick="openInNewTab('/hangfire')" class="btn w-100 custom-fontsize" id="hangfireBtn" style="text-decoration:none;" data-toggle="tooltip" title="Hangfire Dashboard">
                             View Processing
                         </a>
                     </div>
@@ -42,19 +42,18 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-6 col-sm-12">
-                                <h6 class="card-subtitle mb-2 text-muted">Status</h6>
-                                <select class="form-select" aria-label="statusDropdownMenu" id="statusDropdownMenu">
+                                <h6 class="card-subtitle mb-2 text-muted custom-fontsize">Status</h6>
+                                <select class="form-select custom-fontsize" aria-label="statusDropdownMenu" id="statusDropdownMenu">
                                     <option value="All" selected>All</option>
                                     @foreach (var status in Enum.GetValues(typeof(EnrollmentStatusEnum)))
                                     {
-                                        @*<option value="@((int)status)">@status.ToString()</option>*@
                                         <option value="@status.ToString()">@status.ToString()</option>
                                     }
                                 </select>
                             </div>
                             <div class="col-md-6 col-sm-12">
-                                <h6 class="card-subtitle mb-2 text-muted">Training</h6>
-                                <select class="form-select" aria-label="trainingDropdownMenu" id="trainingDropdownMenu">
+                                <h6 class="card-subtitle mb-2 text-muted custom-fontsize">Training</h6>
+                                <select class="form-select custom-fontsize" aria-label="trainingDropdownMenu" id="trainingDropdownMenu">
                                     <option value="All" selected>All</option>
                                     @foreach (var training in ViewBag.Trainings)
                                     {
