@@ -319,7 +319,6 @@
     <Compile Include="Models\TrainingModel.cs" />
     <Compile Include="Models\TrainingPrerequisiteModel.cs" />
     <Compile Include="Models\TrainingPrerequisiteViewModel.cs" />
-    <Compile Include="Models\TrainingViewModel.cs" />
     <Compile Include="Models\UserEnrollmentViewModel.cs" />
     <Compile Include="Models\UserModel.cs" />
     <Compile Include="Models\UserViewModel.cs" />
