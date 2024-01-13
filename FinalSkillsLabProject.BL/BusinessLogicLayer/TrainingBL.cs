@@ -7,6 +7,8 @@ using System.Linq;
 using FinalSkillsLabProject.Common.Models;
 using System.Threading.Tasks;
 using FinalSkillsLabProject.Common.Enums;
+using System.ComponentModel.DataAnnotations;
+using System.Windows.Forms;
 
 namespace FinalSkillsLabProject.BL.BusinessLogicLayer
 {
@@ -106,6 +108,20 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
         public async Task<IEnumerable<UserViewModel>> GetByStatus(int trainingId, EnrollmentStatusEnum status)
         {
             return await this._trainingDAL.GetByStatus(trainingId, status);
+        }
+
+        public TrainingValidationResult CheckTraining(TrainingPrerequisiteViewModel training)
+        {
+            if (training.IsDeleted) 
+            {
+                return new TrainingValidationResult { IsValid = false, Message = "Training already deleted" };
+            }
+
+            if (training.Deadline < DateTime.Now) 
+            {
+                return new TrainingValidationResult { IsValid = false, Message = "Training deadline has passed" };
+            }
+            return new TrainingValidationResult { IsValid = true, Message = "" };
         }
 
         private void CheckInsertUpdateDuplicate(TrainingModel training)

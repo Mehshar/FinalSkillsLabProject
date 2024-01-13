@@ -97,6 +97,21 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
             return await this._enrollmentDAL.GetAllByUser(userId);
         }
 
+        public async Task<IEnumerable<EnrollmentViewModel>> GetByRole(string currentRole, int currentUserId)
+        {
+            List<EnrollmentViewModel> employeeEnrollmentsList = null;
+            if (currentRole.Equals("Admin"))
+            {
+                employeeEnrollmentsList = (await GetAllAsync()).ToList();
+            }
+
+            else if (currentRole.Equals("Manager"))
+            {
+                employeeEnrollmentsList = (await GetAllByManagerAsync(currentUserId)).ToList();
+            }
+            return employeeEnrollmentsList;
+        }
+
         public async Task<EnrollmentResult> Enroll(int trainingId, List<int> prerequisiteIds, HttpFileCollectionBase files, UserViewModel user)
         {
             try

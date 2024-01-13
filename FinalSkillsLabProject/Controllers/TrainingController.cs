@@ -27,12 +27,6 @@ namespace FinalSkillsLabProject.Controllers
             _exportBL = exportBL;
         }
 
-        //public async Task<ActionResult> Index()
-        //{
-        //    List<TrainingModel> trainingsList = (await _trainingBL.GetNotEnrolledTrainingsAsync(((UserViewModel)Session["CurrentUser"]).UserId)).ToList();
-        //    return View(trainingsList);
-        //}
-
         public async Task<ActionResult> Index(int page = 1, int pageSize = 5)
         {
             int userId = ((UserViewModel)Session["CurrentUser"]).UserId;
@@ -47,7 +41,6 @@ namespace FinalSkillsLabProject.Controllers
             ViewBag.TotalTrainings = totalTrainings;
 
             if (Request.IsAjaxRequest()) { return Json(new { result = trainingsList }); }
-
             return View(trainingsList);
         }
 
@@ -81,11 +74,8 @@ namespace FinalSkillsLabProject.Controllers
         {
             TrainingPrerequisiteViewModel training = await _trainingBL.GetWithPrerequisitesAsync(id);
             if (training == null) { return View("Error404"); }
-            string message = "";
-            bool isValid = true;
-            if (training.IsDeleted) { message = "Training already deleted"; isValid = false; }
-            if (training.Deadline < DateTime.Now) { message = "Training deadline has passed"; isValid = false; }
-            return Json(new { result = isValid, message = message, url = Url.Action("Edit", "Training", new { id = training.TrainingId }) });
+            TrainingValidationResult result = _trainingBL.CheckTraining(training);
+            return Json(new { result = result.IsValid, message = result.Message, url = Url.Action("Edit", "Training", new { id = training.TrainingId }) });
         }
 
         [HttpGet]

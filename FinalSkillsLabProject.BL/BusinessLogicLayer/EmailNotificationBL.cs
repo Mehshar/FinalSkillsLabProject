@@ -193,27 +193,6 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
             return htmlBody;
         }
 
-        //private void SendEmail(MailMessage mailMessage)
-        //{
-        //    using (SmtpClient smtpClient = new SmtpClient(smtpServer)
-        //    {
-        //        Port = port,
-        //        EnableSsl = true,
-        //        UseDefaultCredentials = false,
-        //        Credentials = new NetworkCredential(sender, password)
-        //    })
-        //    {
-        //        try
-        //        {
-        //            Task.Run(() => smtpClient.SendMailAsync(mailMessage)).ConfigureAwait(false);
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            throw ex;
-        //        }
-        //    }
-        //}
-
         #pragma warning disable CS1998
         private async Task SendEmail(MailMessage mailMessage)
         #pragma warning restore CS1998

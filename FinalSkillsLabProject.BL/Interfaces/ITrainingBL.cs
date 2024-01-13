@@ -20,5 +20,6 @@ namespace FinalSkillsLabProject.BL.Interfaces
         Task<TrainingPrerequisiteViewModel> GetWithPrerequisitesAsync(int trainingId);
         Task<bool> IsEnrollmentAsync(int trainingId);
         Task<IEnumerable<UserViewModel>> GetByStatus(int trainingId, EnrollmentStatusEnum status);
+        TrainingValidationResult CheckTraining(TrainingPrerequisiteViewModel training);
     }
 }

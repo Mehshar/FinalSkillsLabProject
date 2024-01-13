@@ -19,11 +19,6 @@ namespace FinalSkillsLabProject.Controllers
 {
     public class EnrollmentController : Controller
     {
-        //private static string _apiKey = ConfigurationManager.AppSettings["ApiKey"];
-        //private static string _bucket = ConfigurationManager.AppSettings["Bucket"];
-        //private static string _authEmail = ConfigurationManager.AppSettings["AuthEmail"];
-        //private static string _authPassword = ConfigurationManager.AppSettings["AuthPassword"];
-
         private readonly ITrainingBL _trainingBL;
         private readonly IPrerequisiteBL _prerequisiteBL;
         private readonly IEnrollmentBL _enrollmentBL;
@@ -60,27 +55,15 @@ namespace FinalSkillsLabProject.Controllers
         [HttpGet]
         [CustomAuthorization("Manager,Admin")]
         public async Task<ActionResult> EmployeeEnrollments()
-        {
-            List<EnrollmentViewModel> employeeEnrollmentsList = null;
+        {           
             string currentRole = ((UserViewModel)Session["CurrentUser"]).Role.RoleName.ToString();
             int currentUserId = ((UserViewModel)Session["CurrentUser"]).UserId;
             ViewBag.Trainings = (await _trainingBL.GetAllAsync()).ToList();
-            
-            if (currentRole.Equals("Admin"))
-            {
-                //employeeEnrollmentsList = _enrollmentBL.GetAll().Where(x => x.EnrollmentStatus != EnrollmentStatusEnum.Selected.ToString()).ToList();
-                employeeEnrollmentsList = (await _enrollmentBL.GetAllAsync()).ToList();
-            }
 
-            else if (currentRole.Equals("Manager"))
-            {
-                //employeeEnrollmentsList = (await _enrollmentBL.GetAllByManagerAsync(currentUserId)).Where(x => x.EnrollmentStatus != EnrollmentStatusEnum.Selected.ToString()).ToList();
-                employeeEnrollmentsList = (await _enrollmentBL.GetAllByManagerAsync(currentUserId)).ToList();
-            }
+            List<EnrollmentViewModel> employeeEnrollmentsList = (await _enrollmentBL.GetByRole(currentRole, currentUserId)).ToList();
             return View(employeeEnrollmentsList);
         }
 
-        //[CustomAuthorization("Manager,Admin")]
         public async Task<ActionResult> TrainingEnrollmentsMaterials(int id)
         {
             List<PrerequisiteMaterialViewModel> prerequisiteMaterialsList = (await _enrollmentBL.GetPrerequisiteMaterialsByEnrollmentAsync(id)).ToList();
@@ -96,13 +79,12 @@ namespace FinalSkillsLabProject.Controllers
             {
                 UserViewModel requestHandler = (UserViewModel)Session["CurrentUser"];
                 string requestHandlerName = $"{requestHandler.FirstName} {requestHandler.LastName}";
-               await _emailNotificationBL.SendApprovalRejectionEmailAsync(isApproved, user.Email, user.Username, user.TrainingName, requestHandlerName, requestHandler.Role.RoleName.ToString().ToLower(), requestHandler.Email, declineReason, user.ManagerEmail);
+                await _emailNotificationBL.SendApprovalRejectionEmailAsync(isApproved, user.Email, user.Username, user.TrainingName, requestHandlerName, requestHandler.Role.RoleName.ToString().ToLower(), requestHandler.Email, declineReason, user.ManagerEmail);
             }
             return Json(new { result = result });
         }
 
         [HttpGet]
-        //[CustomAuthorization("Manager,Admin")]
         public async Task<JsonResult> GetDeclineReasonByEnrollment(int enrollmentId)
         {
             string declineReason = await _enrollmentBL.GetDeclineReasonByEnrollmentAsync(enrollmentId);

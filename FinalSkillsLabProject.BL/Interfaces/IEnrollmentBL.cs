@@ -22,5 +22,6 @@ namespace FinalSkillsLabProject.BL.Interfaces
         Task<IEnumerable<EnrollmentViewModel>> GetAllByUser(int userId);
         Task EnrollmentAutomaticProcessing();
         Task<EnrollmentResult> Enroll(int trainingId, List<int> prerequisiteIds, HttpFileCollectionBase files, UserViewModel user);
+        Task<IEnumerable<EnrollmentViewModel>> GetByRole(string currentRole, int currentUserId);
     }
 }
