@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinalSkillsLabProject.DAL",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinalSkillsLabProject.Common", "FinalSkillsLabProject.Common\FinalSkillsLabProject.Common.csproj", "{3986385E-5AB4-4601-8FE1-C4A0B854165F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinalSkillsLabProject.Test", "FinalSkillsLabProject.Test\FinalSkillsLabProject.Test.csproj", "{B494450B-9F29-4D4F-8FC2-5F08873E95C9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{3986385E-5AB4-4601-8FE1-C4A0B854165F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3986385E-5AB4-4601-8FE1-C4A0B854165F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3986385E-5AB4-4601-8FE1-C4A0B854165F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B494450B-9F29-4D4F-8FC2-5F08873E95C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B494450B-9F29-4D4F-8FC2-5F08873E95C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B494450B-9F29-4D4F-8FC2-5F08873E95C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B494450B-9F29-4D4F-8FC2-5F08873E95C9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

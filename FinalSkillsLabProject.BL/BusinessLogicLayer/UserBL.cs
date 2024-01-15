@@ -27,6 +27,11 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
             {
                 await CheckInsertDuplicate(model.NIC, model.Email, model.MobileNum, model.Username);
                 if (!IsValidEmail(model.Email)) { return "Invalid email!"; }
+
+                model.Salt = HashingBL.GenerateSalt();
+                (model.HashedPassword, _) = HashingBL.HashPassword(model.Password, model.Salt);
+                model.Password = null;
+
                 await this._userDAL.AddAsync(model);
                 return "Account created successfully!";
             }

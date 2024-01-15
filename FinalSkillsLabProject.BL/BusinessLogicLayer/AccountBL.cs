@@ -4,12 +4,13 @@ using FinalSkillsLabProject.Common.Exceptions;
 using FinalSkillsLabProject.DAL.Interfaces;
 using FinalSkillsLabProject.Common.Models;
 using System.Threading.Tasks;
+using FinalSkillsLabProject.BL.BusinessLogicLayer;
+using System.Linq;
 
 namespace FinalSkillsLabProject.BL
 {
     public class AccountBL : IAccountBL
     {
-        // DIP
         private readonly IAccountDAL _accountDAL;
 
         public AccountBL(IAccountDAL accountDAL)
@@ -19,7 +20,14 @@ namespace FinalSkillsLabProject.BL
 
         public async Task<bool> AuthenticateUserAsync(LoginModel model)
         {
-            return await this._accountDAL.AuthenticateUserAsync(model);
+            (byte[] storedHashedPassword, byte[] salt) = await _accountDAL.AuthenticateUserAsync(model);
+
+            if (storedHashedPassword != null && salt != null)
+            {
+                (byte[] hashedPassword, _) = HashingBL.HashPassword(model.Password, salt);
+                return hashedPassword.SequenceEqual(storedHashedPassword);
+            }
+            return false;
         }
         public async Task<UserViewModel> GetByUsernameAsync(string username)
         {

@@ -54,6 +54,9 @@
     <Reference Include="Firebase.Storage, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\FirebaseStorage.net.1.0.3\lib\netstandard1.1\Firebase.Storage.dll</HintPath>
     </Reference>
+    <Reference Include="FluentAssertions, Version=6.12.0.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
+      <HintPath>..\packages\FluentAssertions.6.12.0\lib\net47\FluentAssertions.dll</HintPath>
+    </Reference>
     <Reference Include="Hangfire.AspNet, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Hangfire.AspNet.0.2.0\lib\net45\Hangfire.AspNet.dll</HintPath>
     </Reference>
@@ -320,6 +323,7 @@
     <Compile Include="BusinessLogicLayer\DepartmentBL.cs" />
     <Compile Include="BusinessLogicLayer\EmailNotificationBL.cs" />
     <Compile Include="BusinessLogicLayer\EnrollmentBL.cs" />
+    <Compile Include="BusinessLogicLayer\HashingBL.cs" />
     <Compile Include="BusinessLogicLayer\PrerequisiteBL.cs" />
     <Compile Include="BusinessLogicLayer\TrainingBL.cs" />
     <Compile Include="BusinessLogicLayer\UserBL.cs" />

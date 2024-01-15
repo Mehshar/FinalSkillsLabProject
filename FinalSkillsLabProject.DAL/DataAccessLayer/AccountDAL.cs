@@ -10,25 +10,52 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
 {
     public class AccountDAL : IAccountDAL
     {
-        public async Task<bool> AuthenticateUserAsync(LoginModel model)
+        //public async Task<bool> AuthenticateUserAsync(LoginModel model)
+        //{
+        //    const string AuthenticateUserQuery =
+        //      @"SELECT euser.*, acc.*
+        //        FROM [dbo].[EndUser] euser WITH(NOLOCK)
+        //        INNER JOIN [dbo].[Account] acc WITH(NOLOCK)
+        //        ON euser.[UserId] = acc.UserId
+        //        WHERE acc.[Username] = @Username AND acc.[Password] = HASHBYTES('SHA2_512', @Password+CAST(Salt AS NVARCHAR(36)));";
+
+        //    List<SqlParameter> parameters = new List<SqlParameter>()
+        //    {
+        //        new SqlParameter("@Username", model.Username),
+        //        new SqlParameter("@Password", model.Password)
+        //    };
+
+        //    using (SqlDataReader reader = await DbCommand.GetDataWithConditionsAsync(AuthenticateUserQuery, parameters))
+        //    {
+        //        return reader.HasRows;
+        //    }
+        //}
+
+        public async Task<(byte[], byte[])> AuthenticateUserAsync(LoginModel model)
         {
             const string AuthenticateUserQuery =
               @"SELECT euser.*, acc.*
                 FROM [dbo].[EndUser] euser WITH(NOLOCK)
                 INNER JOIN [dbo].[Account] acc WITH(NOLOCK)
                 ON euser.[UserId] = acc.UserId
-                WHERE acc.[Username] = @Username AND acc.[Password] = HASHBYTES('SHA2_512', @Password+CAST(Salt AS NVARCHAR(36)));";
+                WHERE acc.[Username] = @Username";
 
             List<SqlParameter> parameters = new List<SqlParameter>()
             {
-                new SqlParameter("@Username", model.Username),
-                new SqlParameter("@Password", model.Password)
+                new SqlParameter("@Username", model.Username)
             };
 
             using (SqlDataReader reader = await DbCommand.GetDataWithConditionsAsync(AuthenticateUserQuery, parameters))
             {
-                return reader.HasRows;
+                if (reader.HasRows)
+                {
+                    reader.Read();
+                    byte[] storedHashedPassword = (byte[])reader["Password"];
+                    byte[] salt = (byte[])reader["Salt"];
+                    return (storedHashedPassword, salt);
+                }
             }
+            return (null, null);
         }
 
         public async Task<UserViewModel> GetByUsernameAsync(string username)

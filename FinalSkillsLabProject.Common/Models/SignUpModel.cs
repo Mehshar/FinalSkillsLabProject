@@ -14,5 +14,7 @@ namespace FinalSkillsLabProject.Common.Models
         public int RoleId { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
+        public byte[] HashedPassword { get; set; }
+        public byte[] Salt { get; set; }
     }
 }
