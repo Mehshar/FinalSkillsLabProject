@@ -1,15 +1,9 @@
-﻿using FinalSkillsLabProject.BL;
-using FinalSkillsLabProject.BL.BusinessLogicLayer;
+﻿using FinalSkillsLabProject.BL.BusinessLogicLayer;
 using FinalSkillsLabProject.BL.Interfaces;
 using FinalSkillsLabProject.Common.Enums;
 using FinalSkillsLabProject.Common.Models;
 using FinalSkillsLabProject.DAL.Interfaces;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FinalSkillsLabProject.Test
 {
@@ -96,31 +90,6 @@ namespace FinalSkillsLabProject.Test
 
             _userBL = new UserBL(_stubUser.Object, _stubAccount.Object);
         }
-
-        //[Test]
-        //public async Task AddAsync_ValidSignUp_Successful()
-        //{
-        //    // Arrange
-        //    var signUp = new SignUpModel()
-        //    {
-        //        NIC = "M9I5BOCA94RILM",
-        //        FirstName = "Marie",
-        //        LastName = "Smith",
-        //        Email = "marie.smith@gmail.com",
-        //        MobileNum = "58102561",
-        //        DepartmentId = 1,
-        //        ManagerId = 2,
-        //        RoleId = 3,
-        //        Username = "Marie",
-        //        Password = "Marie"
-        //    };
-
-        //    // Act
-        //    var result = await _userBL.AddAsync(signUp);
-
-        //    // Assert
-        //    Assert.That(result, Does.Contain("Account created successfully!"));
-        //}
 
         [Test]
         [TestCase("marie.smith", "Invalid email!")]

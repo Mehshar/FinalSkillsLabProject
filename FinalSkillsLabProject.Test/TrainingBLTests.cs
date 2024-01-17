@@ -4,11 +4,6 @@ using FinalSkillsLabProject.Common.Models;
 using FinalSkillsLabProject.DAL.Interfaces;
 using FluentAssertions;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FinalSkillsLabProject.Test
 {

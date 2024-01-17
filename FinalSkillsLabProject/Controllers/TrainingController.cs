@@ -1,12 +1,10 @@
 ﻿using FinalSkillsLabProject.Authorization;
-using FinalSkillsLabProject.BL.BusinessLogicLayer;
 using FinalSkillsLabProject.BL.Interfaces;
 using FinalSkillsLabProject.Common.Enums;
 using FinalSkillsLabProject.Common.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 

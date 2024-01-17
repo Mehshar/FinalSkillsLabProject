@@ -6,10 +6,10 @@
         return false;
     });
 
-    function extractPlaceholder(fieldName) {
-        var input = document.querySelector("#" + fieldName);
-        return input.getAttribute("placeholder") || "";
-    }
+    //function extractPlaceholder(fieldName) {
+    //    var input = document.querySelector("#" + fieldName);
+    //    return input.getAttribute("placeholder") || "";
+    //}
 
     function validateFieldValues() {
         var fields = ["username", "password"];

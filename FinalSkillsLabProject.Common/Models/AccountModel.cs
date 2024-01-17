@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace FinalSkillsLabProject.Common.Models
+﻿namespace FinalSkillsLabProject.Common.Models
 {
     public class AccountModel
     {

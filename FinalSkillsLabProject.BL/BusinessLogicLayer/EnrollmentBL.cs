@@ -3,15 +3,12 @@ using FinalSkillsLabProject.DAL.Interfaces;
 using System.Collections.Generic;
 using FinalSkillsLabProject.Common.Models;
 using System.Threading.Tasks;
-using FinalSkillsLabProject.DAL.DataAccessLayer;
 using System.Linq;
 using Firebase.Auth;
 using Firebase.Storage;
 using System.IO;
 using System.Threading;
 using System.Configuration;
-using Azure.Core;
-using System.Security.Policy;
 using System.Web;
 using System;
 

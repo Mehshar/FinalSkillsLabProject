@@ -108,7 +108,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
 
             const string GetEnrollmentQuery =
                 @"
-                SELECT *
+                SELECT EnrollmentId, EnrollmentDate, EnrollmentStatus, DeclineReason
                 FROM [dbo].[Enrollment]
                 WHERE [UserId] = @UserId AND [TrainingId] = @TrainingId;";
 

@@ -2,7 +2,6 @@
 using FinalSkillsLabProject.BL.BusinessLogicLayer;
 using FinalSkillsLabProject.BL.Interfaces;
 using FinalSkillsLabProject.Common.Enums;
-using FinalSkillsLabProject.Common.Exceptions;
 using FinalSkillsLabProject.Common.Models;
 using FinalSkillsLabProject.DAL.Interfaces;
 using FluentAssertions;

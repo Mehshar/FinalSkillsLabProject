@@ -71,7 +71,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             List<PrerequisiteModel> prerequisitesList = new List<PrerequisiteModel>();
 
             const string GetAllPrerequisitesQuery =
-              @"SELECT *
+              @"SELECT [PrerequisiteId], [Type], [Description]
                 FROM [dbo].[Prerequisite];";
 
             using (SqlDataReader reader = await DbCommand.GetDataAsync(GetAllPrerequisitesQuery))
@@ -101,7 +101,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             };
 
             const string GetPrerequisitesByTrainingQuery =
-              @"SELECT p.*
+              @"SELECT p.[PrerequisiteId], p.[Type], p.[Description]
                 FROM [dbo].[Training_Prerequisite] AS tp
                 INNER JOIN [dbo].[Prerequisite] AS p
                 ON tp.[PrerequisiteId] = p.[PrerequisiteId]

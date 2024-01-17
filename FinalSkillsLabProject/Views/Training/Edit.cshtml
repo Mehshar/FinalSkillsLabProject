@@ -16,6 +16,7 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
 
+    <script type="text/javascript" src="~/Scripts/Common.js"></script>
     <script type="text/javascript" src="~/Scripts/UpdateTrainingScript.js"></script>
 
     <style>
@@ -83,7 +84,7 @@
                         <div class="form-group mt-4 mb-3">
                             <label for="prerequisite" class="control-label col-md-2 fw-bold">Prerequisites</label>
                         </div>
-                        @if (Model.PrerequisiteIds.Any())
+                        @if (Model.PrerequisiteIds != null)
                         {
                             foreach (var prerequisite in ViewBag.AllPrerequisites)
                             {

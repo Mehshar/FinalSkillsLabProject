@@ -5,7 +5,6 @@ using FinalSkillsLabProject.Common.Models;
 using FinalSkillsLabProject.DAL.Interfaces;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
-using System.Drawing.Printing;
 using System.Data;
 using FinalSkillsLabProject.Common.Enums;
 
@@ -188,11 +187,12 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
                         PriorityDepartment = reader.IsDBNull(reader.GetOrdinal("PriorityDepartment")) ? null : (int?)reader.GetInt16(reader.GetOrdinal("PriorityDepartment")),
                         PriorityDepartmentName = reader.IsDBNull(reader.GetOrdinal("PriorityDepartmentName")) ? null : reader.GetString(reader.GetOrdinal("PriorityDepartmentName")),
                         IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted")),
-                        PrerequisiteIds = new List<int>()
+                        PrerequisiteIds = null
                     };
 
                     if (!(await IsEnrollmentAsync(trainingId)))
                     {
+                        training.PrerequisiteIds = new List<int>();
                         do
                         {
                             int? prerequisiteId = reader.IsDBNull(reader.GetOrdinal("PrerequisiteId")) ? null : (int?)reader.GetInt16(reader.GetOrdinal("PrerequisiteId"));
@@ -244,10 +244,12 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter("@UserId", userId) };
 
             const string GetTrainingsByUserQuery =
-              @"SELECT t.*, e.[UserId], e.[TrainingId]
+              @"SELECT t.*, d.[DepartmentName]
                 FROM [dbo].[Enrollment] as e
                 INNER JOIN [dbo].[Training] as t
                 ON e.[TrainingId] = t.[TrainingId]
+				LEFT JOIN [dbo].[Department] as d
+				ON t.[PriorityDepartment] = d.[DepartmentId]
                 WHERE e.[UserId] = @UserId;";
 
             using (SqlDataReader reader = await DbCommand.GetDataWithConditionsAsync(GetTrainingsByUserQuery, parameters))
@@ -277,7 +279,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter("@UserId", userId) };
 
             const string GetNotEnrolledTrainings =
-                @"SELECT *
+                @"SELECT t.*, d.[DepartmentName]
                 FROM Training t
                 LEFT JOIN [dbo].[Department] AS d 
                 ON t.[PriorityDepartment] = d.DepartmentId

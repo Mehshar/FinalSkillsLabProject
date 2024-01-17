@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 using System.Web;
 using FinalSkillsLabProject.Common.Models;
@@ -10,7 +9,6 @@ namespace FinalSkillsLabProject.BL.Interfaces
     {
         Task<bool> AddAsync(EnrollmentModel enrollment, List<PrerequisiteMaterialModel> prerequisiteMaterialsList);
         Task<bool> UpdateAsync(int enrollmentId, bool isApproved, string declineReason);
-        //void Delete(EnrollmentModel model);
         Task<EnrollmentModel> GetAsync(int userId, int trainingId);
         Task<IEnumerable<EnrollmentViewModel>> GetAllAsync();
         Task<IEnumerable<EnrollmentViewModel>> GetAllByManagerTrainingAsync(int managerId, int trainingId);

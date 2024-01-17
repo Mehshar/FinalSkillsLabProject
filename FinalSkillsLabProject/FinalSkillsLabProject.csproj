@@ -417,6 +417,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Content Include="Scripts\CheckUpdateTrainingScript.js" />
+    <Content Include="Scripts\Common.js" />
     <Content Include="Scripts\DeleteTrainingScript.js" />
   </ItemGroup>
   <ItemGroup>

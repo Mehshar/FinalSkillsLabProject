@@ -6,17 +6,17 @@
         return false;
     });
 
-    function extractPlaceholder(fieldName) {
-        var input = document.querySelector("#" + fieldName);
-        return input.getAttribute("placeholder") || "";
-    }
+    //function extractPlaceholder(fieldName) {
+    //    var input = document.querySelector("#" + fieldName);
+    //    return input.getAttribute("placeholder") || "";
+    //}
 
-    function extractLabelValue(fieldName) {
-        var label = $("Label[for='" + fieldName + "']");
-        return label.length > 0 ? label.text().trim() : "";
-    }
+    //function extractLabelValue(fieldName) {
+    //    var label = $("Label[for='" + fieldName + "']");
+    //    return label.length > 0 ? label.text().trim() : "";
+    //}
 
-    function validateFieldValues() {
+    function validateFieldDropdownValues() {
         var dropdowns = ["departmentDropdown", "managerDropdown"];
         var inputFields = ["nic", "firstName", "lastName", "email", "mobileNum", "username", "password"];
         var isValid = true;
@@ -47,7 +47,7 @@
     }
 
     $("#btnSignup").click(function () {
-        if (!validateFieldValues()) {
+        if (!validateFieldDropdownValues()) {
             return false;
         }
         var email = $("#email").val().trim();

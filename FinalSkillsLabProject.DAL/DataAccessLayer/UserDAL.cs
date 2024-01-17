@@ -11,44 +11,6 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
 {
     public class UserDAL : IUserDAL
     {
-        //public async Task<bool> AddAsync(SignUpModel model)
-        //{
-        //    List<SqlParameter> parameters = new List<SqlParameter>()
-        //    {
-        //        new SqlParameter("@NIC", model.NIC),
-        //        new SqlParameter("@FirstName", model.FirstName),
-        //        new SqlParameter("@LastName", model.LastName),
-        //        new SqlParameter("@Email", model.Email),
-        //        new SqlParameter("@MobileNum", model.MobileNum),
-        //        new SqlParameter("@ManagerId", Convert.ToInt16(model.ManagerId)),
-        //        new SqlParameter("@DepartmentId", Convert.ToInt16(model.DepartmentId)),
-        //        new SqlParameter("@RoleId", Convert.ToInt16((int)RoleEnum.Employee)),
-        //        new SqlParameter("@Username", model.Username),
-        //        new SqlParameter("@Password", model.Password)
-        //    };
-
-        //    const string AddUserQuery =
-        //        @"BEGIN TRANSACTION;
-
-        //        DECLARE @key int
-        //        DECLARE @salt UNIQUEIDENTIFIER=NEWID()
-
-        //        INSERT INTO [dbo].[EndUser] ([NIC], [FirstName], [LastName], [Email], [MobileNum], [ManagerId], [DepartmentId])
-        //        SELECT @NIC, @FirstName, @LastName, @Email, @MobileNum, @ManagerId, @DepartmentId;
-
-        //        SELECT @key = @@IDENTITY
-
-        //        INSERT INTO [dbo].[RoleAssignment] ([UserId], [RoleId])
-        //        SELECT @key, @RoleId;
-
-        //        INSERT INTO [dbo].[Account] ([Username], [UserId], [Password], [Salt])
-        //        SELECT @Username, @key, HASHBYTES('SHA2_512', @Password+CAST(@salt AS NVARCHAR(36))), @salt;
-
-        //        COMMIT;";
-
-        //    return await DbCommand.InsertUpdateDataAsync(AddUserQuery, parameters) > 0;
-        //}
-
         public async Task<bool> AddAsync(SignUpModel model)
         {
             const string AddUserQuery =

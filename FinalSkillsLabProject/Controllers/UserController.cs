@@ -1,12 +1,8 @@
-﻿using FinalSkillsLabProject.Authorization;
-using FinalSkillsLabProject.BL.BusinessLogicLayer;
-using FinalSkillsLabProject.BL.Interfaces;
+﻿using FinalSkillsLabProject.BL.Interfaces;
 using FinalSkillsLabProject.Common.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
 
 namespace FinalSkillsLabProject.Controllers
@@ -30,7 +26,6 @@ namespace FinalSkillsLabProject.Controllers
         }
 
         [HttpGet]
-        //[CustomAuthorization("Employee")]
         public async Task<ActionResult> Enrollments()
         {
             ViewBag.Trainings = (await _trainingBL.GetAllAsync()).ToList();

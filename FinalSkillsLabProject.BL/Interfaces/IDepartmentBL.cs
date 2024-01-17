@@ -8,7 +8,6 @@ namespace FinalSkillsLabProject.BL.Interfaces
     {
         Task<string> AddAsync(DepartmentModel department);
         Task<string> UpdateAsync(DepartmentModel department);
-        //void Delete(DepartmentModel department);
         Task<DepartmentModel> GetAsync(int departmentId);
         Task<IEnumerable<DepartmentModel>> GetAllAsync();
         Task<IEnumerable<UserModel>> GetManagerByDepartmentAsync(int departmentId);

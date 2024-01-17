@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using FinalSkillsLabProject.Common.Enums;
+﻿using FinalSkillsLabProject.Common.Enums;
 
 namespace FinalSkillsLabProject.Common.Models
 {

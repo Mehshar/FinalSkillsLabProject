@@ -6,25 +6,25 @@
         return false;
     });
 
-    function extractLabelValues(fieldName) {
-        var label = $("label[for='" + fieldName + "']");
-        return label.length > 0 ? label.text().trim() : "";
-    }
+    //function extractLabelValues(fieldName) {
+    //    var label = $("label[for='" + fieldName + "']");
+    //    return label.length > 0 ? label.text().trim() : "";
+    //}
 
-    function validateFieldValues() {
-        var fields = ["trainingName", "description", "deadline", "capacity", "departmentDropdown"];
-        var isValid = true;
+    //function validateFieldValues() {
+    //    var fields = ["trainingName", "description", "deadline", "capacity", "departmentDropdown"];
+    //    var isValid = true;
 
-        fields.forEach(function (field) {
-            var value = $("#" + field).val();
-            if (value == '' || value == null || value.trim() == '') {
-                var label = extractLabelValues(field);
-                toastr.error(label + " cannot be empty");
-                isValid = false;
-            }
-        });
-        return isValid;
-    }
+    //    fields.forEach(function (field) {
+    //        var value = $("#" + field).val();
+    //        if (value == '' || value == null || value.trim() == '') {
+    //            var label = extractLabelValue(field);
+    //            toastr.error(label + " cannot be empty");
+    //            isValid = false;
+    //        }
+    //    });
+    //    return isValid;
+    //}
 
     function validateDeadline(parsedDeadline) {
         var currentDate = new Date();
@@ -52,7 +52,8 @@
     }
 
     $("#btnSubmit").click(function () {
-        if (!validateFieldValues()) {
+        var fields = ["trainingName", "description", "deadline", "capacity", "departmentDropdown"];
+        if (!validateFieldValues(fields)) {
             return false;
         }
 

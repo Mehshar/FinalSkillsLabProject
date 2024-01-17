@@ -32,7 +32,6 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
             {
                 return ex.Message;
             }
-
         }
 
         public async Task<string> UpdateAsync(PrerequisiteModel prerequisite)

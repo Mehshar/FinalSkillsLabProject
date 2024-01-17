@@ -10,33 +10,12 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
 {
     public class AccountDAL : IAccountDAL
     {
-        //public async Task<bool> AuthenticateUserAsync(LoginModel model)
-        //{
-        //    const string AuthenticateUserQuery =
-        //      @"SELECT euser.*, acc.*
-        //        FROM [dbo].[EndUser] euser WITH(NOLOCK)
-        //        INNER JOIN [dbo].[Account] acc WITH(NOLOCK)
-        //        ON euser.[UserId] = acc.UserId
-        //        WHERE acc.[Username] = @Username AND acc.[Password] = HASHBYTES('SHA2_512', @Password+CAST(Salt AS NVARCHAR(36)));";
-
-        //    List<SqlParameter> parameters = new List<SqlParameter>()
-        //    {
-        //        new SqlParameter("@Username", model.Username),
-        //        new SqlParameter("@Password", model.Password)
-        //    };
-
-        //    using (SqlDataReader reader = await DbCommand.GetDataWithConditionsAsync(AuthenticateUserQuery, parameters))
-        //    {
-        //        return reader.HasRows;
-        //    }
-        //}
-
         public async Task<(byte[], byte[])> AuthenticateUserAsync(LoginModel model)
         {
             const string AuthenticateUserQuery =
-              @"SELECT euser.*, acc.*
-                FROM [dbo].[EndUser] euser WITH(NOLOCK)
-                INNER JOIN [dbo].[Account] acc WITH(NOLOCK)
+              @"SELECT acc.[Password], acc.[Salt]
+                FROM [dbo].[EndUser] euser
+                INNER JOIN [dbo].[Account] acc
                 ON euser.[UserId] = acc.UserId
                 WHERE acc.[Username] = @Username";
 
@@ -69,11 +48,11 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             const string GetUserByUsernameQuery =
                 @" 
                 SELECT euser.[UserId], ra.[RoleId], euser.[FirstName], euser.[LastName], acc.[Username], euser.[Email], euser.[MobileNum], dept.[DepartmentName], meuser.[FirstName] AS ManagerFirstName, meuser.[LastName] AS ManagerLastName, meuser.[Email] AS ManagerEmail
-                FROM [dbo].[EndUser] euser WITH(NOLOCK)
-                INNER JOIN [dbo].[Account] acc WITH(NOLOCK) ON euser.[UserId] = acc.[UserId]
-                INNER JOIN [dbo].[RoleAssignment] ra WITH(NOLOCK) ON euser.[UserId] = ra.[UserId]
-                INNER JOIN [dbo].[Department] dept WITH(NOLOCK) ON euser.[DepartmentId] = dept.[DepartmentId]
-                LEFT JOIN [dbo].[EndUser] meuser WITH(NOLOCK) ON euser.[ManagerId] = meuser.[UserId]
+                FROM [dbo].[EndUser] euser
+                INNER JOIN [dbo].[Account] acc ON euser.[UserId] = acc.[UserId]
+                INNER JOIN [dbo].[RoleAssignment] ra ON euser.[UserId] = ra.[UserId]
+                INNER JOIN [dbo].[Department] dept ON euser.[DepartmentId] = dept.[DepartmentId]
+                LEFT JOIN [dbo].[EndUser] meuser ON euser.[ManagerId] = meuser.[UserId]
                 WHERE acc.[Username] = @Username;";
 
             using (SqlDataReader reader = await DbCommand.GetDataWithConditionsAsync(GetUserByUsernameQuery, parameters))
@@ -103,7 +82,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             return user;
         }
 
-        // Getting a user with a different UserId, who has a specific username
+        // Getting a user with a specific username and a different UserId
         public async Task<AccountModel> GetByUsernameAndUserIdAsync(string username, int userId)
         {
             AccountModel user = null;
@@ -115,8 +94,8 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
 
             const string GetUserByUsernameAndUserId =
               @"SELECT euser.[UserId], acc.[Username], acc.[Password]
-                FROM [dbo].[EndUser] euser WITH(NOLOCK)
-                INNER JOIN [dbo].[Account] acc WITH(NOLOCK) ON euser.[UserId] = acc.[UserId]
+                FROM [dbo].[EndUser] euser
+                INNER JOIN [dbo].[Account] acc ON euser.[UserId] = acc.[UserId]
                 WHERE acc.[Username] = @Username AND euser.[UserId] != @UserId;";
 
             using (SqlDataReader reader = await DbCommand.GetDataWithConditionsAsync(GetUserByUsernameAndUserId, parameters))

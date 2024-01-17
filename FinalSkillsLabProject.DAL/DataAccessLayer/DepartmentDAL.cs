@@ -40,7 +40,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
 
             return await DbCommand.InsertUpdateDataAsync(UpdateDepartmentQuery, parameters) > 0;
         }
-        //public void Delete(DepartmentModel department) { }
+
         public async Task<DepartmentModel> GetAsync(int departmentId)
         {
             DepartmentModel department = null;
@@ -49,7 +49,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             parameters.Add(new SqlParameter("@DepartmentId", departmentId));
 
             const string GetDepartmentQuery =
-              @"SELECT *
+              @"SELECT [DepartmentId], [DepartmentName]
                 FROM [dbo].[Department]
                 WHERE [DepartmentId] = @DepartmentId;";
 
@@ -73,7 +73,7 @@ namespace FinalSkillsLabProject.DAL.DataAccessLayer
             List<DepartmentModel> departmentsList = new List<DepartmentModel>();
 
             const string GetAllDepartmentsQuery =
-              @"SELECT *
+              @"SELECT DepartmentId, DepartmentName
                 FROM [dbo].[Department];";
 
             using (SqlDataReader reader = await DbCommand.GetDataAsync(GetAllDepartmentsQuery))

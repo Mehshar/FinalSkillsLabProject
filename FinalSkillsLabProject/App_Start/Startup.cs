@@ -1,13 +1,10 @@
 ﻿using FinalSkillsLabProject.Authorization;
-using FinalSkillsLabProject.BL.Interfaces;
 using Hangfire;
 using Microsoft.Owin;
 using Owin;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Diagnostics;
-using System.Threading.Tasks;
 
 [assembly: OwinStartup(typeof(FinalSkillsLabProject.App_Start.Startup))]
 
