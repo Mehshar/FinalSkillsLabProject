@@ -112,11 +112,11 @@ namespace FinalSkillsLabProject.Controllers
         }
 
         [CustomAuthorization("Admin")]
-        public async Task<JsonResult> ExportSelected(int trainingId, string trainingName)
+        public async Task<FileResult> ExportSelected(int trainingId, string trainingName)
         {
             List<UserViewModel> selectedList = (await _trainingBL.GetByStatus(trainingId, EnrollmentStatusEnum.Selected)).ToList();
-            bool isSuccess = _exportBL.ExportToExcel(selectedList, trainingName);
-            return Json(new { result = isSuccess });
+            byte[] excelBytes = _exportBL.ExportToExcel(selectedList, trainingName);
+            return File(excelBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"{trainingName}.xlsx");
         }
     }
 }

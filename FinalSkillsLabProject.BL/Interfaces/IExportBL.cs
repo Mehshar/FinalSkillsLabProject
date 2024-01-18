@@ -5,6 +5,6 @@ namespace FinalSkillsLabProject.BL.Interfaces
 {
     public interface IExportBL
     {
-        bool ExportToExcel(List<UserViewModel> selectedList, string trainingName);
+        byte[] ExportToExcel(List<UserViewModel> selectedList, string trainingName);
     }
 }
