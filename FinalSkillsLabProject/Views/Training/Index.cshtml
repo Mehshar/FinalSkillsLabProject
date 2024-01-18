@@ -134,7 +134,7 @@
                                                 </div>
 
                                                 <div class="col-4">
-                                                    <a class="btn btn-outline-danger btnDeleteTraining ms-3" data-name="@training.TrainingName" data-id="@training.TrainingId">
+                                                    <a class="btn btn-outline-danger btnDeleteTraining ms-3" data-toggle="tooltip" title="Delete Training" data-name="@training.TrainingName" data-id="@training.TrainingId">
                                                         <i class="fa-regular fa-trash-can"></i>
                                                     </a>
                                                 </div>
@@ -169,7 +169,7 @@
                     <nav aria-label="Page Navigation Previous" class="my-3">
                         <ul class="pagination">
                             <li class="page-item">
-                                <a id="previousPageLink" class="page-link" aria-label="Previous">
+                                <a id="previousPageLink" class="page-link" data-toggle="tooltip" title="Previous" aria-label="Previous">
                                     <i class="fa-solid fa-chevron-left"></i>
                                 </a>
                             </li>
@@ -190,7 +190,7 @@
                     <nav aria-label="Page Navigation Next" class="my-3">
                         <ul class="pagination justify-content-end">
                             <li class="page-item">
-                                <a id="nextPageLink" class="page-link" aria-label="Next">
+                                <a id="nextPageLink" class="page-link" data-toggle="tooltip" title="Next" aria-label="Next">
                                     <i class="fa-solid fa-chevron-right"></i>
                                 </a>
                             </li>
@@ -372,7 +372,7 @@
                                             </a>
                                         </div>
                                         <div class="col-4">
-                                            <a class="btn btn-outline-danger btnDeleteTraining ms-3" data-name="${training.TrainingName}" data-id="${training.TrainingId}">
+                                            <a class="btn btn-outline-danger btnDeleteTraining ms-3" data-toggle="tooltip" title="Delete Training" data-name="${training.TrainingName}" data-id="${training.TrainingId}">
                                                 <i class="fa-regular fa-trash-can"></i>
                                             </a>
                                         </div>`;

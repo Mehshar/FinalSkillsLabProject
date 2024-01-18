@@ -61,6 +61,7 @@ namespace FinalSkillsLabProject.BL.BusinessLogicLayer
                     }
 
                     worksheet.Cells.AutoFitColumns();
+
                     FileInfo excelFile = new FileInfo(GetSavePath(trainingName));
                     package.SaveAs(excelFile);
                     return true;

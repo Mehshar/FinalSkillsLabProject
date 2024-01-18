@@ -1,6 +1,7 @@
 ﻿$(function () {
     $('.btnApprove').click(function () {
         var enrollmentId = $('[data-enrollmentid]').data('enrollmentid');
+        console.log(`Approved: ${enrollmentId}`);
         var isApproved = true;
         var declineReason = null;
 

@@ -24,101 +24,25 @@ namespace FinalSkillsLabProject.Test
         {
             _logins = new List<LoginModel>()
             {
-                new LoginModel()
-                {
-                    UserId = 1,
-                    Username = "Mehshar",
-                    Password = "Mehshar",
-                    Role = new RoleModel()
-                    {
-                        RoleId = 1,
-                        RoleName = RoleEnum.Admin
-                    }
-                },
-
-                new LoginModel()
-                {
-                    UserId = 2,
-                    Username = "Sophia",
-                    Password = "Sophia",
-                    Role = new RoleModel()
-                    {
-                        RoleId = 2,
-                        RoleName = RoleEnum.Manager
-                    }
-                },
-
-                new LoginModel()
-                {
-                    UserId = 3,
-                    Username = "Harper",
-                    Password = "Harper",
-                    Role = new RoleModel()
-                    {
-                        RoleId = 3,
-                        RoleName = RoleEnum.Employee
-                    }
-                }
+                new LoginModel(){UserId = 1,Username = "Mehshar",Password = "Mehshar",Role = new RoleModel(){RoleId = 1,RoleName = RoleEnum.Admin}},
+                new LoginModel(){UserId = 2,Username = "Sophia",Password = "Sophia",Role = new RoleModel(){RoleId = 2,RoleName = RoleEnum.Manager}},
+                new LoginModel(){UserId = 3,Username = "Harper",Password = "Harper",Role = new RoleModel(){RoleId = 3,RoleName = RoleEnum.Employee}}
             };
 
             _users = new List<UserViewModel>()
             {
-                new UserViewModel()
-                {
-                    UserId = 1,
-                    Username = "Mehshar",
-                    Role = new RoleModel()
-                    {
-                        RoleId = 1,
-                        RoleName = RoleEnum.Admin
-                    },
-                    FirstName = "Mehshar",
-                    LastName = "Mauraknah",
-                    Email = "mehshar.mauraknah@gmail.com",
-                    MobileNum = "54770024",
-                    Department = "Support & Services"
-                },
-
-                new UserViewModel()
-                {
-                    UserId = 3,
-                    Username = "Harper",
-                    Role = new RoleModel()
-                    {
-                        RoleId = 3,
-                        RoleName = RoleEnum.Employee
-                    },
-                    FirstName = "Harper",
-                    LastName = "Robinson",
-                    Email = "harper.robinson40@gmail.com",
-                    MobileNum = "59364506",
-                    Department = "Product & Technology",
-                    ManagerFirstName = "Sophia",
-                    ManagerLastName = "Middleton",
-                    ManagerEmail = "sophia.middleton40@gmail.com"
-                }
+                new UserViewModel(){UserId = 1,Username = "Mehshar",Role = new RoleModel(){RoleId = 1,RoleName = RoleEnum.Admin},FirstName = "Mehshar",LastName = "Mauraknah",Email = "mehshar.mauraknah@gmail.com",MobileNum = "54770024",Department = "Support & Services"},
+                new UserViewModel(){UserId = 3,Username = "Harper",Role = new RoleModel(){RoleId = 3,RoleName = RoleEnum.Employee},FirstName = "Harper",LastName = "Robinson",Email = "harper.robinson40@gmail.com",MobileNum = "59364506",Department = "Product & Technology",ManagerFirstName = "Sophia",ManagerLastName = "Middleton",ManagerEmail = "sophia.middleton40@gmail.com"}
             };
 
             _accounts = new List<AccountModel>()
             {
-                new AccountModel()
-                {
-                    UserId = 1,
-                    Username = "Mehshar",
-                    Password = "Mehshar"
-                },
-
-                new AccountModel()
-                {
-                    UserId = 2,
-                    Username = "Sophia",
-                    Password = "Sophia"
-                }
+                new AccountModel(){UserId = 1,Username = "Mehshar",Password = "Mehshar"},
+                new AccountModel(){UserId = 2,Username = "Sophia",Password = "Sophia"},
+                new AccountModel(){UserId = 3,Username = "Marie", Password = "Marie"}
             };
 
             _stubAccount = new Mock<IAccountDAL>();
-
-            
 
             _stubAccount.Setup(accountDAL => accountDAL.GetByUsernameAsync(It.IsAny<string>()))
                 .ReturnsAsync((string username) => _users.FirstOrDefault(x => x.Username == username));
@@ -127,7 +51,13 @@ namespace FinalSkillsLabProject.Test
                 .ReturnsAsync((string username, int userId) => _accounts.FirstOrDefault(x => x.Username == username && x.UserId != userId));
 
             _stubAccount.Setup(accountDAL => accountDAL.UpdateAsync(It.IsAny<AccountModel>()))
-                .ReturnsAsync(true);
+                .ReturnsAsync((AccountModel account) =>
+                {
+                    AccountModel targetAccount = _accounts.First(x => x.UserId == account.UserId);
+                    targetAccount.Username = account.Username;
+                    targetAccount.Password = account.Password;
+                    return true;
+                });
 
             _accountBL = new AccountBL(_stubAccount.Object);
         }
@@ -158,7 +88,7 @@ namespace FinalSkillsLabProject.Test
         }
 
         [Test]
-        public async Task AuthenticateUserAsync_IncorrectUsername_Failure()
+        public async Task AuthenticateUserAsync_IncorrectUsername_ReturnsFalse()
         {
             // Arrange
             var login = new LoginModel()
@@ -178,7 +108,7 @@ namespace FinalSkillsLabProject.Test
         }
 
         [Test]
-        public async Task AuthenticateUserAsync_IncorrectPassword_Failure()
+        public async Task AuthenticateUserAsync_IncorrectPassword_ReturnsFalse()
         {
             // Arrange
             var login = new LoginModel()
@@ -203,7 +133,7 @@ namespace FinalSkillsLabProject.Test
         }
 
         [Test]
-        public async Task GetByUsernameAsync_Successful_ReturnsUser()
+        public async Task GetByUsernameAsync_SuccessfulRetrieval_ReturnsUser()
         {
             // Arrange
             string username = "Harper";
@@ -231,11 +161,12 @@ namespace FinalSkillsLabProject.Test
             var result = await _accountBL.GetByUsernameAsync(username);
 
             // Assert
+            Assert.That(result, Is.Not.Null);
             result.Should().BeEquivalentTo(expectedResult);
         }
 
         [Test]
-        [TestCase(9, "Marie", "Marie", "Account successfully updated!")]
+        [TestCase(3, "Marie20", "Marie", "Account successfully updated!")]
         [TestCase(10, "Mehshar", "Mehshar40", "Username already exists!")]
         public async Task UpdateAsync_SuccessFailure_ReturnsMessage(int userId, string username, string password, string expectedResult)
         {

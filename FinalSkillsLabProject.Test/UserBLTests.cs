@@ -23,64 +23,28 @@ namespace FinalSkillsLabProject.Test
         {
             _signUps = new List<SignUpModel>()
             {
-                new SignUpModel()
-                {
-                    NIC = "H9I5BOCT94RILM",
-                    FirstName = "Harper",
-                    LastName = "Robinson",
-                    Email = "harper.robinson40@gmail.com",
-                    MobileNum = "59364506",
-                    DepartmentId = 1,
-                    ManagerId = 2,
-                    RoleId = 3,
-                    Username = "Harper",
-                    Password = "Harper"
-                }
+                new SignUpModel() {NIC = "H9I5BOCT94RILM",FirstName = "Harper",LastName = "Robinson",Email = "harper.robinson40@gmail.com",MobileNum = "59364506",DepartmentId = 1,ManagerId = 2,RoleId = 3,Username = "Harper",Password = "Harper"}
             };
 
             _users = new List<UserModel>()
             {
-                new UserModel()
-                {
-                    UserId = 3,
-                    NIC = "H9I5BOCT94RILM",
-                    FirstName = "Harper",
-                    LastName = "Robinson",
-                    Email = "harper.robinson40@gmail.com",
-                    MobileNum = "59364506",
-                    DepartmentId = 1,
-                    ManagerId = 2,
-                    RoleId = 3
-                }
+                new UserModel() {UserId = 1,NIC = "H9I5BOCT94RILM",FirstName = "Harper",LastName = "Robinson",Email = "harper.robinson40@gmail.com",MobileNum = "59364506",DepartmentId = 1,ManagerId = 2,RoleId = 3}
             };
 
             _userViews = new List<UserViewModel>()
             {
-                new UserViewModel()
-                {
-                    UserId = 3,
-                    Username = "Harper",
-                    Role = new RoleModel()
-                    {
-                        RoleId = 3,
-                        RoleName = RoleEnum.Employee
-                    },
-                    FirstName = "Harper",
-                    LastName = "Robinson",
-                    Email = "harper.robinson40@gmail.com",
-                    MobileNum = "59364506",
-                    Department = "Product & Technology",
-                    ManagerFirstName = "Sophia",
-                    ManagerLastName = "Middleton",
-                    ManagerEmail = "sophia.middleton40@gmail.com"
-                }
+                new UserViewModel() {UserId = 1,Username = "Harper",Role = new RoleModel(){RoleId = 3,RoleName = RoleEnum.Employee},FirstName = "Harper",LastName = "Robinson",Email = "harper.robinson40@gmail.com",MobileNum = "59364506",Department = "Product & Technology",ManagerFirstName = "Sophia",ManagerLastName = "Middleton",ManagerEmail = "sophia.middleton40@gmail.com"}
             };
 
             _stubUser = new Mock<IUserDAL>();
             _stubAccount = new Mock<IAccountDAL>();
 
             _stubUser.Setup(userDAL => userDAL.AddAsync(It.IsAny<SignUpModel>()))
-                .ReturnsAsync(true);
+                .ReturnsAsync((SignUpModel signUp) =>
+                {
+                    _signUps.Add(signUp);
+                    return true;
+                });
 
             _stubUser.Setup(userDAL => userDAL.GetAllAsync())
                 .ReturnsAsync(_users);
@@ -95,7 +59,7 @@ namespace FinalSkillsLabProject.Test
         [TestCase("marie.smith", "Invalid email!")]
         [TestCase("mariesmith.com", "Invalid email!")]
         [TestCase("marie.smith@gmail.com", "Account created successfully!")]
-        public async Task AddAsync_ValidInvalidEmail(string email, string expectedResult)
+        public async Task AddAsync_ValidInvalidEmail_ReturnsMessage(string email, string expectedResult)
         {
             // Arrange
             var signUp = new SignUpModel()
@@ -124,7 +88,7 @@ namespace FinalSkillsLabProject.Test
         [TestCase("X8I5BOCT94RILM", "harper.robinson40@gmail.com", "58102561", "Marie", "Email already exists!")]
         [TestCase("X8I5BOCT94RILM", "marie.smith@gmail.com", "59364506", "Marie", "Mobile number already exists!")]
         [TestCase("X8I5BOCT94RILM", "marie.smith@gmail.com", "58102561", "Harper", "Username already exists!")]
-        public async Task AddAsync_Duplicates_ReturnsError(string nic, string email, string mobileNum, string username, string expectedResult)
+        public async Task AddAsync_Duplicates_ReturnsErrorMessage(string nic, string email, string mobileNum, string username, string expectedResult)
         {
             // Arrange
             var signUp = new SignUpModel()

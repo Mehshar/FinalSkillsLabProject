@@ -416,6 +416,8 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Content Include="Content\Images\AboutUs.png" />
+    <Content Include="Content\Images\ContactUs.png" />
     <Content Include="Scripts\CheckUpdateTrainingScript.js" />
     <Content Include="Scripts\Common.js" />
     <Content Include="Scripts\DeleteTrainingScript.js" />

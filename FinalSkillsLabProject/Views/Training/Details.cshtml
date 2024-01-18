@@ -6,6 +6,7 @@
 
 <head>
     <script type="text/javascript" src="~/Scripts/DisplayByRoleScript.js"></script>
+    <link rel="stylesheet" href="~/Content/CommonStyle.css" />
 </head>
 
 <div>
@@ -52,6 +53,6 @@
     }
 </div>
 <p>
-    @Html.ActionLink("Edit", "Edit", "Training", new { id = Model.TrainingId }, new { @class = "btn btn-primary me-3 border-0 btnEdit d-none" })
-    @Html.ActionLink("Back to List", "Index", "Training", null, new { @class = "btn btn-primary border-0" })
+    @Html.ActionLink("Edit", "Edit", "Training", new { id = Model.TrainingId }, new { @class = "btn me-3 border-0 btnEdit d-none" })
+    @Html.ActionLink("Back to List", "Index", "Training", null, new { @class = "btn purple-border" })
 </p>

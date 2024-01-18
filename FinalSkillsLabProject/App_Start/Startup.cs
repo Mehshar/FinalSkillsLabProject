@@ -1,4 +1,5 @@
 ﻿using FinalSkillsLabProject.Authorization;
+using FinalSkillsLabProject.BL.Interfaces;
 using Hangfire;
 using Microsoft.Owin;
 using Owin;
@@ -35,6 +36,8 @@ namespace FinalSkillsLabProject.App_Start
             });
 
             //BackgroundJob.Schedule<IEnrollmentBL>(x => x.EnrollmentAutomaticProcessing(), TimeSpan.FromMinutes(1));
+
+            //RecurringJob.AddOrUpdate<IEnrollmentBL>("enrollmentJob", x => x.EnrollmentAutomaticProcessing(), Cron.Daily);
         }
     }
 }

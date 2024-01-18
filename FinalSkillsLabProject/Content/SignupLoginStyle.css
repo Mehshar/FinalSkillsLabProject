@@ -203,7 +203,7 @@ input:-webkit-autofill:active {
 /* Sign Up Page */
 #departmentDropdown,
 #managerDropdown {
-    width: 24rem;
+    max-width: 23.75rem;
 }
 
 .dropdown-text {

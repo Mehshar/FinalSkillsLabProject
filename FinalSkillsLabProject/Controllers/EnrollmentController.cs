@@ -59,6 +59,7 @@ namespace FinalSkillsLabProject.Controllers
         public async Task<ActionResult> TrainingEnrollmentsMaterials(int id)
         {
             List<PrerequisiteMaterialViewModel> prerequisiteMaterialsList = (await _enrollmentBL.GetPrerequisiteMaterialsByEnrollmentAsync(id)).ToList();
+            ViewBag.EnrollmentId = id;
             return PartialView(prerequisiteMaterialsList);
         }
 

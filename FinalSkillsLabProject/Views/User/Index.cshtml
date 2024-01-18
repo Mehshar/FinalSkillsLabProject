@@ -20,6 +20,12 @@
 
     <link rel="stylesheet" href="~/Content/ProfileStyle.css" />
     <script type="text/javascript" src="~/Scripts/DisplayByRoleScript.js"></script>
+
+    <style>
+        .f-1{
+            font-size: 1rem;
+        }
+    </style>
 </head>
 <body>
     <div class="title-bar">
@@ -33,7 +39,7 @@
                 <div class="card card-1 text-center rounded-start-5">
                     <div class="card-body">
                         <img src="~/Content/Images/male-avatar.svg" alt="profile-img" class="custom-mt" />
-                        <h2 class="card-title fw-bold mt-5 mb-3">@Model.FirstName @Model.LastName</h2>
+                        <h3 class="card-title fw-bold mt-5 mb-3">@Model.FirstName @Model.LastName</h3>
                         <h6 class="card-subtitle mb-2 text-muted fw-bold">@Model.Role.RoleName</h6>
                         <div class="social-media d-flex justify-content-center">
                             <a href="#" class="social-icon">
@@ -53,13 +59,13 @@
                             </a>
                         </div>
                         <div class="fixed-bottom mb-5">
-                            <a href="/User/Enrollments" class="btn profileBtn d-none" id="myenrollmentsBtn">View Enrollments</a>
+                            <a href="/User/Enrollments" class="btn profileBtn d-none f-1" id="myenrollmentsBtn">View Enrollments</a>
                         </div>
                     </div>
                 </div>
-                <div class="card card-2 rounded-end-5">
+                <div class="card card-2 rounded-end-5 f-1">
                     <div class="card-body rounded-end-5">
-                        <h2 class="card-title fw-bold mt-5 mb-5 text-center">Profile</h2>
+                        <h3 class="card-title fw-bold mt-5 mb-5 text-center">Profile</h3>
                         <table border="0">
                             <tr>
                                 <td>Username</td>
@@ -90,8 +96,8 @@
                             }
                         </table>
                         <div class="px-5 d-flex justify-content-center fixed-bottom mb-5">
-                            <button type="button" class="btn profileBtn d-inline-block me-5">Edit</button>
-                            <button type="button" class="btn profileBtn d-inline-block ms-5">Delete</button>
+                            <button type="button" class="btn profileBtn d-inline-block me-5 f-1">Edit</button>
+                            <button type="button" class="btn profileBtn d-inline-block ms-5 f-1">Delete</button>
                         </div>
 
                     </div>

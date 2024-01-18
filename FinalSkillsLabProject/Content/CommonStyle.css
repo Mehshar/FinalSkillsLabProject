@@ -115,3 +115,25 @@ hr {
     #btnCreateTraining:hover, #btnSubmit:hover/*, #hangfireBtn:hover*/ {
         background-image: linear-gradient(to right, rgba(238, 174, 202, 1) 6%, rgba(148, 187, 233, 1) 100%);
     }
+
+.purple-border {
+    border: 1px solid rgba(199,179,215,255) !important;
+    font-weight: 500 !important;
+}
+
+    .purple-border:hover {
+        background-image: linear-gradient(to right, rgba(238, 174, 202, 1) 6%, rgba(148, 187, 233, 1) 100%);
+        border: none !important;
+        outline: none !important;
+        font-weight: 600 !important;
+        color: white !important;
+    }
+
+#hangfireBtn {
+    border: 1px solid rgba(199,179,215,255) !important;
+}
+
+    #hangfireBtn:hover {
+        background-image: linear-gradient(to left, rgba(238, 174, 202, 1) 6%, rgba(148, 187, 233, 1) 100%);
+        color: white !important;
+    }

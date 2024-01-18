@@ -4,6 +4,9 @@
     $('#enrollmentAccordion').on('click', '.accordion-button', function () {
         if ($(this).attr('aria-expanded')) {
             var enrollmentId = $(this).data('enrollment-id');
+            var trainingDeadline = $(this).data('deadline');
+            //console.log(trainingDeadline);
+            //alert(enrollmentId);
             var url = '/Enrollment/TrainingEnrollmentsMaterials/' + enrollmentId;
             var managerDetails = $('#manager_' + enrollmentId).text();
             $('#body_' + enrollmentId).load(url);
@@ -11,13 +14,18 @@
             setTimeout(function () {
                 $('.manager-details').text(managerDetails);
                 var enrollmentStatus = $("#badge_" + enrollmentId).text();
+
+                if (new Date(trainingDeadline) < new Date()) {
+                    $('.responseBtnGroup').addClass('d-none');
+                }
+
                 if (enrollmentStatus == "Approved") {
                     $('.btnApprove').prop('disabled', true).removeClass('btn-outline-success').addClass('btn-outline-secondary');
                 }
 
-                else if (enrollmentStatus == "Selected") {
-                    $('.responseBtnGroup').addClass('d-none');
-                }
+                //else if (enrollmentStatus == "Selected") {
+                //    $('.responseBtnGroup').addClass('d-none');
+                //}
 
                 else if (enrollmentStatus == "Declined") {
                     $('.btnReject').prop('disabled', true).removeClass('btn-outline-danger').addClass('btn-outline-secondary');

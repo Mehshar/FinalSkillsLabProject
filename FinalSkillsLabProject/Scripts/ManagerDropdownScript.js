@@ -11,7 +11,7 @@
             data: { departmentId: department },  
             dataType: "json",
             success: function (response) {
-                var placeholder = "<option disabled selected hidden>Choose your manager...</option>";
+                var placeholder = "<option disabled selected hidden>Choose your manager . . .</option>";
                 managerDropdown.append(placeholder);
                 $.each(response.managers, function (index, manager) {
                     var managerOptions = "<option value=" + manager.UserId + ">" + manager.FirstName + " " + manager.LastName + "</option>";

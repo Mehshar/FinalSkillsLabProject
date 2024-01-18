@@ -13,6 +13,7 @@ namespace FinalSkillsLabProject.Common.Models
         public DateTime EnrollmentDate { get; set; }
         public string TrainingName { get; set; }
         public int TrainingId { get; set; }
+        public DateTime TrainingDeadline { get; set; }
         public string PriorityDepartmentName { get; set; }
         public int Capacity { get; set; }
         public string EnrollmentStatus { get; set; }

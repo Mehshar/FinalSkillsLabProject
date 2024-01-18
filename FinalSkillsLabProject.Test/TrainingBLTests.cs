@@ -21,41 +21,9 @@ namespace FinalSkillsLabProject.Test
         {
             _trainings = new List<TrainingModel>()
             {
-                new TrainingModel()
-                {
-                    TrainingId = 1,
-                    TrainingName = "Advanced Software Development Bootcamp",
-                    Description = "An intensive bootcamp that delves into advanced software development concepts, tools, and methodologies, preparing participants for complex coding challenges.",
-                    Deadline = new DateTime(2023, 12, 15),
-                    Capacity = 3,
-                    PriorityDepartment = 1,
-                    PriorityDepartmentName = "Product & Technology",
-                    IsDeleted = false
-                },
-
-                new TrainingModel()
-                {
-                    TrainingId = 2,
-                    TrainingName = "Advanced Technical Support Training",
-                    Description = "A training tailored for support engineers focusing on advanced troubleshooting, customer communication skills, and in-depth product knowledge.",
-                    Deadline = new DateTime(2024, 11, 11),
-                    Capacity = 3,
-                    PriorityDepartment = 6,
-                    PriorityDepartmentName = "Support & Services",
-                    IsDeleted = true
-                },
-
-                new TrainingModel()
-                {
-                    TrainingId = 3,
-                    TrainingName = "Strategic HR Leadership Program",
-                    Description = "A leadership program for HR professionals, covering strategic HR planning, employee engagement strategies, and leadership development.",
-                    Deadline = new DateTime(2024, 10, 08),
-                    Capacity = 5,
-                    PriorityDepartment = 2,
-                    PriorityDepartmentName = "Human Resources",
-                    IsDeleted = false
-                }
+                new TrainingModel(){TrainingId = 1,TrainingName = "Advanced Software Development Bootcamp",Description = "An intensive bootcamp that delves into advanced software development concepts, tools, and methodologies, preparing participants for complex coding challenges.",Deadline = new DateTime(2023, 12, 15),Capacity = 3,PriorityDepartment = 1,PriorityDepartmentName = "Product & Technology",IsDeleted = false},
+                new TrainingModel(){TrainingId = 2,TrainingName = "Advanced Technical Support Training",Description = "A training tailored for support engineers focusing on advanced troubleshooting, customer communication skills, and in-depth product knowledge.",Deadline = new DateTime(2024, 11, 11),Capacity = 3,PriorityDepartment = 6,PriorityDepartmentName = "Support & Services",IsDeleted = true},
+                new TrainingModel(){TrainingId = 3,TrainingName = "Strategic HR Leadership Program",Description = "A leadership program for HR professionals, covering strategic HR planning, employee engagement strategies, and leadership development.",Deadline = new DateTime(2024, 10, 08),Capacity = 5,PriorityDepartment = 2,PriorityDepartmentName = "Human Resources",IsDeleted = false}
             };
 
             _prerequisitesList = new List<int>() { 1, 2 };
@@ -72,7 +40,12 @@ namespace FinalSkillsLabProject.Test
                 .Returns(Task.CompletedTask);
 
             _stubTraining.Setup(trainingDAL => trainingDAL.DeleteAsync(It.IsAny<int>()))
-                .ReturnsAsync(true);
+                .ReturnsAsync((int trainingId) =>
+                {
+                    TrainingModel training = _trainings.First(x => x.TrainingId == trainingId);
+                    _trainings.Remove(training);
+                    return true;
+                });
 
             _stubTraining.Setup(trainingDAL => trainingDAL.GetAsync(It.IsAny<int>()))
                 .ReturnsAsync((int trainingId) => _trainings.FirstOrDefault(x => x.TrainingId == trainingId));
@@ -84,7 +57,7 @@ namespace FinalSkillsLabProject.Test
         }
 
         [Test]
-        public async Task AddAsync_ValidTraining_Success()
+        public async Task AddAsync_ValidTraining_ReturnsSuccessMessage()
         {
             // Arrange
             var training = new TrainingModel()
@@ -104,7 +77,7 @@ namespace FinalSkillsLabProject.Test
         }
 
         [Test]
-        public async Task AddAsync_DuplicateName_Failure()
+        public async Task AddAsync_DuplicateName_ReturnsErrorMessage()
         {
             // Arrange
             var training = new TrainingModel()
@@ -148,7 +121,7 @@ namespace FinalSkillsLabProject.Test
         }
 
         [Test]
-        public async Task DeleteAsync_Success()
+        public async Task DeleteAsync_Valid_ReturnsTrue()
         {
             // Arrange
             int trainingId = 1;
@@ -161,7 +134,7 @@ namespace FinalSkillsLabProject.Test
         }
 
         [Test]
-        public async Task GetAsync_Success()
+        public async Task GetAsync_SuccessfulRetrieval_ReturnsTraining()
         {
             // Arrange
             var trainingId = 2;
@@ -186,7 +159,7 @@ namespace FinalSkillsLabProject.Test
         }
 
         [Test]
-        public async Task GetByDeadlineAsync_Success()
+        public async Task GetByDeadlineAsync_SuccessfulRetrieval_ReturnsTraining()
         {
             // Arrange
             var expectedResult = new List<TrainingModel>()
